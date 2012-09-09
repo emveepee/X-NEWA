@@ -63,15 +63,15 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
 
     def goConflicts(self):
         import conflicts
-	mywin = conflicts.ConflictedRecordingsWindow('gbpvr_conflicts.xml', os.getcwd(), settings=self.settings, gbpvr=self.gbpvr)
+	mywin = conflicts.ConflictedRecordingsWindow('nextpvr_conflicts.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
         mywin.doModal()
 
     def goEditSchedule(self):
 
 	import details
 
-	oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
+	oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['recording_oid']
+        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()

@@ -20,7 +20,6 @@
 import datetime, time
 import xbmcgui
 import os
-from xbmcaddon import Addon
 
 from myGBPVRGlobals import *
 
@@ -66,7 +65,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.recentData[self.programsListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", Addon('script.myGBPVR').getAddonInfo('path'), gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
+        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()

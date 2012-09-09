@@ -2,11 +2,12 @@
 # -*- coding: UTF-8 -*-
 
 """
-	myGBPVR
+	X-NEWA
 
-	Controlling GB-PVR from within XBMC.
+	Controlling NextPVR from within XBMC.
 
 	Written By Ton van der Poel
+	Updated by emveepee
 
 	THANKS:
 	To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
@@ -15,7 +16,6 @@
 """
 
 import xbmc, xbmcgui
-from xbmcaddon import Addon
 import sys, re, time, os
 from os import path, listdir
 from string import replace, split, upper, lower, capwords, join,zfill
@@ -31,7 +31,9 @@ __date__ = '2012-09-03'
 xbmc.log(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
-DIR_HOME =  Addon('script.myGBPVR').getAddonInfo('path').replace( ";", "" )
+from myGBPVRGlobals import *
+#todo what is DIR_HOME?
+DIR_HOME =  WHERE_AM_I.replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
 DIR_USERDATA = xbmc.translatePath("/".join( ["T:", "script_data", __scriptname__] ))
@@ -39,7 +41,6 @@ DIR_CACHE = os.path.join( DIR_USERDATA, "cache" )
 DIR_PIC = os.path.join( DIR_RESOURCES, "src", "images" )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-from myGBPVRGlobals import *
 from fanart import fanart
 #################################################################################################################
 # MAIN
@@ -618,7 +619,7 @@ class EpgWindow(xbmcgui.WindowXML):
 		import details
 
 		oid = self.epgTagData[controlID][0]
-        	detailDialog = details.DetailDialog("gbpvr_details.xml",  DIR_HOME, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="E")
+        	detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="E")
         	detailDialog.doModal()
         	if detailDialog.returnvalue is not None:
                         # First, get the epgData item....
@@ -992,6 +993,7 @@ def info(object, spacing=10, collapse=1):
 
 try:
 	# start script main
+	#todo figure out what this is
 	debug("--> Home Directory is: " + DIR_HOME)
 	myEPG = myGBPVR("script-myGBPVR-main.xml", DIR_HOME, "Default")
 	if myEPG.ready:

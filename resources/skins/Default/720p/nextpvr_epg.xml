@@ -254,7 +254,7 @@
                   <posy>20</posy>
                   <width>460</width>
                   <height>90</height>
-                  <texture>myGBPVR.png</texture>
+                  <texture>NextPVR.png</texture>
                   <aspectratio align="left">keep</aspectratio>
                   <animation effect="fade" time="200">WindowOpen</animation>
                   <animation effect="fade" time="200">WindowClose</animation>

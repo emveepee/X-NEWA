@@ -165,7 +165,7 @@ DEBUG = False
 
 from xbmcaddon import Addon
 
-WHERE_AM_I = Addon('script.myGBPVR').getAddonInfo('path')
+WHERE_AM_I = Addon('script.xbmc.x-newa').getAddonInfo('path')
 
 # Script doc constants
 __scriptname__ = "myGBPVRGlobals"

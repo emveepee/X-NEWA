@@ -189,7 +189,6 @@ class GBPVR_Connect:
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
-
 	ret_soap = client.service.getChannelGroupsObject(soapheaders=authObj)
 	groups = []
 	for group in ret_soap.anyType:
@@ -237,9 +236,14 @@ class GBPVR_Connect:
 		print self.channelGroups
 		if group not in self.channelGroups:
 			print group + " group not found"
-			group = None
+			caseGroup = None
+			for groups in self.channelGroups:
+				if groups.lower() == group.lower():
+					print groups + " group found"
+					caseGroup = groups
+			group = caseGroup
 
-	print "getGuideInfo start " + group
+	print "getGuideInfo start"
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -1232,18 +1236,21 @@ class GBPVR_Connect:
   # Note: Requires PCCrypto....
   ######################################################################################################
   def _AESEncrypt(self, plain_text, key, iv):
-    from Crypto.Cipher import AES
-    block_size = 16
-    key_size = 32
-    mode = AES.MODE_CBC
+	try:
+		from Crypto.Cipher import AES
+	except:
+		return "Nothing to decrypt here"
 
-    key_bytes = key[:key_size]
-    pad = block_size - len(plain_text) % block_size
-    data = str(plain_text) + pad * chr(pad)
-    iv_bytes = iv[:block_size]
-    encrypted = AES.new(key_bytes, mode, iv_bytes).encrypt(data) 
-
-    return encrypted
+	block_size = 16
+	key_size = 32
+	mode = AES.MODE_CBC
+	
+	key_bytes = key[:key_size]
+	pad = block_size - len(plain_text) % block_size
+	data = str(plain_text) + pad * chr(pad)
+	iv_bytes = iv[:block_size]
+	encrypted = AES.new(key_bytes, mode, iv_bytes).encrypt(data) 
+	return encrypted
  
   ######################################################################################################
   # Creates a (MD5) hash of a string
@@ -1273,7 +1280,6 @@ class GBPVR_Connect:
   # Encrypts a string with password and salt for authentication
   ######################################################################################################
   def _Encrypt(self, cleartext, password, salt):
-	
 	from PBKDF2 import PBKDF2
 	import base64
 
@@ -1284,9 +1290,7 @@ class GBPVR_Connect:
 	key = safepw.read(32) # 256-bit key
 
 	iv = safepw.read(16) # 256-bit key
-
 	result = self._AESEncrypt(clearBytes, key, iv)
-
 	return base64.b64encode(result)
 
   ######################################################################################################
@@ -1300,12 +1304,10 @@ class GBPVR_Connect:
 	encodingSalt = self._hashMe(timeString)
         
 	pwdHash = self._hashMe(password)
-	
 	pwd = self._Encrypt(password, pwdHash, encodingSalt)
 	id = self._Encrypt(userid, pwdHash, encodingSalt);
 
 	myguid = self._Guid();
-
 	#We're encrypting the date/time we used to create the salt with the guid so the decrypt of the re-passed credentials knows
 	#what is used as the salt
 	RL = self._Encrypt(str ( len ( id ) ), pwdHash, myguid);
@@ -1318,7 +1320,6 @@ class GBPVR_Connect:
 
 	R = rt + id + pwd + myguid
 	myObj.R = R
-
 	return myObj
 
 def _WakeOnLan(ethernet_address, broadcast_address):

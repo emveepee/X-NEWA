@@ -26,9 +26,6 @@ from myGBPVRGlobals import *
 from GBPVR_Connect import GBPVR_Connect
 from GBPVR_Settings import GBPVR_Settings
 
-# Shared resources
-DIR_HOME =  Addon('script.myGBPVR').getAddonInfo('path').replace( ";", "" )
-
 # =============================================================================
 class HomeWindow(xbmcgui.WindowXML):
     
@@ -90,7 +87,7 @@ class HomeWindow(xbmcgui.WindowXML):
                
     def goSearch(self):
 		import search
-		mywin = search.SearchWindow('gbpvr_search.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = search.SearchWindow('nextpvr_search.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
 		mywin.doModal()
 
     def goExit(self):
@@ -100,7 +97,7 @@ class HomeWindow(xbmcgui.WindowXML):
     def goRecentDetails(self):
 		import details
 		oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
-		detailDialog = details.DetailDialog("gbpvr_details.xml", DIR_HOME, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R" )
+		detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R" )
 		detailDialog.doModal()
 		if detailDialog.shouldRefresh:
 			self.render()
@@ -109,7 +106,7 @@ class HomeWindow(xbmcgui.WindowXML):
 		import details
 
 		oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['program_oid']
-		detailDialog = details.DetailDialog("gbpvr_details.xml", DIR_HOME, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="P")
+		detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="P")
 		detailDialog.doModal()
 		if detailDialog.shouldRefresh:
 			self.render()
@@ -119,30 +116,32 @@ class HomeWindow(xbmcgui.WindowXML):
         
     def goTvGuide(self):
 		import epg
-		mywin = epg.EpgWindow('gbpvr_epg.xml', DIR_HOME, gbpvr=self.gbpvr, settings=self.settings)
+		mywin = epg.EpgWindow('nextpvr_epg.xml', WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings)
 		mywin.doModal()
     
     def goRecordingSchedules(self):
 		import schedules
-		mywin = schedules.SchedulesWindow('gbpvr_schedules.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = schedules.SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
 		mywin.doModal()
             
     def goUpcomingRecordings(self):
 		import upcoming
-		mywin = upcoming.UpcomingRecordingsWindow('gbpvr_upcoming.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = upcoming.UpcomingRecordingsWindow('nextpvr_upcoming.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
 		mywin.doModal()
         
     def goRecentRecordings(self):
 		import recent
-		mywin = recent.RecentRecordingsWindow('gbpvr_recent.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = recent.RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
 		mywin.doModal()
         
     def goSettings(self):
 		import settings
-		mywin = settings.settingsDialog('gbpvr_settings.xml', DIR_HOME, settings=self.settings)
+		mywin = settings.settingsDialog('nextpvr_settings.xml', WHERE_AM_I, settings=self.settings)
 		mywin.doModal()
 		self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
-		self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+		#self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+
+		self.refreshOnInit()
 
     def refresh(self):
 		self.renderUpComing()

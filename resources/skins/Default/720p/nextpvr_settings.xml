@@ -74,7 +74,7 @@
             </control>
 
             <control type="button" id="298">
-                <label>GBPVR Settings</label>
+                <label>NextPVR Settings</label>
                 <width>650</width>
                 <height>35</height>
                 <font>font12</font>
@@ -85,7 +85,7 @@
             </control>
 
             <control type="button" id="201">
-                <label>GBPVR Ip Adres:</label>
+                <label>NextPVR IP Address:</label>
                 <label2>127.0.0.1</label2>
                 <width>650</width>
                 <height>35</height>
@@ -97,7 +97,7 @@
             </control>
             
             <control type="button" id="202">
-                <label>GBPVR Port Number:</label>
+                <label>NextPVR Port Number:</label>
                 <label2>4242</label2>
                 <width>650</width>
                 <height>35</height>
@@ -109,7 +109,7 @@
             </control>
             
             <control type="button" id="203">
-                <label>GBPVR Userid:</label>
+                <label>NextPVR Userid:</label>
                 <label2>ton</label2>
                 <width>650</width>
                 <height>35</height>
@@ -121,7 +121,7 @@
             </control>
             
             <control type="button" id="204">
-                <label>GBPVR Password:</label>
+                <label>NextPVR Password:</label>
                 <label2>xxx</label2>
                 <width>650</width>
                 <height>35</height>
@@ -145,7 +145,7 @@
             </control>
 
             <control type="button" id="206">
-                <label>GBPVR Mac Address:</label>
+                <label>NextPVR MAC Address:</label>
                 <label2>xxx</label2>
                 <width>650</width>
                 <height>35</height>

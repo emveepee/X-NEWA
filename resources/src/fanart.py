@@ -9,7 +9,6 @@
 ######################################################################################################
 
 import os
-from xbmcaddon import Addon
 # Core defines
 
 class fanart:
@@ -21,9 +20,11 @@ class fanart:
 
   # Instantiation
   def __init__(self):
-	self.channelPath = os.path.join( Addon('script.myGBPVR').getAddonInfo('path'), self.FANART_PATH, self.CHANNEL_PATH)
-	self.showPath = os.path.join( Addon('script.myGBPVR').getAddonInfo('path'), self.FANART_PATH, self.SHOW_PATH)
-	self.genrePath = os.path.join( Addon('script.myGBPVR').getAddonInfo('path'), self.FANART_PATH, self.GENRE_PATH)
+	from myGBPVRGlobals import *
+
+	self.channelPath = os.path.join( WHERE_AM_I, self.FANART_PATH, self.CHANNEL_PATH)
+	self.showPath = os.path.join( WHERE_AM_I, self.FANART_PATH, self.SHOW_PATH)
+	self.genrePath = os.path.join( WHERE_AM_I, self.FANART_PATH, self.GENRE_PATH)
 	self.channelIcons = self._getFiles(self.channelPath)
 	self.showIcons = self._getFiles(self.showPath) 
 	self.genreIcons = self._getFiles(self.genrePath)

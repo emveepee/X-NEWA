@@ -18,32 +18,31 @@ from xbmcaddon import Addon
 
 class GBPVR_Settings:
 
-  INI_PATH = 'mygbpvr.ini'
+  INI_PATH = 'x-newa.ini'
 
   # Instantiation
   def __init__(self):
-	print Addon('script.myGBPVR').getAddonInfo('path')
-	self.configpath = os.path.join(Addon('script.myGBPVR').getAddonInfo('path'), self.INI_PATH)
+	self.configpath = os.path.join(Addon('script.xbmc.x-newa').getAddonInfo('path'), self.INI_PATH)
 
-	self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8080', 'userid':'gbpvr', 'pw':'gbpvr',  'usewol':'No', 'mac':'00:00:00:00:00:00', 'broadcast':'255.255.255.255','scroll_int':'15', 'disp_int':'60', 'retr_int':'2', 'row_h':'75', 'group':'' })
+	self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8866', 'userid':'admin', 'pw':'password',  'usewol':'No', 'mac':'00:00:00:00:00:00', 'broadcast':'255.255.255.255','scroll_int':'15', 'disp_int':'60', 'retr_int':'2', 'row_h':'75', 'group':'' })
 	try:
 		self.config.read(self.configpath)
 	except:
 		handleException()
 		pass
-	if (not config.has_section("GBPVR")):
-		config.add_section("GBPVR")
+	if (not config.has_section("NextPVR")):
+		config.add_section("NextPVR")
 	if (not config.has_section("EPG")):
 		config.add_section("EPG")
 
 	try:
-		self.GBPVR_HOST = config.get("GBPVR", "host")
-		self.GBPVR_PORT = config.getint("GBPVR", "port")
-		self.GBPVR_USER = config.get("GBPVR", "userid")
-		self.GBPVR_PW = config.get("GBPVR", "pw")
-		self.GBPVR_USEWOL = config.get("GBPVR", "usewol")
-		self.GBPVR_MAC = config.get("GBPVR", "mac")
-		self.GBPVR_BROADCAST = config.get("GBPVR", "broadcast")
+		self.GBPVR_HOST = config.get("NextPVR", "host")
+		self.GBPVR_PORT = config.getint("NextPVR", "port")
+		self.GBPVR_USER = config.get("NextPVR", "userid")
+		self.GBPVR_PW = config.get("NextPVR", "pw")
+		self.GBPVR_USEWOL = config.get("NextPVR", "usewol")
+		self.GBPVR_MAC = config.get("NextPVR", "mac")
+		self.GBPVR_BROADCAST = config.get("NextPVR", "broadcast")
 		self.EPG_SCROLL_INT = config.getint("EPG", "scroll_int")
 		self.EPG_DISP_INT = config.getint("EPG", "disp_int")
 		self.EPG_RETR_INT = config.getint("EPG", "retr_int")
@@ -57,13 +56,13 @@ class GBPVR_Settings:
   ######################################################################################################
   def save(self):
 	try:
-		self.config.set("GBPVR", "host", self.GBPVR_HOST)
-		self.config.set("GBPVR", "port", self.GBPVR_PORT)
-		self.config.set("GBPVR", "userid", self.GBPVR_USER)
-		self.config.set("GBPVR", "pw", self.GBPVR_PW)
-		self.config.set("GBPVR", "usewol", self.GBPVR_USEWOL)
-		self.config.set("GBPVR", "mac", self.GBPVR_MAC)
-		self.config.set("GBPVR", "broadcast", self.GBPVR_BROADCAST)
+		self.config.set("NextPVR", "host", self.GBPVR_HOST)
+		self.config.set("NextPVR", "port", self.GBPVR_PORT)
+		self.config.set("NextPVR", "userid", self.GBPVR_USER)
+		self.config.set("NextPVR", "pw", self.GBPVR_PW)
+		self.config.set("NextPVR", "usewol", self.GBPVR_USEWOL)
+		self.config.set("NextPVR", "mac", self.GBPVR_MAC)
+		self.config.set("NextPVR", "broadcast", self.GBPVR_BROADCAST)
 		
 		self.config.set("EPG", "scroll_int", self.EPG_SCROLL_INT)
 		self.config.set("EPG", "disp_int", self.EPG_DISP_INT)
