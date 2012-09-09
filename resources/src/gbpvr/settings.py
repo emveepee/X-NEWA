@@ -124,12 +124,12 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         
 	self.win.setProperty('busy', 'true')
 	try:
-		self.gbpvrip.setLabel( "GBPVR Ip Adres:", label2=self.settings.GBPVR_HOST )
-		self.gbpvrport.setLabel( "GBPVR Port Number:", label2=str(self.settings.GBPVR_PORT) )
-		self.gbpvruser.setLabel( "GBPVR Userid:", label2=self.settings.GBPVR_USER )
-		self.gbpvrpw.setLabel( "GBPVR Password:", label2=self.settings.GBPVR_PW )
+		self.gbpvrip.setLabel( "NextPVR IP Address:", label2=self.settings.GBPVR_HOST )
+		self.gbpvrport.setLabel( "NextPVR Port Number:", label2=str(self.settings.GBPVR_PORT) )
+		self.gbpvruser.setLabel( "NextPVR Userid:", label2=self.settings.GBPVR_USER )
+		self.gbpvrpw.setLabel( "NextPVR Password:", label2=self.settings.GBPVR_PW )
 		self.gbpvrusewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.GBPVR_USEWOL )
-		self.gbpvrmac.setLabel( "GBPVR Mac Address:", label2=self.settings.GBPVR_MAC )
+		self.gbpvrmac.setLabel( "NextPVR MAC Address:", label2=self.settings.GBPVR_MAC )
 		self.gbpvrbroadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.GBPVR_BROADCAST )
 		self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
 		self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )

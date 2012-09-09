@@ -162,10 +162,10 @@ class HomeWindow(xbmcgui.WindowXML):
 			except:
 				handleException()
 				self.win.setProperty('busy', 'false')
-				xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+				xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 		else:
 			self.win.setProperty('busy', 'false')
-			xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+			xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 			#self.close()
 
     def renderUpComing(self):

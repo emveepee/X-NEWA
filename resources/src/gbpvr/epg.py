@@ -23,11 +23,11 @@ from datetime import date, datetime, timedelta
 import traceback
 
 # Script doc constants
-__scriptname__ = "myGBPVR"
-__version__ = '2.0.0'
+__scriptname__ = "X-NEWA"
+__version__ = '1.0.0'
 __orgiginal_author__ = 'Ton van der Poel'
 __author__ = 'emveepee'
-__date__ = '2012-09-03'
+__date__ = '2012-09-09'
 xbmc.log(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
@@ -730,7 +730,7 @@ class EpgWindow(xbmcgui.WindowXML):
 			tNew = self.epgStartTime + timedelta(minutes=interval) + timedelta(minutes=self.settings.EPG_DISP_INT)
 			if tNew > self.EPGEndTime:
 				myDlg = xbmcgui.DialogProgress()
-				myDlg.create("Retrieving GBPVR data ...", "Please wait ...")
+				myDlg.create("Retrieving NextPVR data ...", "Please wait ...")
 				myDlg.update(33, "Downloading ...")
 
 				cstart = tNew.strftime("%Y-%m-%dT%H:%M:00")
