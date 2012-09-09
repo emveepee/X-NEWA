@@ -1,0 +1,273 @@
+<window>
+    <type>dialog</type>
+    <defaultcontrol>250</defaultcontrol>
+    <animation effect="fade" time="200">WindowOpen</animation>
+    <animation effect="fade" time="200">WindowClose</animation>
+    <coordinates>
+        <system>1</system>
+        <posx>190</posx>
+        <!-- <posy>95</posy> -->
+        <posy>25</posy>
+    </coordinates>
+    <controls>
+        
+        <control type="image">
+            <description>dialog background image</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>880</width>
+            <height>655</height>
+            <texture border="40">DialogBack.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        
+        <control type="image">
+            <description>dialog border image</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>880</width>
+            <height>635</height>
+            <texture border="40">DialogFront.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        
+        <control type="label" id="301">
+            <description>Dialog Heading</description>
+            <posx>40</posx>
+            <posy>40</posy>
+            <width>630</width>
+            <align>center</align>
+            <font>font20</font>
+            <info>Window.Property(heading)</info>
+            <label></label>
+        </control>
+        
+        <control type="image">
+            <description>separator image</description>
+            <posx>40</posx>
+            <posy>75</posy>
+            <width>650</width>
+            <height>2</height>
+            <texture>separator.png</texture>
+        </control>
+                
+        <!--  SECTION 3 -->
+        
+        <control type="grouplist" id="9000">
+            <description>Recording Options</description>
+            <posx>45</posx>
+            <posy>-15</posy>
+            <height>630</height>
+            <itemgap>4</itemgap>
+            <onleft>2000</onleft>
+            <onright>2000</onright>
+            <ondown>9000</ondown>
+            <onup>9000</onup>
+            
+            <control type="image" id="7777">
+                <height>100</height>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+                <visible>true</visible>
+            </control>
+
+            <control type="button" id="298">
+                <label>GBPVR Settings</label>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>center</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="201">
+                <label>GBPVR Ip Adres:</label>
+                <label2>127.0.0.1</label2>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="202">
+                <label>GBPVR Port Number:</label>
+                <label2>4242</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="203">
+                <label>GBPVR Userid:</label>
+                <label2>ton</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="204">
+                <label>GBPVR Password:</label>
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="205">
+                <label>Use Wake-On-Lan</label>
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="206">
+                <label>GBPVR Mac Address:</label>
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="207">
+                <label>Wake-On-LAN Broadcast Address</label>
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="299">
+                <label>EPG Settings</label>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>center</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="210">
+		<label>Scroll Interval (min.):</label>
+                <label2>15</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="211">
+                <label>Display Interval (min.):</label>
+                <label2>60</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="212">
+                <label>Retrieve Interval (hrs.):</label>
+                <label2>2</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="213">
+                <label>Row Height (px):</label>
+                <label2>75</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+        </control>
+        
+        <control type="grouplist" id="2000">
+            <description>Save Cancel Delete Buttons</description>
+            <posx>710</posx>
+            <posy>95</posy>
+            <onleft>9000</onleft>
+            <onright>9000</onright>
+            <ondown>2000</ondown>
+            <onup>2000</onup>
+            
+            <control type="button" id="250">
+                <label>Save</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>
+
+            <control type="button" id="253">
+                <label>Cancel</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>
+
+        </control>
+        <control type="multiimage" id="237">
+            <description>Busy throbber</description>
+            <posx>400</posx>
+            <posy>300</posy>
+            <width>128</width>
+            <height>128</height>
+            <imagepath>busy</imagepath>
+            <timeperimage>50</timeperimage>
+            <fadetime>0</fadetime>
+            <visible>substring(Window.Property(busy),true)</visible>
+            <animation effect="fade" time="250">VisibleChange</animation>
+        </control>
+    </controls>
+</window>

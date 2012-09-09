@@ -1,0 +1,404 @@
+<window>
+    <type>dialog</type>
+    <defaultcontrol>253</defaultcontrol>
+    <animation effect="fade" time="200">WindowOpen</animation>
+    <animation effect="fade" time="200">WindowClose</animation>
+    <coordinates>
+        <system>1</system>
+        <posx>190</posx>
+        <!-- <posy>95</posy> -->
+        <posy>45</posy>
+    </coordinates>
+    <controls>
+        
+        <control type="image">
+            <description>dialog background image</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>880</width>
+            <height>600</height>
+            <texture border="40">DialogBack.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        
+        <control type="image">
+            <description>dialog border image</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>880</width>
+            <height>600</height>
+            <texture border="40">DialogFront.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        
+        <control type="label" id="301">
+            <description>Dialog Heading</description>
+            <posx>40</posx>
+            <posy>40</posy>
+            <width>650</width>
+            <align>center</align>
+            <font>font20</font>
+            <info>Window.Property(heading)</info>
+            <label></label>
+        </control>
+        
+        <control type="image">
+            <description>separator image</description>
+            <posx>40</posx>
+            <posy>75</posy>
+            <width>650</width>
+            <height>2</height>
+            <texture>separator.png</texture>
+        </control>
+
+        <control type="image" id="302">
+            <description>recording fanart</description>
+            <posx>40</posx>
+            <posy>80</posy>
+            <width>130</width>
+            <height>130</height>
+            <align>left</align>
+            <aspectratio>keep</aspectratio>
+            <texture></texture>
+        </control>
+
+        <!-- SECTION 2 ROW 1-->
+                
+        <control type="label" id="303">
+            <description>Title Label</description>
+            <posx>220</posx>
+            <posy>95</posy>
+            <width>400</width>
+            <align>left</align>
+            <font>font20</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label>$INFO[Window.Property(title)]</label>
+            <scroll>auto</scroll>
+        </control>
+        
+        <control type="label" id="304">
+            <description>Channel Label</description>
+            <posx>695</posx>
+            <posy>135</posy>
+            <width>400</width>
+            <align>right</align>
+            <font>font12</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label>$INFO[Window.Property(channel)]</label>
+        </control>
+
+        <control type="label" id="309">
+            <description>Status Label</description>
+            <posx>695</posx>
+            <posy>185</posy>
+            <width>400</width>
+            <align>right</align>
+            <font>font12</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label>$INFO[Window.Property(status)]</label>
+        </control>
+
+        <control type="image" id="305">
+            <description>channel fanart</description>
+            <posx>642</posx>
+            <posy>80</posy>
+            <width>50</width>
+            <height>50</height>
+            <align>right</align>
+            <aspectratio>keep</aspectratio>
+            <align>left</align>
+            <texture></texture>
+        </control>
+
+        <control type="image" id="306">
+            <description>genre 1 fanart</description>
+            <posx>225</posx>
+            <posy>145</posy>
+            <width>30</width>
+            <height>30</height>
+            <align>right</align>
+            <aspectratio>keep</aspectratio>
+            <align>left</align>
+            <texture></texture>
+        </control>
+
+        <control type="image" id="307">
+            <description>genre 2 fanart</description>
+            <posx>285</posx>
+            <posy>145</posy>
+            <width>30</width>
+            <height>30</height>
+            <align>right</align>
+            <aspectratio>keep</aspectratio>
+            <align>left</align>
+            <texture></texture>
+        </control>
+
+        <control type="image" id="308">
+            <description>genre 3 fanart</description>
+            <posx>345</posx>
+            <posy>145</posy>
+            <width>30</width>
+            <height>30</height>
+            <align>right</align>
+            <aspectratio>keep</aspectratio>
+            <align>left</align>
+            <texture></texture>
+        </control>
+
+        <control type="label" id="309">
+            <description>Genre Label</description>
+            <posx>220</posx>
+            <posy>185</posy>
+            <width>400</width>
+            <align>left</align>
+            <font>font12</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label>$INFO[Window.Property(genre)]</label>
+        </control>
+
+        <!-- SECTION 2 ROW 2 -->
+        
+        <control type="image" id="3">
+            <description>separator image</description>
+            <posx>40</posx>
+            <posy>215</posy>
+            <width>650</width>
+            <width>380</width>
+            <height>2</height>
+            <texture>separator.png</texture>
+        </control>
+        
+        <control type="label" id="310">
+            <description>Subtitle Label</description>
+            <posx>55</posx>
+            <posy>220</posy>
+            <width>300</width>
+            <align>left</align>
+            <font>font12</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label></label>
+            <scroll>auto</scroll>
+        </control>
+
+        <control type="label" id="311">
+            <description>Time Label</description>
+            <posx>695</posx>
+            <posy>220</posy>
+            <width>400</width>
+            <align>right</align>
+            <font>font12</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label></label>
+         </control>
+
+        <control type="textbox" id="312">
+            <description>Desc Label</description>
+            <posx>55</posx>
+            <posy>245</posy>
+            <width>640</width>
+            <height>70</height>
+            <align>left</align>
+            <font>font12</font>
+            <texturefocus>-</texturefocus>
+            <texturenofocus>-</texturenofocus>
+            <label></label>
+            <autoscroll delay="4000" time="1000" repeat="6000">true</autoscroll>
+        </control>
+
+        <control type="image" id="4">
+            <description>separator image</description>
+            <posx>40</posx>
+            <posy>320</posy>
+            <width>650</width>
+            <width>380</width>
+            <height>2</height>
+            <texture>separator.png</texture>
+        </control>
+
+        <!--  SECTION 3 -->
+        
+        <control type="grouplist" id="9000">
+            <description>Recording Options</description>
+            <posx>45</posx>
+            <posy>224</posy>
+            <height>430</height>
+            <itemgap>4</itemgap>
+            <onleft>2000</onleft>
+            <onright>2000</onright>
+            <ondown>9000</ondown>
+            <onup>9000</onup>
+            
+            <control type="image" id="7777">
+                <height>100</height>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+                <visible>true</visible>
+            </control>
+
+            <control type="button" id="201">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="202">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="203">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="204">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="205">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="206">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="207">
+                <label></label>
+                <label2></label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="208">
+                <label>Priority</label>
+                <label2>Not Supported</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+        </control>
+        
+        <control type="grouplist" id="2000">
+            <description>Save Cancel Delete Buttons</description>
+            <posx>710</posx>
+            <posy>95</posy>
+            <onleft>9000</onleft>
+            <onright>9000</onright>
+            <ondown>2000</ondown>
+            <onup>2000</onup>
+            
+            <control type="button" id="250">
+                <label>Save</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>
+
+            <control type="button" id="251">
+                <label>Delete</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>
+            
+            <control type="button" id="252">
+                <label>Record</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>
+            
+            <control type="button" id="253">
+                <label>Cancel</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>
+
+        </control>
+        <control type="multiimage" id="237">
+            <description>Busy throbber</description>
+            <posx>400</posx>
+            <posy>300</posy>
+            <width>128</width>
+            <height>128</height>
+            <imagepath>busy</imagepath>
+            <timeperimage>50</timeperimage>
+            <fadetime>0</fadetime>
+            <visible>substring(Window.Property(busy),true)</visible>
+            <animation effect="fade" time="250">VisibleChange</animation>
+        </control>
+    </controls>
+</window>

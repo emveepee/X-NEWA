@@ -1,0 +1,845 @@
+<window>
+      <id>3003</id>
+      <defaultcontrol>250</defaultcontrol>
+      <type>window</type>
+      <coordinates>
+            <system>1</system>
+            <posx>0</posx>
+            <posy>0</posy>
+      </coordinates>
+      <controls>
+            <!-- ============================================= -->
+            <!-- S C R E E N B A C K G R O U N D -->
+            <!-- ============================================= -->
+            <!-- Copy of CommonBackground -->
+            <control type="image">
+                  <description>background image</description>
+                  <posx>0</posx>
+                  <posy>0</posy>
+                  <width>1280</width>
+                  <height>720</height>
+                  <texture>bg.png</texture>
+            </control>
+            <control type="group">
+                  <description>Content Group</description>
+                  <!-- Copy Window_OpenClose_Right_Panel_Animation -->
+                  <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+                  <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+                  <animation effect="slide" start="1030,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+                  <animation effect="slide" end="1030,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+                  <!-- ============================================= -->
+                  <!-- C O N T E N T B A C K G R O U N D -->
+                  <!-- ============================================= -->
+                  <!-- Copy of ContentPanel -->
+                  <control type="image">
+                        <posx>265</posx>
+                        <posy>100</posy>
+                        <width>1015</width>
+                        <height>580</height>
+                        <texture border="50,0,0,45">vpanel1.png</texture>
+                  </control>
+                  <control type="group" id="499">
+                        <description>Recent recordings</description>
+                        <posx>315</posx>
+                        <posy>150</posy>
+                        <onup>2000</onup>
+                        <ondown>2000</ondown>
+                        <control type="image">
+                              <posx>0</posx>
+                              <posy>0</posy>
+                              <width>900</width>
+                              <height>250</height>
+                              <visible>Control.IsVisible(500) + false</visible>
+                              <texture>black-back.png</texture>
+                              <animation effect="fade" time="200">WindowOpen</animation>
+                              <animation effect="fade" time="200">WindowClose</animation>
+                        </control>
+                        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx -->
+                  </control>
+                  <control type="group">
+                        <visible>true</visible>
+                        <!-- ============================================= -->
+                        <!-- Recent Recordings Table Header -->
+                        <!-- ============================================= -->
+                        <control type="label">
+                              <posx>315</posx>
+                              <posy>270</posy>
+                              <width>900</width>
+                              <height>35</height>
+                              <font>font16</font>
+                              <textcolor>white</textcolor>
+                              <scroll>true</scroll>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Recent Recordings[/B]</label>
+                        </control>
+                        <control type="image">
+                              <description>table header</description>
+                              <posx>315</posx>
+                              <posy>300</posy>
+                              <width>900</width>
+                              <height>40</height>
+                              <texture flipx="true">header.png</texture>
+                        </control>
+                        <control type="label">
+                              <posx>325</posx>
+                              <posy>300</posy>
+                              <width>300</width>
+                              <height>35</height>
+                              <font>font12</font>
+                              <textcolor>ffddddff</textcolor>
+                              <selectedcolor>FFe2ff43</selectedcolor>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Title[/B]</label>
+                        </control>
+                        <control type="label">
+                              <posx>700</posx>
+                              <posy>300</posy>
+                              <width>200</width>
+                              <height>35</height>
+                              <font>font12</font>
+                              <textcolor>ffddddff</textcolor>
+                              <selectedcolor>FFe2ff43</selectedcolor>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Date/Time[/B]</label>
+                        </control>
+                        <control type="label">
+                              <posx>975</posx>
+                              <posy>300</posy>
+                              <width>100</width>
+                              <height>35</height>
+                              <font>font12</font>
+                              <textcolor>ffddddff</textcolor>
+                              <selectedcolor>FFe2ff43</selectedcolor>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Status[/B]</label>
+                        </control>
+                        <!-- ============================================= -->
+                        <!-- Recent Recordings Table -->
+                        <!-- ============================================= -->
+                        <control type="image">
+                              <description>recent recordings table background</description>
+                              <posx>315</posx>
+                              <posy>330</posy>
+                              <width>900</width>
+                              <height>115</height>
+                              <colordiffuse>66FFFFFF</colordiffuse>
+                              <texture border="5">black-back.png</texture>
+                        </control>
+                        <control type="list" id="249">
+                              <posx>315</posx>
+                              <posy>335</posy>
+                              <width>900</width>
+                              <height>110</height>
+                              <onleft>2000</onleft>
+                              <onright>248</onright>
+                              <onup>249</onup>
+                              <ondown>249</ondown>
+                              <viewtype label="Recent Recordings">wide</viewtype>
+                              <scrolltime>0</scrolltime>
+                              <preloaditems>10</preloaditems>
+                              <itemlayout height="30">
+                                    <control type="label">
+                                          <posx>10</posx>
+                                          <posy>0</posy>
+                                          <width>500</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(title)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>385</posx>
+                                          <posy>0</posy>
+                                          <width>250</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>660</posx>
+                                          <posy>0</posy>
+                                          <width>710</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(status)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                              </itemlayout>
+                              <focusedlayout height="30">
+                                    <control type="image">
+                                          <posx>0</posx>
+                                          <posy>0</posy>
+                                          <width>900</width>
+                                          <height>28</height>
+                                          <texture border="3">input-focus.png</texture>
+                                          <visible>Control.HasFocus(249)</visible>
+                                    </control>
+                                    <control type="image">
+                                          <posx>0</posx>
+                                          <posy>0</posy>
+                                          <width>900</width>
+                                          <height>28</height>
+                                          <texture border="3">input-nofocus.png</texture>
+                                          <visible>!Control.HasFocus(249)</visible>
+                                    </control>
+
+                                    <control type="label">
+                                          <posx>10</posx>
+                                          <posy>0</posy>
+                                          <width>500</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(title)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>385</posx>
+                                          <posy>0</posy>
+                                          <width>250</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>660</posx>
+                                          <posy>0</posy>
+                                          <width>210</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(status)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                              </focusedlayout>
+                        </control>
+                  </control>
+                  <control type="group">
+                        <visible>true</visible>
+                        <!-- ============================================= -->
+                        <!-- Upcoming recordings Header -->
+                        <!-- ============================================= -->
+                        <control type="label">
+                              <posx>315</posx>
+                              <posy>450</posy>
+                              <width>900</width>
+                              <height>35</height>
+                              <font>font16</font>
+                              <textcolor>white</textcolor>
+                              <scroll>true</scroll>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Upcoming Recordings[/B]</label>
+                        </control>
+                        <control type="image">
+                              <description>upcoming recordings table header</description>
+                              <posx>315</posx>
+                              <posy>480</posy>
+                              <width>900</width>
+                              <height>40</height>
+                              <texture flipx="true">header.png</texture>
+                        </control>
+                        <control type="label">
+                              <posx>325</posx>
+                              <posy>480</posy>
+                              <width>200</width>
+                              <height>35</height>
+                              <font>font12</font>
+                              <textcolor>ffddddff</textcolor>
+                              <selectedcolor>FFe2ff43</selectedcolor>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Title[/B]</label>
+                        </control>
+                        <control type="label">
+                              <posx>700</posx>
+                              <posy>480</posy>
+                              <width>500</width>
+                              <height>35</height>
+                              <font>font12</font>
+                              <textcolor>ffddddff</textcolor>
+                              <selectedcolor>FFe2ff43</selectedcolor>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Date/Time[/B]</label>
+                        </control>
+                        <control type="label">
+                              <posx>975</posx>
+                              <posy>480</posy>
+                              <width>100</width>
+                              <height>35</height>
+                              <font>font12</font>
+                              <textcolor>ffddddff</textcolor>
+                              <selectedcolor>FFe2ff43</selectedcolor>
+                              <align>left</align>
+                              <aligny>center</aligny>
+                              <label>[B]Channel[/B]</label>
+                        </control>
+                        <!-- ============================================= -->
+                        <!-- Upcoming Recordings -->
+                        <!-- ============================================= -->
+                        <control type="image">
+                              <description>jobs table header screen</description>
+                              <posx>315</posx>
+                              <posy>510</posy>
+                              <width>900</width>
+                              <height>115</height>
+                              <colordiffuse>66FFFFFF</colordiffuse>
+                              <texture border="5">black-back.png</texture>
+                        </control>
+                        <control type="list" id="248">
+                              <posx>315</posx>
+                              <posy>515</posy>
+                              <width>900</width>
+                              <height>110</height>
+                              <onleft>249</onleft>
+                              <onright>2000</onright>
+                              <onup>248</onup>
+                              <ondown>248</ondown>
+                              <viewtype label="Upcoming Recordings">wide</viewtype>
+                              <scrolltime>0</scrolltime>
+                              <preloaditems>10</preloaditems>
+                              <itemlayout height="30">
+                                    <control type="label">
+                                          <posx>10</posx>
+                                          <posy>0</posy>
+                                          <width>500</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(title)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>385</posx>
+                                          <posy>0</posy>
+                                          <width>250</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>660</posx>
+                                          <posy>0</posy>
+                                          <width>210</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(channel)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                              </itemlayout>
+                              <focusedlayout height="30">
+                                    <control type="image">
+                                          <posx>0</posx>
+                                          <posy>0</posy>
+                                          <width>900</width>
+                                          <height>28</height>
+                                          <texture border="3">input-focus.png</texture>
+                                          <visible>Control.HasFocus(248)</visible>
+                                    </control>
+                                    <control type="image">
+                                          <posx>0</posx>
+                                          <posy>0</posy>
+                                          <width>900</width>
+                                          <height>28</height>
+                                          <texture border="3">input-nofocus.png</texture>
+                                          <visible>!Control.HasFocus(248)</visible>
+                                    </control>
+
+                                    <control type="label">
+                                          <posx>10</posx>
+                                          <posy>0</posy>
+                                          <width>500</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(title)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>385</posx>
+                                          <posy>0</posy>
+                                          <width>250</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                                    <control type="label">
+                                          <posx>660</posx>
+                                          <posy>0</posy>
+                                          <width>210</width>
+                                          <height>30</height>
+                                          <font>font12</font>
+                                          <textcolor>0xffddddff</textcolor>
+                                          <textoffset>10</textoffset>
+                                          <selectedcolor>FFe2ff43</selectedcolor>
+                                          <align>left</align>
+                                          <aligny>center</aligny>
+                                          <label>$INFO[ListItem.Property(channel)]</label>
+                                          <scroll>true</scroll>
+                                          <scrollspeed>30</scrollspeed>
+                                    </control>
+                              </focusedlayout>
+                        </control>
+                  </control>
+		<!-- Free Space -->
+		<control type="image">
+			<description>Free space background</description>
+			<posx>315</posx>
+			<posy>150</posy>
+			<width>270</width>
+			<height>105</height>
+			<colordiffuse>66FFFFFF</colordiffuse>
+			<texture border="5">black-back.png</texture>
+		</control>
+		<control type="label">
+			<posx>325</posx>
+			<posy>150</posy>
+			<width>300</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>[B]Free Space[/B]</label>
+		</control>
+		<control type="image" id="247">
+			<posx>325</posx>
+			<posy>180</posy>
+			<width>10</width>
+			<height>50</height>
+			<aspectratio>scale</aspectratio>
+			<texture>green.png</texture>
+			<animation effect="slide" start="0,0" end="5,5" time="200">Focus</animation>
+			<animation effect="slide" end="0,0" start="5,5" time="200">UnFocus</animation>
+		</control>
+		<control type="image" id="246">
+			<posx>525</posx>
+			<posy>180</posy>
+			<width>50</width>
+			<height>50</height>
+			<aspectratio>scale</aspectratio>
+			<texture>red.png</texture>
+			<animation effect="slide" start="0,0" end="5,5" time="200">Focus</animation>
+			<animation effect="slide" end="0,0" start="5,5" time="200">UnFocus</animation>
+		</control>
+		<control type="label" id="245">
+			<posx>325</posx>
+			<posy>225</posy>
+			<width>195</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>xx Gb</label>
+		</control>
+		<control type="label" id="244">
+			<posx>575</posx>
+			<posy>225</posy>
+			<width>200</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>xx Gb</label>
+		</control>
+		<!-- Counters -->
+		<control type="image">
+			<description>Counters background</description>
+			<posx>853</posx>
+			<posy>150</posy>
+			<width>362</width>
+			<height>110</height>
+			<colordiffuse>66FFFFFF</colordiffuse>
+			<texture border="5">black-back.png</texture>
+		</control>
+		<control type="label">
+			<posx>990</posx>
+			<posy>150</posy>
+			<width>150</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>[B]Counters[/B]</label>
+		</control>
+		<control type="label">
+			<posx>980</posx>
+			<posy>175</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>Pending:</label>
+		</control>
+		<control type="label" id="243">
+			<posx>1020</posx>
+			<posy>175</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[B]-[/B]</label>
+		</control>
+		<control type="label">
+			<posx>980</posx>
+			<posy>200</posy>
+			<width>130</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>In Progress:</label>
+		</control>
+		<control type="label" id="242">
+			<posx>1020</posx>
+			<posy>200</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[B]-[/B]</label>
+		</control>
+		<control type="label">
+			<posx>980</posx>
+			<posy>225</posy>
+			<width>110</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>Available:</label>
+		</control>
+		<control type="label" id="241">
+			<posx>1020</posx>
+			<posy>225</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[B]-[/B]</label>
+		</control>
+		<control type="label">
+			<posx>1170</posx>
+			<posy>175</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>Failed:</label>
+		</control>
+		<control type="label" id="240">
+			<posx>1210</posx>
+			<posy>175</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[B]-[/B]</label>
+		</control>
+		<control type="label">
+			<posx>1170</posx>
+			<posy>200</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>Conflict:</label>
+		</control>
+		<control type="label" id="239">
+			<posx>1210</posx>
+			<posy>200</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[B]-[/B]</label>
+		</control>
+		<control type="label">
+			<posx>1170</posx>
+			<posy>225</posy>
+			<width>140</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>Reocurring:</label>
+		</control>
+		<control type="label" id="238">
+			<posx>1210</posx>
+			<posy>225</posy>
+			<width>100</width>
+			<height>35</height>
+			<font>font16</font>
+			<textcolor>white</textcolor>
+			<scroll>true</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>[B]-[/B]</label>
+		</control>
+            </control>
+            <!-- ============================================= -->
+            <!-- H E A D E R -->
+            <!-- ============================================= -->
+            <control type="image">
+                  <description>Header Panel</description>
+                  <posx>0</posx>
+                  <posy>0</posy>
+                  <width>1280</width>
+                  <height>128</height>
+                  <texture>header.png</texture>
+            </control>
+            <control type="image">
+                  <posx>40</posx>
+                  <posy>20</posy>
+                  <width>460</width>
+                  <height>90</height>
+                  <texture>myGBPVR.png</texture>
+                  <aspectratio align="left">keep</aspectratio>
+                  <animation effect="fade" time="200">WindowOpen</animation>
+                  <animation effect="fade" time="200">WindowClose</animation>
+            </control>
+            <control type="label">
+                  <description>date/time label</description>
+                  <posx>70r</posx>
+                  <posy>65</posy>
+                  <width>450</width>
+                  <height>35</height>
+                  <align>right</align>
+                  <aligny>center</aligny>
+                  <font>font12</font>
+                  <textcolor>ffffffff</textcolor>
+                  <label>$INFO[System.Date] [COLOR=88FFFFFF] | $INFO[System.Time][/COLOR]</label>
+                  <animation effect="fade" time="200">WindowOpen</animation>
+                  <animation effect="fade" time="200">WindowClose</animation>
+            </control>
+            <!-- ============================================= -->
+            <!-- N A V B U T T O N S -->
+            <!-- ============================================= -->
+            <control type="grouplist" id="2000">
+                  <description>Buttons</description>
+                  <posx>0</posx>
+                  <posy>122</posy>
+                  <itemgap>1</itemgap>
+                  <onup>2000</onup>
+                  <ondown>2000</ondown>
+                  <onleft>248</onleft>
+                  <onright>249</onright>
+                  <!-- Copy of include Window_OpenClose_Left_Panel_Animation -->
+                  <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+                  <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+                  <animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+                  <animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+                  <control type="button" id="250" >
+                        <label>Watch Recordings</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <enabled>true</enabled>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="251">
+                        <label>TV Guide</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="253">
+                        <label>Upcoming Recordings</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="258">
+                        <label>Recent Recordings</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="252">
+                        <label>Recurring Recordings</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="254">
+                        <label>Search Program</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="255">
+                        <label>Settings</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="256">
+                        <label>Refresh</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+                  <control type="button" id="257">
+                        <label>Exit</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>
+            </control>
+            <control type="multiimage" id="237">
+                  <description>Busy throbber</description>
+                  <posx>708</posx>
+                  <posy>326</posy>
+                  <width>128</width>
+                  <height>128</height>
+                  <imagepath>busy</imagepath>
+                  <timeperimage>50</timeperimage>
+                  <fadetime>0</fadetime>
+                  <visible>substring(Window.Property(busy),true)</visible>
+                  <animation effect="fade" time="250">VisibleChange</animation>
+            </control>
+      </controls>
+</window>
