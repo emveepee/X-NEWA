@@ -16,7 +16,7 @@
             <posx>0</posx>
             <posy>0</posy>
             <width>880</width>
-            <height>655</height>
+            <height>670</height>
             <texture border="40">DialogBack.png</texture>
             <aspectratio>stretch</aspectratio>
         </control>
@@ -26,7 +26,7 @@
             <posx>0</posx>
             <posy>0</posy>
             <width>880</width>
-            <height>635</height>
+            <height>670</height>
             <texture border="40">DialogFront.png</texture>
             <aspectratio>stretch</aspectratio>
         </control>
@@ -178,6 +178,18 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
+
+            <control type="button" id="214">
+                <label>Channel Group</label>
+                <label2>75</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>            
 
             <control type="button" id="210">
 		<label>Scroll Interval (min.):</label>

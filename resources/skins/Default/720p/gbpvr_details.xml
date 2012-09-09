@@ -387,6 +387,15 @@
                 <texturefocus border="5">button-focus2.png</texturefocus>
             </control>
 
+            <control type="button" id="254">
+                <label>Play</label>
+                <width>120</width>
+                <height>35</height>
+                <align>center</align>
+                <texturenofocus>button2-nofocus.png</texturenofocus>
+                <texturefocus border="5">button-focus2.png</texturefocus>
+            </control>            
+
         </control>
         <control type="multiimage" id="237">
             <description>Busy throbber</description>

@@ -670,7 +670,7 @@
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>Reocurring:</label>
+			<label>Recurring:</label>
 		</control>
 		<control type="label" id="238">
 			<posx>1210</posx>
@@ -701,7 +701,7 @@
                   <posy>20</posy>
                   <width>460</width>
                   <height>90</height>
-                  <texture>myGBPVR.png</texture>
+                  <texture>nextPVR.png</texture>
                   <aspectratio align="left">keep</aspectratio>
                   <animation effect="fade" time="200">WindowOpen</animation>
                   <animation effect="fade" time="200">WindowClose</animation>

@@ -163,14 +163,19 @@ FONT_SPECIAL_14 = 'special14'
 
 DEBUG = False
 
+from xbmcaddon import Addon
+
+WHERE_AM_I = Addon('script.myGBPVR').getAddonInfo('path')
+
 # Script doc constants
 __scriptname__ = "myGBPVRGlobals"
-__version__ = '0.0.1'
-__author__ = 'Ton van der Poel'
-__date__ = '29-11-2009'
+__version__ = '2.0.0'
+__author__ = 'emveepee'
+__original_author__ = 'Ton van der Poel'
+__date__ = '2012-09-02'
 
 import xbmc
-xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
+xbmc.log(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 #################################################################################################################
 def debug( value ):

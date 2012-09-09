@@ -23,15 +23,19 @@ __version__    = "[Beta SVN %d]" % __svn_revision__
 
 if __name__ == '__main__':
 	import os, sys, xbmc
-	sys.path.append(os.path.join(os.getcwd(), 'resources', 'src'))
-	sys.path.append(os.path.join(os.getcwd(), 'resources', 'lib'))
-	from myGBPVRGlobals import *
+	from xbmcaddon import Addon
+
+	__settings__ = Addon(id='script.myGBPVR')
+
+	sys.path.append(os.path.join(__settings__.getAddonInfo('path'), 'resources', 'src'))
+	sys.path.append(os.path.join(__settings__.getAddonInfo('path'), 'resources', 'lib'))
+ 	from myGBPVRGlobals import *
 	from gbpvr.home import HomeWindow
 	try:
 		# start script main
-		DIR_HOME = os.getcwd().replace( ";", "" )
+		DIR_HOME = __settings__.getAddonInfo('path').replace( ";", "" )
 		debug("--> Home Directory is: " + DIR_HOME)
-		HomeWindow('gbpvr_home.xml', os.getcwd()).doModal()
+		HomeWindow('gbpvr_home.xml', __settings__.getAddonInfo('path')).doModal()
 	except:
 		debug("exiting script: " + __scriptname__)
 		handleException()

@@ -13,16 +13,19 @@
 ######################################################################################################
 DEBUG = True
 # Core defines
-GBPVR_XMLINFO_PATH = "/gbpvr/public/services/InfoXML.aspx"
-GBPVR_WS_MANAGE_PATH = "/gbpvr/public/services/ManageService.asmx?WSDL"
-GBPVR_WS_SEARCH_PATH = "/gbpvr/public/services/SearchService.asmx?WSDL"
-GBPVR_WS_DETAIL_PATH = "/gbpvr/public/services/DetailService.asmx?WSDL"
-GBPVR_WS_GUIDE_PATH = "/gbpvr/public/services/GuideService.asmx?WSDL"
-GBPVR_WS_SCHEDULE_PATH = "/gbpvr/public/services/ScheduleService.asmx?WSDL"
+GBPVR_XMLINFO_PATH = "/public/services/InfoXML.aspx"
+GBPVR_WS_MANAGE_PATH = "/public/services/ManageService.asmx?WSDL"
+GBPVR_WS_SEARCH_PATH = "/public/services/SearchService.asmx?WSDL"
+GBPVR_WS_DETAIL_PATH = "/public/services/DetailService.asmx?WSDL"
+GBPVR_WS_GUIDE_PATH = "/public/services/GuideService.asmx?WSDL"
+GBPVR_WS_SCHEDULE_PATH = "/public/services/ScheduleService.asmx?WSDL"
 
 Last_Error = ""
 # For WS Search functions, sort and filters....
 # Sort fields
+
+import time
+from datetime import timedelta
 
 class GBPVR_Connect:
 
@@ -89,7 +92,6 @@ class GBPVR_Connect:
 		s.close()
 	except:
                 if _retry < 5:
-                        import time
                         
                         #_WakeOnLan("00:13:d4:fa:f5:27")
                 	if usewol:
@@ -101,6 +103,11 @@ class GBPVR_Connect:
 
 	debug("--> AreYouThere() returning: " + str(ret))
 	return ret
+
+#################################################################################################################
+  def getURL(self):
+	address = "http://" + self.ip + ":" + str(self.port)
+	return address
 
   ######################################################################################################
   # Retrieving XMLInfo information and returning in dictionary
@@ -132,6 +139,7 @@ class GBPVR_Connect:
 
 	# We also get, and cache, the channel data
 	self.channels = self.getChannelList(userid, password)
+	self.channelGroups = self.getChannelGroupList(userid, password)
 
 	return dic
 
@@ -141,7 +149,7 @@ class GBPVR_Connect:
   def getChannelList(self, userid, password):
 
 	import suds.client
-
+  	print "getChannelList start"
 
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SEARCH_PATH
 
@@ -153,17 +161,45 @@ class GBPVR_Connect:
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
-	ret_soap = client.service.getChannelListObject(soapheaders=authObj)
 
+	ret_soap = client.service.getChannelListObject(soapheaders=authObj)
 	dic = {}
 	for chan in ret_soap.anyType:
 		temp = chan.split(',')
-		dic[temp[2]] = temp[1].encode('latin-1')
-
+		dic[temp[2]] = ( temp[1].encode('latin-1'),temp[0] )
+  	print "getChannelList end"
 	return dic
 
+
   ######################################################################################################
-  def getDetails(self, userid, password, oid):
+  # Retrieves a list of channelGroups...
+  ######################################################################################################
+  def getChannelGroupList(self, userid, password):
+
+	import suds.client
+  	print "getChannelGroupList start"
+
+	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_GUIDE_PATH
+
+	client = suds.client.Client(url,cache=None)
+
+	authObj = client.factory.create('webServiceAuthentication')
+
+	# Fill authentication object
+	authObj = self._AddAuthentication(authObj, userid, password)
+	
+	client.set_options(soapheaders=authObj)
+
+	ret_soap = client.service.getChannelGroupsObject(soapheaders=authObj)
+	groups = []
+	for group in ret_soap.anyType:
+		groups.append(group.encode('latin-1'))
+  	
+	print "getChannelGroupList end"
+	return groups
+
+  ######################################################################################################
+  def getDetails(self, userid, password, oid, type):
 
 	import suds.client
 
@@ -178,30 +214,45 @@ class GBPVR_Connect:
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
-	ret_soap = client.service.getProgrammeObject(oid, soapheaders=authObj)
+	#todo fix types
+	if type=="F":
+		ret_soap = client.service.getwebServiceEPGEventObjectByRecurringOID(oid, soapheaders=authObj)
+		return self._rec2dict2(ret_soap[0] )
+	elif type=="P" or type=="E":
+		ret_soap = client.service.getwebServiceEPGEventObjectByEPGEventOID(oid, soapheaders=authObj)
+	else:
+		ret_soap = client.service.getwebServiceEPGEventObjectByScheduleOID(oid, soapheaders=authObj)
 
 	return self._detail2array(ret_soap)
 
   ######################################################################################################
-  def getGuideInfo(self, userid, password, timeStart, timeEnd):
+  def getGuideInfo(self, userid, password, timeStart, timeEnd, group):
 
 	import suds.client
 
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_GUIDE_PATH
+	
+	if group is not None:
+		print group
+		print self.channelGroups
+		if group not in self.channelGroups:
+			print group + " group not found"
+			group = None
+
+	print "getGuideInfo start " + group
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
-
 	authObj = client.factory.create('webServiceAuthentication')
 
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
-	ret_soap = client.service.getGuideObject( timeStart, timeEnd, soapheaders=authObj)
-
+	ret_soap = client.service.getGuideObject( timeStart, timeEnd, channelGroup=group, soapheaders=authObj)
+  	print "getGuideInfo end"	
 	return self._progs2array(ret_soap)
-
+  
   ######################################################################################################
   def getUpcomingRecordings(self, userid, password, amount=0):
 
@@ -237,12 +288,12 @@ class GBPVR_Connect:
 	fltrObj.Completed = 0
 	fltrObj.Failed = 0
 	fltrObj.Conflict = 1
-	fltrObj.Reoccurring = 0
+	fltrObj.Recurring = 0
 	fltrObj.Deleted = 0
 	
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
-	
+
 	client.set_options(soapheaders=authObj)
 	if amount == 0:
             ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
@@ -286,18 +337,18 @@ class GBPVR_Connect:
 	fltrObj.Completed = 1
 	fltrObj.Failed = 1
 	fltrObj.Conflict = 0
-	fltrObj.Reoccurring = 0
+	fltrObj.Recurring = 0
 	fltrObj.Deleted = 1
 	
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
+
 	if amount == 0:
             ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
 	else:
             ret_soap = client.service.getSortedFilteredManageListObjectLimitResults(sortObj, fltrObj, amount, soapheaders=authObj)
-
 	return self._recs2array(ret_soap)
 
   ######################################################################################################
@@ -336,7 +387,7 @@ class GBPVR_Connect:
 	fltrObj.Completed = 0
 	fltrObj.Failed = 0
 	fltrObj.Conflict = 1
-	fltrObj.Reoccurring = 0
+	fltrObj.Recurring = 0
 	fltrObj.Deleted = 0
 	
 	# Fill authentication object
@@ -345,7 +396,7 @@ class GBPVR_Connect:
 	client.set_options(soapheaders=authObj)
 	ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
 	thePrograms =  self._recs2array(ret_soap)
-
+	
 	#Now we get the attributes from the program
 	start = conflictRec['start']
 	end = conflictRec['end']
@@ -369,37 +420,44 @@ class GBPVR_Connect:
     
   ######################################################################################################
   def searchProgram(self, userid, password, needle):
-
+ 
 	import suds.client
 
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SEARCH_PATH
-        
+	
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
-
 	#d=dict(http='localhost:8080')
 	#client.set_options(proxy=d)
 
 	authObj = client.factory.create('webServiceAuthentication')
 	searchObj = client.factory.create('SavedSearch')
-
 	# Figure out the sorting....
 	searchObj.searchName = needle
 	searchObj.autoShowSearch = True
-        searchObj.autoRecordSearch = True
-        searchObj.searchTitle = True
-        searchObj.searchSubTitle = True
-        searchObj.searchDescription = False
-        searchObj.searchPhrase = needle
-        searchObj.searchCaseSensitive = False
+	searchObj.autoRecordSearch = False
+	searchObj.searchTitle = True
+	searchObj.searchSubTitle = True
+	searchObj.searchDescription = False
+	searchObj.matchTitle = False
+	searchObj.matchSubTitle = False
+	searchObj.matchDescription = False
+	searchObj.startTitle = False
+	searchObj.startSubTitle = False
+	searchObj.startDescription = False
+	searchObj.searchPhrase = needle
+	searchObj.searchCaseSensitive = False
 	
 	# Fill authentication object
-	authObj = self._AddAuthentication(authObj, userid, password)
-	
+	authObj = self._AddAuthentication(authObj, userid, password)	
 	client.set_options(soapheaders=authObj)
-	ret_soap = client.service.searchObject(searchObj, soapheaders=authObj)
 
-	return self._recs2array(ret_soap)
+#	import logging
+#	logging.basicConfig(level=logging.INFO)
+#	logging.getLogger('suds.transport.http').setLevel(logging.DEBUG)
+	ret_soap = client.service.searchObject(searchObj, soapheaders=authObj)
+	return self._recs2array1(ret_soap)
+  
   ######################################################################################################
   def getScheduledRecordings(self, userid, password):
 
@@ -435,7 +493,7 @@ class GBPVR_Connect:
 	fltrObj.Completed = 0
 	fltrObj.Failed = 0
 	fltrObj.Conflict = 0
-	fltrObj.Reoccurring = 1
+	fltrObj.Recurring = 1
 	fltrObj.Deleted = 0
 	
 	# Fill authentication object
@@ -443,7 +501,7 @@ class GBPVR_Connect:
 	
 	client.set_options(soapheaders=authObj)
 	ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
-	return self._recs2array(ret_soap)
+	return self._recs2array2(ret_soap)
 
   ######################################################################################################
   def getConflictedRecordings(self, userid, password):
@@ -480,7 +538,7 @@ class GBPVR_Connect:
 	fltrObj.Completed = 0
 	fltrObj.Failed = 0
 	fltrObj.Conflict = 1
-	fltrObj.Reoccurring = 0
+	fltrObj.Recurring = 0
 	fltrObj.Deleted = 0
 	
 	# Fill authentication object
@@ -543,7 +601,7 @@ class GBPVR_Connect:
 	fltrObj.Completed = 0
 	fltrObj.Failed = 0
 	fltrObj.Conflict = 0
-	fltrObj.Reoccurring = 0
+	fltrObj.Recurring = 0
 	fltrObj.Deleted = 0
 	
 	if filter == self.FILTER_ALL:
@@ -561,7 +619,7 @@ class GBPVR_Connect:
 	elif filter == self.FILTER_CONFLICT:
 		fltrObj.Conflict = 1
 	elif filter == self.FILTER_REOCURRING:
-		fltrObj.Reoccurring = 1
+		fltrObj.Recurring = 1
 	else: # FILTER_DELETED
 		fltrObj.Deleted = 1
 
@@ -629,104 +687,117 @@ class GBPVR_Connect:
   ######################################################################################################
   def scheduleRecording(self, userid, password, progDetails):
 	import suds.client
-
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
-
 	client = suds.client.Client(url,cache=None)
-
 	authObj = client.factory.create('webServiceAuthentication')
-
+	
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
 	recObj = client.factory.create('webServiceScheduleSettings')
-        qualObj = client.factory.create('Quality')
+	qualObj = client.factory.create('RecordingQuality')
+	if progDetails['recquality'].lower() == "low":
+		recObj.quality = qualObj.QUALITY_GOOD
+	elif progDetails['recquality'].lower() == "medium":
+		recObj.quality = qualObj.QUALITY_BETTER
+	elif progDetails['recquality'].lower() == "high":
+		recObj.quality = qualObj.QUALITY_BEST
+	else:
+		recObj.quality = qualObj.QUALITY_DEFAULT
 
-        if progDetails['recquality'].lower() == "low":
-                 recObj.quality = qualObj.Low
-        elif progDetails['recquality'].lower() == "medium":
-                recObj.quality = qualObj.Medium
-        elif progDetails['recquality'].lower() == "high":
-                recObj.quality = qualObj.High
-        elif progDetails['recquality'].lower() == "custom1":
-                recObj.quality = qualObj.Custom1
-        else:
-                recObj.quality = qualObj.Custom2
+	recObj.qualityGood = qualObj.QUALITY_GOOD
+	recObj.qualityBetter = qualObj.QUALITY_BETTER
+	recObj.qualityBest = qualObj.QUALITY_BEST
+	recObj.qualityDefault = qualObj.QUALITY_DEFAULT
 
-        recObj.qualityHigh = qualObj.High
-        recObj.qualityMedium = qualObj.Medium
-        recObj.qualityLow = qualObj.Low
-        recObj.qualityCustom1 = qualObj.Custom1
-        recObj.qualityCustom2 = qualObj.Custom2
-        recObj.dayMonday = "false"
-        recObj.dayTuesday = "false"
-        recObj.dayWednesday = "false"
-        recObj.dayThursday = "false"
-        recObj.dayFriday = "false"
-        recObj.daySaturday = "false"
-        recObj.daySunday = "false"
-        
-        
-	recObj.programmeOID = progDetails['program_oid']
+	recObj.dayMonday = "false"
+	recObj.dayTuesday = "false"
+	recObj.dayWednesday = "false"
+	recObj.dayThursday = "false"
+	recObj.dayFriday = "false"
+	recObj.daySaturday = "false"
+	recObj.daySunday = "false"
+	recObj.onlyNew = "false"	
+	recObj.allChannels = "false"	
+
+	recObj.epgeventOID = progDetails['program_oid']
+	recObj.ChannelOid = "0"
+	recObj.startDate = progDetails['start']
+	recObj.endDate = progDetails['end']
+	
+	recordDayIntervalType = client.factory.create('recordDayIntervalType')
+	recordTimeIntervalType = client.factory.create('recordTimeIntervalType')
+
 	if progDetails['rectype'] == 'Once':
-            recObj.recordInterval = "once"
-        else:
-            recObj.recordInterval = "anyDay"
-            recObj.recordDayInterval = "anyDay"
+		recObj.recordTimeInterval = recordTimeIntervalType.recordOnce
+		recObj.recordDayInterval = recordDayIntervalType.recordThisDay
+	else:
+		recObj.recordTimeInterval = recordTimeIntervalType.recordThisTimeslot
+		recObj.recordDayInterval = recordDayIntervalType.recordAnyDay
+	
+	recObj.allChannels = "false"
 
 	recObj.pre_padding_min = progDetails['prepadding']
-        recObj.post_padding_min = progDetails['postpadding']
-        recObj.extend_end_time_min = 0
-        recObj.days_to_keep = progDetails['maxrecs']
-	
-	client.set_options(soapheaders=authObj)
-	ret_soap = client.service.scheduleRecording(recObj, soapheaders=authObj)
-	if ret_soap.Message is not None:
-            last_Error = ret_soap.Message
-	    print ret_soap
+	recObj.post_padding_min = progDetails['postpadding']
+	recObj.extend_end_time_min = "0"
+	recObj.days_to_keep = progDetails['maxrecs']
+	recObj.days_to_keep = progDetails['maxrecs']
 
-	return (not ret_soap.Error)
+
+	client.set_options(soapheaders=authObj)
+
+#	import logging
+#	logging.basicConfig(level=logging.INFO)
+#	logging.getLogger('suds.transport.http').setLevel(logging.DEBUG)
+	ret_soap = client.service.scheduleRecording(recObj, soapheaders=authObj)
+	if ret_soap.webServiceEPGEventObjects.webServiceReturn.Message is not None:
+		print ret_soap.webServiceEPGEventObjects.webServiceReturn.Message
+		last_Error = ret_soap.webServiceEPGEventObjects.webServiceReturn.Message
+
+	return (not ret_soap.webServiceEPGEventObjects.webServiceReturn.Error)
 
   ######################################################################################################
   def cancelRecording(self, userid, password, progDetails):
 	import suds.client
-
+	
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
-
+	
 	client = suds.client.Client(url,cache=None)
-
+	
 	authObj = client.factory.create('webServiceAuthentication')
-
+	
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
-
+	
 	client.set_options(soapheaders=authObj)
+	print progDetails['status']
+	
+	if progDetails['status'].lower() == "recurring":
+		debug("Cancelling")
+		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
+	elif progDetails['status'].lower() == "pending":
+		debug("Cancelling")
+		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
+	elif progDetails['status'].lower() == "conflict":
+		debug("Cancelling")
+		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
+	elif progDetails['status'].lower() == "in progress":
+		debug("Cancelling and Deleting")
+		ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
+	elif progDetails['status'].lower() == "completed":
+		debug("Cancelling and Deleting")
+		ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
+	elif progDetails['status'].lower() == "failed":
+		debug("Cancelling and Deleting")
+		ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
+	else: ## "deleted":
+		debug("Cancelling and Deleting")
+		ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
 
-        if progDetails['status'].lower() == "reocurring":
-                debug("Cancelling")
-                ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
-        elif progDetails['status'].lower() == "pending":
-                debug("Cancelling")
-                ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
-        elif progDetails['status'].lower() == "conflict":
-                debug("Cancelling")
-                ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
-        elif progDetails['status'].lower() == "in progress":
-                debug("Cancelling and Deleting")
-                ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
-        elif progDetails['status'].lower() == "completed":
-                debug("Cancelling and Deleting")
-                ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
-        elif progDetails['status'].lower() == "failed":
-                debug("Cancelling and Deleting")
-                ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
-        else: ## "deleted":
-                debug("Cancelling and Deleting")
-                ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
+	if ret_soap.webServiceEPGEventObjects.webServiceReturn.Message is not None:
+		print ret_soap.webServiceEPGEventObjects.webServiceReturn.Message
+		last_Error = ret_soap.webServiceEPGEventObjects.webServiceReturn.Message
 
-	if ret_soap.Message is not None:
-            last_Error = ret_soap.Message
-
-	return (not ret_soap.Error)
+	return (not ret_soap.webServiceEPGEventObjects.webServiceReturn.Error)
 
   # Helper functions
   ######################################################################################################
@@ -734,72 +805,241 @@ class GBPVR_Connect:
   ######################################################################################################
   def _recs2array(self, soapObj):
 	retArr = []
+
 	if soapObj is None:
             return retArr
         if soapObj.webServiceManageListing is None:
             return retArr
         if len(soapObj.webServiceManageListing) == 0:
             return retArr
-            
-	for prog in soapObj.webServiceManageListing.webServiceProgramme:
-		theDict = self._rec2dict(prog)
+	for prog1 in soapObj.webServiceManageListing.webServiceEPGEvent:
+		for prog in prog1:
+			theDict = self._rec2dict(prog)
+			retArr.append(theDict)
+
+	return retArr
+
+  # Helper functions
+  ######################################################################################################
+  # Translating a (soap) recordinglist into an array of dictionaries...
+  ######################################################################################################
+  def _recs2array1(self, soapObj):
+	retArr = []
+
+	if soapObj is None:
+            return retArr
+        if soapObj.webServiceManageListing is None:
+            return retArr
+        if len(soapObj.webServiceManageListing) == 0:
+            return retArr
+
+	for prog in soapObj.webServiceManageListing.webServiceEPGEvent:
+		theDict = self._rec2dict1(prog)
 		retArr.append(theDict)
 
 	return retArr
 
+  ######################################################################################################
+  # Translating a (soap) recordinglist into an array of dictionaries...
+  ######################################################################################################
+  def _recs2array2(self, soapObj):
+	retArr = []
+	if soapObj is None:
+		return retArr
+	if soapObj.webServiceManageListing is None:
+		return retArr
+	if len(soapObj.webServiceManageListing  ) == 0:
+		return retArr
+
+	#todo fix suds processing
+	x = soapObj.webServiceManageListing
+	for prog in x[0]:
+		p1 = prog[0].webServiceReturn
+		theDict = self._rec2dict2(prog[0])
+   		retArr.append(theDict)
+	
+	return retArr
+
 
   ######################################################################################################
-  # Translating a (soap) recordingobject into a dictionary object...
+  # Translating a (soap)1 recordingobject into a dictionary object...
   ######################################################################################################
-  def _rec2dict(self, prog):
+  def _rec2dict(self, epgo):
 	theDict = {}
-	if prog.title is not None:
-		theDict['title'] = prog.title
+	#todo fix suds processing
+	L = epgo
+	if L[1].webServiceEPGEventObject is not None:
+		prog = L[1].webServiceEPGEventObject
+	if prog.HasSchedule:
+		rec = L[1].webServiceScheduleObject
+	if prog.Title is not None:
+		theDict['title'] = prog.Title
 	else:
-		theDict['title'] = prog.recordingName
+		theDict['title'] = rec.Name
 
-	if prog.recordingStartTime.year > 1:
-                theDict['start'] = prog.recordingStartTime
-                theDict['end'] = prog.recordingEndTime
-        else:
-                theDict['start'] = prog.startTime
-                theDict['end'] = prog.endTime
+	if time.daylight != 0:
+		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
+	else:
+		offset = 0
+
+	if prog.StartTime.year > 1:
+		theDict['start'] = prog.StartTime + offset
+		theDict['end'] = prog.EndTime + offset
+	else:
+		theDict['start'] = rec.StartTime + offset
+		theDict['end'] = rec.EndTime + offset
 
 	if prog.Desc is not None:
-		theDict['desc'] = prog.Desc
+		theDict['desc'] = prog.Desc.encode('utf-8')
 	else:
 		theDict['desc'] = ""
-	if prog.subtitle is not None:
-		theDict['subtitle'] = prog.subtitle
+
+	if prog.Subtitle is not None:
+		theDict['subtitle'] = prog.Subtitle.encode('utf-8')
 	else:
 		theDict['subtitle'] = ""
-	theDict['program_oid'] = prog.programmeOID
-	theDict['recording_oid'] = prog.scheduleOID
-        if prog.scheduleOID > 0:
+	theDict['program_oid'] = prog.OID
+	theDict['recording_oid'] = rec.OID
+        if prog.OID > 0:
                 theDict['rec'] = True
         else:
                 theDict['rec'] = False
-	theDict['priority'] = prog.recordingPriority
+	theDict['priority'] = rec.Priority
 
-	if prog.channelOID is not 0:
-		theDict['channel_oid'] = prog.channelOID
+	if prog.ChannelOid is not 0:
+		theDict['channel_oid'] = prog.ChannelOid
 	else:
-		theDict['channel_oid'] = prog.recordingChannelOID
+		theDict['channel_oid'] = rec.ChannelOid
 
-	if prog.programStatus is not None:
-		theDict['status'] = prog.programStatus
+	if rec.Status is not None:
+		theDict['status'] = rec.Status
 	else:
 		theDict['status'] = ""
 	if str(theDict['channel_oid']) in self.channels:
 		theDict['channel'] = self.channels[str(theDict['channel_oid'])]
 	else:
 		theDict['channel'] = "Unknown"
-
-	if prog.programStatus == 'Reoccuring':
+	if rec.Status == 'Recuring':
 		theDict['rectype'] = prog.recordingType
 	else:
 		theDict['rectype'] = self.SCHEDULE_ONCE
         
+	return theDict
+
+  ######################################################################################################
+  # Translating a (soap)1 recordingobject into a dictionary object...
+  ######################################################################################################
+  def _rec2dict1(self, epgo):
+	theDict = {}
+	q = epgo[0].webServiceReturn
+	prog = epgo[0].webServiceEPGEventObject
+
+#	if L.webServiceEPGEventObject is not None:
+#		prog = L.webServiceEPGEventObject
+
+
+	if prog.HasSchedule is True:
+		rec = L.webServiceScheduleObject 
+	
+	if prog.Title is not None:
+		theDict['title'] = prog.Title
+	else:
+		theDict['title'] = rec.Name
+	if time.daylight != 0:
+		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
+	else:
+		offset = 0
+
+	if prog.StartTime.year > 1:
+                theDict['start'] = prog.StartTime + offset
+                theDict['end'] = prog.EndTime + offset
+        else:
+                theDict['start'] = rec.StartTime + offset
+                theDict['end'] = rec.EndTime + offset
+
+	if prog.Desc is not None:
+		theDict['desc'] = prog.Desc
+	else:
+		theDict['desc'] = ""
+	
+	if prog.Subtitle is not None:
+		theDict['subtitle'] = prog.Subtitle
+	else:
+		theDict['subtitle'] = ""
+	
+	theDict['program_oid'] = prog.OID
+
+	if prog.OID > 0:
+			theDict['rec'] = True
+	else:
+			theDict['rec'] = False
+
+	if prog.HasSchedule is True:
+		theDict['priority'] = rec.Priority
+		if rec.Status == 'Recuring':
+			theDict['rectype'] = prog.recordingType
+		else:
+			theDict['rectype'] = self.SCHEDULE_ONCE
+		theDict['status'] = rec.Status
+		theDict['recording_oid'] = rec.OID
+	else:
+		theDict['priority'] = ""
+		theDict['rectype'] = ""
+		theDict['status'] = ""
+		theDict['recording_oid'] = ""
+
+	if prog.ChannelOid is not 0:
+		theDict['channel_oid'] = prog.ChannelOid
+	else:
+		theDict['channel_oid'] = rec.ChannelOid
+
+
+	if str(theDict['channel_oid']) in self.channels:
+		theDict['channel'] = self.channels[str(theDict['channel_oid'])][0]
+	else:
+		theDict['channel'] = "Unknown"        
+
+	return theDict
+
+
+  ######################################################################################################
+  # Translating a (soap)1 recordingobject into a dictionary object...
+  ######################################################################################################
+  def _rec2dict2(self, epgo):
+	theDict = {}
+	q = epgo.webServiceReturn
+	rec = epgo.webServiceRecurringObject
+	theDict['title'] = rec.Name
+	if time.daylight != 0:
+		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
+	else:
+		offset = 0
+	
+	theDict['start'] = rec.StartTime + offset
+	theDict['end'] = rec.EndTime + offset
+	#todo fix Rules display
+	rules = rec.RulesXmlDoc.Rules
+	theDict['desc'] = str(rules)
+
+	theDict['subtitle'] = ""
+	
+	theDict['program_oid'] = rec.OID
+
+	theDict['rec'] = False
+
+	theDict['priority'] = rec.Priority
+	theDict['rectype'] = rec.Type
+	theDict['status'] = ""
+	theDict['recording_oid'] = rec.OID
+
+	theDict['channel_oid'] = rec.ChannelOid
+
+	if str(theDict['channel_oid']) in self.channels:
+		theDict['channel'] = self.channels[str(theDict['channel_oid'])][0]
+	else:
+		theDict['channel'] = "Unknown"
+
+	theDict['genres'] = ""
 
 	return theDict
 
@@ -808,30 +1048,43 @@ class GBPVR_Connect:
   ######################################################################################################
   def _progs2array(self, soapObj):
 	retArr = []
+	print "Processing listings start"
+	if time.daylight != 0:
+		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
+	else:
+		offset = 0
+	
 	for chnl in soapObj.webServiceGuideListing.webServiceGuideChannel:
 		channel = {}
 		channel['name'] = chnl.channelName
 		channel['oid'] = chnl.channelOID
+		evt = chnl[3].webServiceEPGEvent
 		progs = []
-		for prog in chnl.webServiceGuideChannelProgrammes.webServiceProgramme:
-			dic = {}
-			dic['title'] = unicode(prog.title)
-			dic['subtitle'] = unicode(prog.subtitle)
-			if prog.Desc is not None:
-				dic['desc'] = unicode(prog.Desc)
-			else:
-				dic['desc'] = ""
-                        dic['start'] = prog.startTime
-                        dic['end'] = prog.endTime
-			dic['oid'] = prog.programmeOID
-			if prog.scheduleOID > 0:
-				dic['rec'] = True
-			else:
-				dic['rec'] = False
-			dic['genre'] = unicode(prog.genreList)
-			progs.append(dic)
+		for p2 in evt:
+			for p1 in p2:
+				prog = p1[1].webServiceEPGEventObject
+				dic = {}
+				dic['title'] = unicode(prog.Title)
+				dic['subtitle'] = unicode(prog.Subtitle)
+				if prog.Desc is not None:
+					dic['desc'] = unicode(prog.Desc)
+				else:
+					dic['desc'] = ""
+
+				dic['start'] = prog.StartTime + offset
+				dic['end'] = prog.EndTime + offset
+
+				dic['oid'] = prog.OID
+				if prog.HasSchedule is True:
+					dic['rec'] = True
+				else:
+					dic['rec'] = False
+				#todo fix genres
+				dic['genre'] = "" 
+				progs.append(dic)
 		channel['progs'] = progs
 		retArr.append(channel)
+	print "Process listing end"
 
 	return retArr
 
@@ -840,55 +1093,89 @@ class GBPVR_Connect:
   # Translating a (soap) detailrecord into a dictionary...
   ######################################################################################################
   def _detail2array(self, soapObj):
-	dict = {}
-	if soapObj.title is not None:
-		dict['title'] = soapObj.title
-	else:
-		dict['title'] = soapObj.recordingName
+	print "Detail error returns: " + str(soapObj.webServiceEPGEventObjects.webServiceReturn.Error)
 
-        if soapObj.recordingStartTime.year > 1:
-                dict['start'] = soapObj.recordingStartTime
-                dict['end'] = soapObj.recordingEndTime
-        else:
-                dict['start'] = soapObj.startTime
-                dict['end'] = soapObj.endTime
-	if soapObj.Desc is not None:
-		dict['desc'] = soapObj.Desc
+	if soapObj.webServiceEPGEventObjects.webServiceReturn.Error is True:
+		print soapObj.webServiceEPGEventObjects.webServiceReturn.Message
+		print soapObj
+		dict = {}
+		return dict
+	
+	L = soapObj.webServiceEPGEventObjects
+
+	if L.webServiceEPGEventObject is not None:
+		prog = L.webServiceEPGEventObject
+	else:
+		prog = L.webServiceRecurringObject
+
+	if prog.HasSchedule is True:
+		rec = L.webServiceScheduleObject
+
+	dict = {}
+	if prog.Title is not None:
+		dict['title'] = prog.Title
+	else:
+		dict['title'] = rec.Name
+	
+	if  time.daylight != 0:
+		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
+	else:
+		offset = 0
+
+	if prog.StartTime.year > 1:
+			dict['start'] = prog.StartTime + offset
+			dict['end'] = prog.EndTime + offset
+	else:
+			dict['start'] = rec.StartTime + offset
+			dict['end'] = rec.EndTime + offset
+
+	if prog.Desc is not None:
+		dict['desc'] = prog.Desc.encode('utf-8')
 	else:
 		dict['desc'] = ""
-	if soapObj.subtitle is not None:
-		dict['subtitle'] = soapObj.subtitle
+
+	if prog.Subtitle is not None:
+		dict['subtitle'] = prog.Subtitle.encode('utf-8')
 	else:
 		dict['subtitle'] = ""
-
-        dict['priority'] = soapObj.recordingPriority
-	if soapObj.channelOID is not 0:
-		dict['channel_oid'] = soapObj.channelOID
+	
+	if prog.OID is not 0:
+		dict['channel_oid'] = prog.ChannelOid
 	else:
-		dict['channel_oid'] = soapObj.recordingChannelOID
-
-	if soapObj.programStatus is not None:
-		dict['status'] = soapObj.programStatus
-	else:
-		dict['status'] = ""
+		dict['channel_oid'] = rec.OID
 
 	if str(dict['channel_oid']) in self.channels:
 		dict['channel'] = self.channels[str(dict['channel_oid'])]
 	else:
 		dict['channel'] = "Unknown"
 		
-	dict['program_oid'] = soapObj.programmeOID
-	dict['recording_oid'] = soapObj.scheduleOID
-	dict['rectype'] = soapObj.recordingType
-	dict['recday'] = soapObj.recordingDay
-	dict['recquality'] = soapObj.recordingQuality
-	dict['prepadding'] = soapObj.prePadding
-	dict['postpadding'] = soapObj.postPadding
-	dict['maxrecs'] = soapObj.maxRecordings
-
+	dict['program_oid'] = prog.OID
+	
+	if prog.HasSchedule is True:
+		dict['status'] = rec.Status
+		if rec.Status == "Completed" or rec.Status == "In-Progress":
+			dict['filename'] = rec.RecordingFileName
+		dict['recording_oid'] = rec.OID
+		dict['rectype'] = rec.Type
+		dict['recday'] = rec.Day
+		dict['recquality'] = rec.Quality
+		dict['prepadding'] = rec.PrePadding
+		dict['postpadding'] = rec.PostPadding
+		dict['maxrecs'] = rec.MaxRecordings
+		dict['priority'] = rec.Priority
+	else:
+		dict['status'] = ""
+		dict['recording_oid'] = ""
+		dict['rectype'] = ""
+		dict['recday'] = ""
+		dict['recquality'] = ""
+		dict['prepadding'] = ""
+		dict['postpadding'] = ""
+		dict['maxrecs'] = ""
+		dict['priority'] = ""
 	dict['genres'] = []
 	try:
-		dict['genres'] = soapObj.genreList.anyType
+		dict['genres'] = ""
 	except:
 		pass
 
@@ -920,7 +1207,7 @@ class GBPVR_Connect:
   ######################################################################################################
   def _Guid(self, *args ):
 
-	import time, random, md5
+	import time, random, hashlib
 
 	"""
 		Generates a universally unique ID.
@@ -934,7 +1221,9 @@ class GBPVR_Connect:
 		# if we can't get a network address, just imagine one
 		a = random.random()*100000000000000000L
 	data = str(t)+' '+str(r)+' '+str(a)+' '+str(args)
-	data = "0000" + md5.new(data).hexdigest()
+	h = hashlib.md5()
+	h.update(data)
+	data = "0000" + h.hexdigest()
 
 	return data
 
@@ -943,28 +1232,27 @@ class GBPVR_Connect:
   # Note: Requires PCCrypto....
   ######################################################################################################
   def _AESEncrypt(self, plain_text, key, iv):
+    from Crypto.Cipher import AES
+    block_size = 16
+    key_size = 32
+    mode = AES.MODE_CBC
 
-	from Crypto.Cipher import AES
+    key_bytes = key[:key_size]
+    pad = block_size - len(plain_text) % block_size
+    data = str(plain_text) + pad * chr(pad)
+    iv_bytes = iv[:block_size]
+    encrypted = AES.new(key_bytes, mode, iv_bytes).encrypt(data) 
 
-	block_size = 16
-	key_size = 32
-	mode = AES.MODE_CBC 
-
-	key_bytes = key[:key_size]
-	pad = block_size - len(plain_text) % block_size
-	data = str(plain_text) + pad * chr(pad)
-
-	iv_bytes = iv[:block_size]
-	encrypted = AES.new(key_bytes, mode, iv_bytes).encrypt(data) 
-
-	return encrypted
+    return encrypted
  
   ######################################################################################################
   # Creates a (MD5) hash of a string
   ######################################################################################################
   def _hashMe (self, thedata):
-	import md5
-	return md5.new(thedata).hexdigest()
+	import hashlib
+	h = hashlib.md5()
+	h.update(thedata)
+	return h.hexdigest()
 
   ######################################################################################################
   # Creates a byte-array with an MS representation of unicode...
@@ -991,7 +1279,7 @@ class GBPVR_Connect:
 
 	clearBytes = self._toMsUniCode(cleartext)
 
-	safepw = PBKDF2(password, salt, 100)
+	safepw = PBKDF2(password, salt, 25)
 
 	key = safepw.read(32) # 256-bit key
 
@@ -1007,8 +1295,8 @@ class GBPVR_Connect:
   def _AddAuthentication(self, myObj, userid, password):
 
 	from datetime import datetime
-
-	timeString = datetime.now().strftime("%d-%m-%Y %H:%M:00")
+	timeString = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+#	print timeString
 	encodingSalt = self._hashMe(timeString)
         
 	pwdHash = self._hashMe(password)
@@ -1098,3 +1386,4 @@ def debug( value ):
 				print value
 			except:
 				print "Debug() Bad chars in string"
+

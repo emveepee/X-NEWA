@@ -20,6 +20,7 @@
 import datetime, time
 import xbmcgui
 import os
+from xbmcaddon import Addon
 
 from myGBPVRGlobals import *
 
@@ -57,17 +58,15 @@ class SearchWindow(xbmcgui.WindowXML):
             self.close()
 
     def goEditSchedule(self):
-
-	import details
-
-	oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), gbpvr=self.gbpvr, settings=self.settings, oid=oid)
-        detailDialog.doModal()
-        if detailDialog.shouldRefresh:
-            self.render()
+		import details
+		oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
+		detailDialog = details.DetailDialog("gbpvr_details.xml", Addon('script.myGBPVR').getAddonInfo('path'), gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="P")
+		detailDialog.doModal()
+		if detailDialog.shouldRefresh:
+			self.render()
 
     def render(self):
-        myText = self._getText("Please enter search frase:","")
+        myText = self._getText("Please enter search phrase:","")
         if myText is None:
             self.close()
     

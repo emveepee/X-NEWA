@@ -20,6 +20,7 @@
 import datetime, time
 import xbmcgui
 import os
+from xbmcaddon import Addon
 
 from myGBPVRGlobals import *
 
@@ -64,8 +65,8 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 
 	import details
 
-	oid = self.recentData[self.programsListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), gbpvr=self.gbpvr, settings=self.settings, oid=oid)
+	oid = self.recentData[self.programsListBox.getSelectedPosition()]['recording_oid']
+        detailDialog = details.DetailDialog("gbpvr_details.xml", Addon('script.myGBPVR').getAddonInfo('path'), gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
@@ -74,31 +75,31 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 	listItems = []
 
 	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
-            	self.win.setProperty('busy', 'true')
+		self.win.setProperty('busy', 'true')
 		try:
-                        self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
-                        previous = None
-                        for i, t in enumerate(self.recentData):
-                                listItem = xbmcgui.ListItem('Row %d' % i)
-                                airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
-                                listItem.setProperty('airdate', airdate)
-                                listItem.setProperty('title', t['title'])
-                                listItem.setProperty('status', t['status'])
-                                listItem.setProperty('start', t['start'].strftime("%H:%M"))
-                                duration = int((t['end'] - t['start']).seconds / 60)
-                                listItem.setProperty('duration', str(duration) )
-                                listItem.setProperty('channel', t['channel'])
-                                if len(t['subtitle']) > 0:
-                                        listItem.setProperty('description', t['subtitle'] + "; " + t['desc'])
-                                else:
-                                        listItem.setProperty('description', t['desc'])
-                                listItem.setProperty('oid', str(t['program_oid']))
-                                listItems.append(listItem)
-                        self.programsListBox.addItems(listItems)
-                except:
-                        self.win.setProperty('busy', 'false')
-                        xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+			self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+			previous = None
+			for i, t in enumerate(self.recentData):
+				listItem = xbmcgui.ListItem('Row %d' % i)
+				airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
+				listItem.setProperty('airdate', airdate)
+				listItem.setProperty('title', t['title'])
+				listItem.setProperty('status', t['status'])
+				listItem.setProperty('start', t['start'].strftime("%H:%M"))
+				duration = int((t['end'] - t['start']).seconds / 60)
+				listItem.setProperty('duration', str(duration) )
+				listItem.setProperty('channel', t['channel'][0])
+				if len(t['subtitle']) > 0:
+						listItem.setProperty('description', t['subtitle'] + "; " + t['desc'])
+				else:
+						listItem.setProperty('description', t['desc'])
+				listItem.setProperty('oid', str(t['program_oid']))
+				listItems.append(listItem)
 
+			self.programsListBox.addItems(listItems)
+		except:
+			self.win.setProperty('busy', 'false')
+			xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
 		self.win.setProperty('busy', 'false')
 	else:
 		xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')

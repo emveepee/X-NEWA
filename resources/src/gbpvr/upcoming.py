@@ -71,7 +71,7 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), gbpvr=self.gbpvr, settings=self.settings, oid=oid)
+        detailDialog = details.DetailDialog("gbpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
@@ -92,7 +92,7 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
                                 listItem.setProperty('start', t['start'].strftime("%H:%M"))
                                 duration = int((t['end'] - t['start']).seconds / 60)
                                 listItem.setProperty('duration', str(duration) )
-                                listItem.setProperty('channel', t['channel'])
+                                listItem.setProperty('channel', t['channel'][0])
                                 if len(t['subtitle']) > 0:
                                         listItem.setProperty('description', t['subtitle'] + "; " + t['desc'])
                                 else:

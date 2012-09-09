@@ -62,7 +62,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.scheduleData[self.schedulesListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), gbpvr=self.gbpvr, settings=self.settings, oid=oid)
+        detailDialog = details.DetailDialog("gbpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid,type="F")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()

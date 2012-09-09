@@ -13,7 +13,7 @@ import ConfigParser
 from myGBPVRGlobals import *
 import traceback
 import sys
-
+from xbmcaddon import Addon
 # Core defines
 
 class GBPVR_Settings:
@@ -22,9 +22,10 @@ class GBPVR_Settings:
 
   # Instantiation
   def __init__(self):
-	self.configpath = os.path.join(os.getcwd(), self.INI_PATH)
+	print Addon('script.myGBPVR').getAddonInfo('path')
+	self.configpath = os.path.join(Addon('script.myGBPVR').getAddonInfo('path'), self.INI_PATH)
 
-	self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8080', 'userid':'gbpvr', 'pw':'gbpvr',  'usewol':'No', 'mac':'00:00:00:00:00:00', 'broadcast':'255.255.255.255','scroll_int':'15', 'disp_int':'60', 'retr_int':'2', 'row_h':'75' })
+	self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8080', 'userid':'gbpvr', 'pw':'gbpvr',  'usewol':'No', 'mac':'00:00:00:00:00:00', 'broadcast':'255.255.255.255','scroll_int':'15', 'disp_int':'60', 'retr_int':'2', 'row_h':'75', 'group':'' })
 	try:
 		self.config.read(self.configpath)
 	except:
@@ -47,6 +48,7 @@ class GBPVR_Settings:
 		self.EPG_DISP_INT = config.getint("EPG", "disp_int")
 		self.EPG_RETR_INT = config.getint("EPG", "retr_int")
 		self.EPG_ROW_HEIGHT = config.getint("EPG", "row_h")
+		self.EPG_GROUP = config.get("EPG", "group")
 	except:
 		handleException()
 
@@ -67,6 +69,7 @@ class GBPVR_Settings:
 		self.config.set("EPG", "disp_int", self.EPG_DISP_INT)
 		self.config.set("EPG", "retr_int", self.EPG_RETR_INT)
 		self.config.set("EPG", "row_h", self.EPG_ROW_HEIGHT)
+		self.config.set("EPG", "group", self.EPG_GROUP)
 		print "Trying to write to: " + self.configpath
 		configfile = open(self.configpath, 'w')
 		self.config.write(configfile)
@@ -105,3 +108,5 @@ class GBPVR_Settings:
 		self.EPG_RETR_INT = int(val)
 	elif key == "EPG_ROW_HEIGHT":
 		self.EPG_ROW_HEIGHT = int(val)
+	elif key == "EPG_GROUP":
+		self.EPG_GROUP = val

@@ -51,6 +51,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
 	self.epgdispint = self.getControl(211)
 	self.epgretrint = self.getControl(212)
 	self.epgrowh = self.getControl(213)
+	self.epgGroup = self.getControl(214)
 	
         self.saveButton = self.getControl(250)
         self.cancelButton = self.getControl(253)
@@ -95,6 +96,8 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self._getText(self.epgretrint, "EPG_RETR_INT")	
 	elif self.epgrowh == source:
             self._getText(self.epgrowh, "EPG_ROW_HEIGHT")	
+	elif self.epgGroup == source:
+            self._getText(self.epgGroup, "EPG_GROUP")	
 
     def _getText(self, ctrl, key):
 	cTitle = ctrl.getLabel()
@@ -132,6 +135,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
 		self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )
 		self.epgretrint.setLabel( "Retrieve Interval (hrs.):", label2=str(self.settings.EPG_RETR_INT) )
 		self.epgrowh.setLabel( "Row Height (px):", label2=str(self.settings.EPG_ROW_HEIGHT) )
+		self.epgGroup.setLabel( "Channel Group", label2=str(self.settings.EPG_GROUP) )
 	except:
 		handleException()
 	try:

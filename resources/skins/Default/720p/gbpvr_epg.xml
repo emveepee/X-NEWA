@@ -13,14 +13,14 @@
             <!-- S C R E E N B A C K G R O U N D -->
             <!-- ============================================= -->
             <!-- Copy of CommonBackground -->
-            <control type="image">
+            <!--control type="image">
                   <description>background image</description>
                   <posx>0</posx>
                   <posy>0</posy>
                   <width>1280</width>
                   <height>720</height>
                   <texture>bg.png</texture>
-            </control>
+            </control-->
             <control type="group">
                   <description>Content Group</description>
                   <!-- Copy Window_OpenClose_Right_Panel_Animation -->
@@ -52,7 +52,7 @@
                         <posy>150</posy>
                         <onup>2000</onup>
                         <ondown>2000</ondown>
-                        <control type="image">
+                        <!--control type="image">
                               <posx>0</posx>
                               <posy>0</posy>
                               <width>900</width>
@@ -61,7 +61,7 @@
                               <texture>black-back.png</texture>
                               <animation effect="fade" time="200">WindowOpen</animation>
                               <animation effect="fade" time="200">WindowClose</animation>
-                        </control>
+                        </control-->
                         <control type="image">
                               <posx>0</posx>
                               <posy>0</posy>

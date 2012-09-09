@@ -15,6 +15,7 @@
 """
 
 import xbmc, xbmcgui
+from xbmcaddon import Addon
 import sys, re, time, os
 from os import path, listdir
 from string import replace, split, upper, lower, capwords, join,zfill
@@ -23,13 +24,14 @@ import traceback
 
 # Script doc constants
 __scriptname__ = "myGBPVR"
-__version__ = '0.0.1'
-__author__ = 'Ton van der Poel'
-__date__ = '29-11-2009'
-xbmc.output(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
+__version__ = '2.0.0'
+__orgiginal_author__ = 'Ton van der Poel'
+__author__ = 'emveepee'
+__date__ = '2012-09-03'
+xbmc.log(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
-DIR_HOME = os.getcwd().replace( ";", "" )
+DIR_HOME =  Addon('script.myGBPVR').getAddonInfo('path').replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
 DIR_USERDATA = xbmc.translatePath("/".join( ["T:", "script_data", __scriptname__] ))
@@ -57,8 +59,7 @@ class EpgWindow(xbmcgui.WindowXML):
 	
 	def __init__(self, *args, **kwargs):
 		debug("--> myGBPVR()__init__")
-
-        	xbmcgui.WindowXML.__init__(self, *args, **kwargs)
+#        	xbmcgui.WindowXML.__init__(self, *args, **kwargs)
 
 		# Need to get: oid and gbpvr....
         	self.settings = kwargs['settings']
@@ -123,7 +124,7 @@ class EpgWindow(xbmcgui.WindowXML):
 		debug("< onInit()")
 
 	#################################################################################################################
-	def loadGBPVR(self, theDate=None ):
+	def loadGBPVR(self, theDate=None):
 		# Todo: Error-Handling
 		debug("--> loadGBPVR" )
 		success = True
@@ -132,21 +133,30 @@ class EpgWindow(xbmcgui.WindowXML):
                         theDate = self.initDate
                         
 		myDlg = xbmcgui.DialogProgress()
-		myDlg.create("Retrieving GBPVR data ...", "Please wait ...")
+		myDlg.create("Loading TV Guide ...", "Please wait ...")
 
 		myDlg.update(33, "Downloading ...")
 
 		# Todo: Get correct times....
 		tdate = theDate
-		cstart = tdate.strftime("%Y-%m-%dT%H:%M:00")
+		if time.daylight != 0:
+			tdate1 = tdate + timedelta(seconds=time.altzone)
+		else:
+			tdate1 = tdate + timedelta(seconds=time.timezone)
+		cstart = tdate1.strftime("%Y-%m-%dT%H:%M:00")
 		tdate = tdate + timedelta(hours=self.settings.EPG_RETR_INT)
 		self.EPGEndTime = tdate
-		#tdate = tdate + timedelta(hours=2)
+		if time.daylight != 0:
+			tdate = tdate + timedelta(seconds=time.altzone)
+		else:
+			tdate = tdate + timedelta(seconds=time.timezone)
 		cend = tdate.strftime("%Y-%m-%dT%H:%M:00")
 
+
+		channelGroup = self.settings.EPG_GROUP
                 if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
                     try:
-                        self.epgData = self.gbpvr.getGuideInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW, cstart, cend)
+                        self.epgData = self.gbpvr.getGuideInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW, cstart, cend, channelGroup)
                     except:
                         xbmcgui.Dialog().ok('Sorry', 'Error retrieving EPG data!')
 
@@ -608,7 +618,7 @@ class EpgWindow(xbmcgui.WindowXML):
 		import details
 
 		oid = self.epgTagData[controlID][0]
-        	detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), gbpvr=self.gbpvr, settings=self.settings, oid=oid)
+        	detailDialog = details.DetailDialog("gbpvr_details.xml",  DIR_HOME, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="E")
         	detailDialog.doModal()
         	if detailDialog.returnvalue is not None:
                         # First, get the epgData item....
@@ -721,6 +731,7 @@ class EpgWindow(xbmcgui.WindowXML):
 				myDlg = xbmcgui.DialogProgress()
 				myDlg.create("Retrieving GBPVR data ...", "Please wait ...")
 				myDlg.update(33, "Downloading ...")
+
 				cstart = tNew.strftime("%Y-%m-%dT%H:%M:00")
 				tNew = tNew + timedelta(hours=self.settings.EPG_RETR_INT)
 				self.EPGEndTime = tNew

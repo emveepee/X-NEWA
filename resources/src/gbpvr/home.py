@@ -20,19 +20,24 @@ import sys
 
 import xbmc
 import xbmcgui
+from xbmcaddon import Addon
 
 from myGBPVRGlobals import *
 from GBPVR_Connect import GBPVR_Connect
 from GBPVR_Settings import GBPVR_Settings
+
+# Shared resources
+DIR_HOME =  Addon('script.myGBPVR').getAddonInfo('path').replace( ";", "" )
+
 # =============================================================================
 class HomeWindow(xbmcgui.WindowXML):
     
     def __init__(self, *args, **kwargs):
-        self.win = None
-	self.busy = False        
-        self.progressDialog = None
-        self.settings = GBPVR_Settings()
-	self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
+		self.win = None
+		self.busy = False
+		self.progressDialog = None
+		self.settings = GBPVR_Settings()
+		self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
         
     def onFocus(self, controlId):
         pass
@@ -64,7 +69,7 @@ class HomeWindow(xbmcgui.WindowXML):
                 254 : self.goSearch,
                 255 : self.goSettings,
                 256 : self.refreshOnInit,
-		257 : self.goExit,
+				257 : self.goExit,
                 258 : self.goRecentRecordings
             }
             
@@ -84,99 +89,98 @@ class HomeWindow(xbmcgui.WindowXML):
             debug('onClick')
                
     def goSearch(self):
-        import search
-	mywin = search.SearchWindow('gbpvr_search.xml', os.getcwd(), settings=self.settings, gbpvr=self.gbpvr)
-        mywin.doModal()
+		import search
+		mywin = search.SearchWindow('gbpvr_search.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin.doModal()
 
     def goExit(self):
-	self.closed = True
-	self.close()
+		self.closed = True
+		self.close()
 
     def goRecentDetails(self):
-	import details
-
-	oid = self.recentData[self.recentListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), settings=self.settings, gbpvr=self.gbpvr, oid=oid)
-        detailDialog.doModal()
-        if detailDialog.shouldRefresh:
-            self.render()
+		import details
+		oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
+		detailDialog = details.DetailDialog("gbpvr_details.xml", DIR_HOME, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R" )
+		detailDialog.doModal()
+		if detailDialog.shouldRefresh:
+			self.render()
 
     def goUpcomingDetails(self):
-	import details
+		import details
 
-	oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("gbpvr_details.xml", os.getcwd(), settings=self.settings, gbpvr=self.gbpvr, oid=oid)
-        detailDialog.doModal()
-        if detailDialog.shouldRefresh:
-            self.render()
+		oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['program_oid']
+		detailDialog = details.DetailDialog("gbpvr_details.xml", DIR_HOME, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="P")
+		detailDialog.doModal()
+		if detailDialog.shouldRefresh:
+			self.render()
 
     def goWatchRecordings(self):
         xbmc.executebuiltin('XBMC.ActivateWindow(videolibrary,tvshowtitles)')
         
     def goTvGuide(self):
-        import epg; 
-	mywin = epg.EpgWindow('gbpvr_epg.xml', os.getcwd(), gbpvr=self.gbpvr, settings=self.settings)
-        mywin.doModal()
+		import epg
+		mywin = epg.EpgWindow('gbpvr_epg.xml', DIR_HOME, gbpvr=self.gbpvr, settings=self.settings)
+		mywin.doModal()
     
     def goRecordingSchedules(self):
-        import schedules
-	mywin = schedules.SchedulesWindow('gbpvr_schedules.xml', os.getcwd(), settings=self.settings, gbpvr=self.gbpvr)
-        mywin.doModal()
+		import schedules
+		mywin = schedules.SchedulesWindow('gbpvr_schedules.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin.doModal()
             
     def goUpcomingRecordings(self):
-        import upcoming
-	mywin = upcoming.UpcomingRecordingsWindow('gbpvr_upcoming.xml', os.getcwd(), settings=self.settings, gbpvr=self.gbpvr)
-        mywin.doModal()
+		import upcoming
+		mywin = upcoming.UpcomingRecordingsWindow('gbpvr_upcoming.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin.doModal()
         
     def goRecentRecordings(self):
-        import recent
-	mywin = recent.RecentRecordingsWindow('gbpvr_recent.xml', os.getcwd(), settings=self.settings, gbpvr=self.gbpvr)
-        mywin.doModal()
+		import recent
+		mywin = recent.RecentRecordingsWindow('gbpvr_recent.xml', DIR_HOME, settings=self.settings, gbpvr=self.gbpvr)
+		mywin.doModal()
         
     def goSettings(self):
-        import settings
-	mywin = settings.settingsDialog('gbpvr_settings.xml', os.getcwd(), settings=self.settings)
-        mywin.doModal()
-	self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
+		import settings
+		mywin = settings.settingsDialog('gbpvr_settings.xml', DIR_HOME, settings=self.settings)
+		mywin.doModal()
+		self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
+		self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
 
     def refresh(self):
-	self.renderUpComing()
-	self.renderRecent()
-	self.renderStats()
+		self.renderUpComing()
+		self.renderRecent()
+		self.renderStats()
 
     def refreshOnInit(self):
-	self.win.setProperty('busy', 'true')
-	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
-		try:
-			self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
-			self.upcomingData = self.gbpvr.getUpcomingRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW, 10)
-			self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW, 10)
-			self.renderUpComing()
-			self.renderRecent()
-			self.renderStats()
-
-			self.win.setProperty('busy', 'false')
-		except:
-			handleException()
+		self.win.setProperty('busy', 'true')
+		if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+			try:
+				self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+				self.upcomingData = self.gbpvr.getUpcomingRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW, 10)
+				self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW, 10)
+				self.renderUpComing()
+				self.renderRecent()
+				self.renderStats()				
+				self.win.setProperty('busy', 'false')
+			except:
+				handleException()
+				self.win.setProperty('busy', 'false')
+				xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+		else:
 			self.win.setProperty('busy', 'false')
 			xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
-	else:
-                self.win.setProperty('busy', 'false')
-		xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
-		#self.close()
+			#self.close()
 
     def renderUpComing(self):
-        listItems = []
-        for i, t in enumerate(self.upcomingData):
-            listItem = xbmcgui.ListItem('Row %d' % i)
-            listItem.setProperty('title', t['title'])
-            listItem.setProperty('date', t['start'].strftime("%a, %b %d %H:%M"))
-            listItem.setProperty('end', t['end'].strftime("%H:%M"))
-            listItem.setProperty('description', t['desc'])
-            listItem.setProperty('channel', t['channel'])
-            listItem.setProperty('oid', str(t['program_oid']))
-            listItems.append(listItem)
-        self.comingListBox.addItems(listItems)
+		listItems = []
+		for i, t in enumerate(self.upcomingData):
+			listItem = xbmcgui.ListItem('Row %d' % i)
+			listItem.setProperty('title', t['title'])
+			listItem.setProperty('date', t['start'].strftime("%a, %b %d %H:%M"))
+			listItem.setProperty('end', t['end'].strftime("%H:%M"))
+			listItem.setProperty('description', t['desc'])
+			listItem.setProperty('channel', t['channel'][0])
+			listItem.setProperty('oid', str(t['program_oid']))
+			listItems.append(listItem)
+		self.comingListBox.addItems(listItems)
 
     def renderRecent(self):
         listItems = []
@@ -192,28 +196,28 @@ class HomeWindow(xbmcgui.WindowXML):
         self.recentListBox.addItems(listItems)
                
     def renderStats(self):
-	# Set up free-space indication
-	# First, the text part
-	# Todo: Make safe for other languages / sizes (GB/MB, etc.)
-	tmp = self.statusData['directory'][0]['Total'].split(' ')
-	lTotal = float(tmp[0].replace(',','.'))
-	tmp = self.statusData['directory'][0]['Free'].split(' ')
-	lFree = float(tmp[0].replace(',','.'))
-	lUsed = lTotal - lFree
-        self.spaceFree.setLabel(str(lFree) + " Gb")
-        self.spaceUsed.setLabel(str(lUsed) + " Gb")
-	# Then, the images part
-	x, y = self.spaceGreen.getPosition()
-	redWidth = int((250 / (lTotal) ) * lUsed)
-	greenWidth = 250 - redWidth
-	self.spaceGreen.setWidth(greenWidth)
-	self.spaceRed.setWidth(redWidth)
-	self.spaceRed.setPosition(x+greenWidth, y)
-
-	# Set up display of counters
-        self.countPending.setLabel(self.statusData['schedule']['Pending'])
-        self.countProgress.setLabel(self.statusData['schedule']['InProgress'])
-        self.countAvailable.setLabel(self.statusData['schedule']['Available'])
-        self.countFailed.setLabel(self.statusData['schedule']['Failed'])
-        self.countConflict.setLabel(self.statusData['schedule']['Conflict'])
-        self.countSeason.setLabel(self.statusData['schedule']['Reoccurring'])
+		# Set up free-space indication
+		# First, the text part
+		# Todo: Make safe for other languages / sizes (GB/MB, etc.)
+		tmp = self.statusData['directory'][0]['Total'].split(' ')
+		lTotal = float(tmp[0].replace(',','.'))
+		tmp = self.statusData['directory'][0]['Free'].split(' ')
+		lFree = float(tmp[0].replace(',','.'))
+		lUsed = lTotal - lFree
+		self.spaceFree.setLabel(str(lFree) + " Gb")
+		self.spaceUsed.setLabel(str(lUsed) + " Gb")
+		# Then, the images part
+		x, y = self.spaceGreen.getPosition()
+		redWidth = int((250 / (lTotal) ) * lUsed)
+		greenWidth = 250 - redWidth
+		self.spaceGreen.setWidth(greenWidth)
+		self.spaceRed.setWidth(redWidth)
+		self.spaceRed.setPosition(x+greenWidth, y)
+	
+		# Set up display of counters
+		self.countPending.setLabel(self.statusData['schedule']['Pending'])
+		self.countProgress.setLabel(self.statusData['schedule']['InProgress'])
+		self.countAvailable.setLabel(self.statusData['schedule']['Available'])
+		self.countFailed.setLabel(self.statusData['schedule']['Failed'])
+		self.countConflict.setLabel(self.statusData['schedule']['Conflict'])
+		self.countSeason.setLabel(self.statusData['schedule']['Recurring'])
