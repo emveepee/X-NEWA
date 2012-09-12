@@ -243,7 +243,7 @@
                 <texturenofocus>input-nofocus.png</texturenofocus>
                 <visible>true</visible>
             </control>
-
+            
             <control type="button" id="201">
                 <label></label>
                 <label2></label2>
@@ -291,7 +291,7 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-
+            
             <control type="button" id="205">
                 <label></label>
                 <label2></label2>
@@ -343,7 +343,7 @@
         </control>
         
         <control type="grouplist" id="2000">
-            <description>Save Cancel Delete Buttons</description>
+            <description>Save Close Delete Buttons</description>
             <posx>710</posx>
             <posy>95</posy>
             <onleft>9000</onleft>
@@ -379,7 +379,7 @@
             </control>
             
             <control type="button" id="253">
-                <label>Cancel</label>
+                <label>Close</label>
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>

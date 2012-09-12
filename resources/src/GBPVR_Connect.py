@@ -140,7 +140,7 @@ class GBPVR_Connect:
 	# We also get, and cache, the channel data
 	self.channels = self.getChannelList(userid, password)
 	self.channelGroups = self.getChannelGroupList(userid, password)
-
+	self.RecDirs = self.getRecDirList(userid, password)
 	return dic
 
   ######################################################################################################
@@ -198,6 +198,31 @@ class GBPVR_Connect:
 	return groups
 
   ######################################################################################################
+  # Retrieves a list of recDir...
+  ######################################################################################################
+  def getRecDirList(self, userid, password):
+
+	import suds.client
+	print "getRecDirList start"
+	
+	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
+	
+	client = suds.client.Client(url,cache=None)
+	authObj = client.factory.create('webServiceAuthentication')
+	
+	# Fill authentication object
+	authObj = self._AddAuthentication(authObj, userid, password)
+	
+	client.set_options(soapheaders=authObj)
+	ret_soap = client.service.getRecDirObject(soapheaders=authObj)
+	groups = []
+	groups.append(ret_soap.DefaultRecordingDirectory.RecDirName.encode('latin-1'))
+	if len(ret_soap.ExtraRecordingDirectories) != 0:
+		for dirs in ret_soap.ExtraRecordingDirectories.webServiceRecordingDirectory:
+			groups.append(dirs.RecDirName.encode('latin-1'))
+	return groups
+
+  ######################################################################################################
   def getDetails(self, userid, password, oid, type):
 
 	import suds.client
@@ -232,8 +257,6 @@ class GBPVR_Connect:
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_GUIDE_PATH
 	
 	if group is not None:
-		print group
-		print self.channelGroups
 		if group not in self.channelGroups:
 			print group + " group not found"
 			caseGroup = None
@@ -243,7 +266,8 @@ class GBPVR_Connect:
 					caseGroup = groups
 			group = caseGroup
 
-	print "getGuideInfo start"
+	print "getGuideInfo start "
+	print timeStart
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -648,23 +672,19 @@ class GBPVR_Connect:
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
 	recObj = client.factory.create('webServiceScheduleSettings')
-        qualObj = client.factory.create('Quality')
+        qualObj = client.factory.create('RecordingQuality')
 
-        if progDetails['recquality'].lower() == "low":
-                 recObj.quality = qualObj.Low
-        elif progDetails['recquality'].lower() == "medium":
-                recObj.quality = qualObj.Medium
-        elif progDetails['recquality'].lower() == "high":
-                recObj.quality = qualObj.High
-        elif progDetails['recquality'].lower() == "custom1":
-                recObj.quality = qualObj.Custom1
+        if progDetails['recquality'].lower() == "good":
+                 recObj.quality = qualObj.QUALITY_GOOD
+        elif progDetails['recquality'].lower() == "better":
+                recObj.quality = qualObj.QUALITY_BETTER
+        elif progDetails['recquality'].lower() == "best":
+                recObj.quality = qualObj.QUALITY_BEST
         else:
-                recObj.quality = qualObj.Custom2
-        recObj.qualityHigh = qualObj.High
-        recObj.qualityMedium = qualObj.Medium
-        recObj.qualityLow = qualObj.Low
-        recObj.qualityCustom1 = qualObj.Custom1
-        recObj.qualityCustom2 = qualObj.Custom2
+                recObj.quality = qualObj.QUALITY_DEFAULT
+        recObj.qualityBest = qualObj.QUALITY_BEST
+        recObj.qualityBetter = qualObj.QUALITY_BETTER
+        recObj.qualityGood = qualObj.QUALITY_GOOD
         recObj.dayMonday = "false"
         recObj.dayTuesday = "false"
         recObj.dayWednesday = "false"
@@ -699,11 +719,11 @@ class GBPVR_Connect:
 	authObj = self._AddAuthentication(authObj, userid, password)
 	recObj = client.factory.create('webServiceScheduleSettings')
 	qualObj = client.factory.create('RecordingQuality')
-	if progDetails['recquality'].lower() == "low":
+	if progDetails['recquality'].lower() == "good":
 		recObj.quality = qualObj.QUALITY_GOOD
-	elif progDetails['recquality'].lower() == "medium":
+	elif progDetails['recquality'].lower() == "better":
 		recObj.quality = qualObj.QUALITY_BETTER
-	elif progDetails['recquality'].lower() == "high":
+	elif progDetails['recquality'].lower() == "best":
 		recObj.quality = qualObj.QUALITY_BEST
 	else:
 		recObj.quality = qualObj.QUALITY_DEFAULT
@@ -728,17 +748,48 @@ class GBPVR_Connect:
 	recObj.startDate = progDetails['start']
 	recObj.endDate = progDetails['end']
 	
+	if progDetails['directory'] != "Default":
+		recObj.recDirId = progDetails['directory']
+
 	recordDayIntervalType = client.factory.create('recordDayIntervalType')
 	recordTimeIntervalType = client.factory.create('recordTimeIntervalType')
 
-	if progDetails['rectype'] == 'Once':
+	if progDetails['rectype'] == 'Record Once':
 		recObj.recordTimeInterval = recordTimeIntervalType.recordOnce
 		recObj.recordDayInterval = recordDayIntervalType.recordThisDay
+	elif progDetails['rectype'] == "Record Season (NEW episodes on this channel)":
+		recObj.onlyNew = true;
+		recObj.recordDayInterval = recordDayIntervalType.recordAnyDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordAnyTimeslot;	
+	elif progDetails['rectype'] == "Record Season (All episodes on this channel)":
+		recObj.recordDayInterval = recordDayIntervalType.recordAnyDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordAnyTimeslot;
+	elif progDetails['rectype'] == "Record Season (Daily, this timeslot)":
+		recObj.recordDayInterval =  recordDayIntervalType.recordAnyDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordThisTimeslot;
+	elif progDetails['rectype'] == "Record Season (Weekly, this timeslot)":
+		recObj.recordDayInterval =  recordDayIntervalType.recordThisDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordThisTimeslot;
+	elif progDetails['rectype'] == "Record Season (Monday-Friday, this timeslot)":
+		recObj.recordDayInterval =  recordDayIntervalType.recordSpecificDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordThisTimeslot;
+		recObj.dayMonday = true;
+		recObj.dayTuesday = true;
+		recObj.dayWednesday = true;
+		recObj.dayThursday = true;
+		recObj.dayFriday = true;
+	elif progDetails['rectype'] == "Record Season (Weekends, this timeslot)":
+		recObj.recordDayInterval =  recordDayIntervalType.recordSpecificDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordThisTimeslot;
+		recObj.daySaturday = true;
+		recObj.daySunday = true;
+	elif progDetails['rectype'] == "Record All Episodes, All Channels":
+		recObj.allChannels = true;
+		recObj.recordDayInterval = recordDayIntervalType.recordAnyDay;
+		recObj.recordTimeInterval = recordTimeIntervalType.recordAnyTimeslot;
 	else:
-		recObj.recordTimeInterval = recordTimeIntervalType.recordThisTimeslot
-		recObj.recordDayInterval = recordDayIntervalType.recordAnyDay
-	
-	recObj.allChannels = "false"
+		print "Unknown rectype"
+		return False
 
 	recObj.pre_padding_min = progDetails['prepadding']
 	recObj.post_padding_min = progDetails['postpadding']
@@ -762,7 +813,6 @@ class GBPVR_Connect:
   ######################################################################################################
   def cancelRecording(self, userid, password, progDetails):
 	import suds.client
-	
 	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
 	
 	client = suds.client.Client(url,cache=None)
@@ -773,11 +823,10 @@ class GBPVR_Connect:
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
-	print progDetails['status']
-	
-	if progDetails['status'].lower() == "recurring":
+
+	if progDetails['rectype'].lower() == "recurring" or progDetails['status'].lower() == "recurring":
 		debug("Cancelling")
-		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
+		ret_soap = client.service.cancelRecurring(progDetails['recording_oid'], soapheaders=authObj)
 	elif progDetails['status'].lower() == "pending":
 		debug("Cancelling")
 		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
@@ -923,11 +972,17 @@ class GBPVR_Connect:
 		theDict['channel'] = self.channels[str(theDict['channel_oid'])]
 	else:
 		theDict['channel'] = "Unknown"
-	if rec.Status == 'Recuring':
+	if rec.Status == 'Recuyring':
 		theDict['rectype'] = prog.recordingType
 	else:
 		theDict['rectype'] = self.SCHEDULE_ONCE
-        
+	if prog.HasSchedule:
+		if rec.RecordingFileName is not None:
+			theDict['directory'] = rec.RecordingFileName[1:-1]
+		else:
+			theDict['directory'] = "Default"
+	else:
+		theDict['directory'] = ""
 	return theDict
 
   ######################################################################################################
@@ -980,10 +1035,11 @@ class GBPVR_Connect:
 
 	if prog.HasSchedule is True:
 		theDict['priority'] = rec.Priority
-		if rec.Status == 'Recuring':
+		if rec.Status == 'Recurring':
 			theDict['rectype'] = prog.recordingType
 		else:
 			theDict['rectype'] = self.SCHEDULE_ONCE
+		theDict['directory'] = rec.RecordingFileName[1:-1]
 		theDict['status'] = rec.Status
 		theDict['recording_oid'] = rec.OID
 	else:
@@ -1001,8 +1057,7 @@ class GBPVR_Connect:
 	if str(theDict['channel_oid']) in self.channels:
 		theDict['channel'] = self.channels[str(theDict['channel_oid'])][0]
 	else:
-		theDict['channel'] = "Unknown"        
-
+		theDict['channel'] = "Unknown" 
 	return theDict
 
 
@@ -1024,6 +1079,10 @@ class GBPVR_Connect:
 	#todo fix Rules display
 	rules = rec.RulesXmlDoc.Rules
 	theDict['desc'] = str(rules)
+	try:
+		theDict['directory'] = rules.RecordingDirectoryID[1:-1]
+	except:
+		theDict['directory'] = "Default"
 
 	theDict['subtitle'] = ""
 	
@@ -1044,7 +1103,10 @@ class GBPVR_Connect:
 		theDict['channel'] = "Unknown"
 
 	theDict['genres'] = ""
-
+	theDict['recquality'] = rec.Quality
+	theDict['prepadding'] = rec.PrePadding
+	theDict['postpadding'] = rec.PostPadding
+	theDict['maxrecs'] = rec.MaxRecordings
 	return theDict
 
   ######################################################################################################
@@ -1159,6 +1221,12 @@ class GBPVR_Connect:
 		dict['status'] = rec.Status
 		if rec.Status == "Completed" or rec.Status == "In-Progress":
 			dict['filename'] = rec.RecordingFileName
+			dict['directory'] = None
+		else:
+			if rec.RecordingFileName is not None:
+				dict['directory'] = rec.RecordingFileName[1:-1]
+			else:
+				dict['directory'] = "Default"
 		dict['recording_oid'] = rec.OID
 		dict['rectype'] = rec.Type
 		dict['recday'] = rec.Day
@@ -1169,7 +1237,7 @@ class GBPVR_Connect:
 		dict['priority'] = rec.Priority
 	else:
 		dict['status'] = ""
-		dict['recording_oid'] = ""
+		dict['recording_oid'] = 0
 		dict['rectype'] = ""
 		dict['recday'] = ""
 		dict['recquality'] = ""
@@ -1177,6 +1245,8 @@ class GBPVR_Connect:
 		dict['postpadding'] = ""
 		dict['maxrecs'] = ""
 		dict['priority'] = ""
+		dict['directory'] = ""
+	
 	dict['genres'] = []
 	try:
 		dict['genres'] = ""

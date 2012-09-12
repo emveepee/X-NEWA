@@ -62,20 +62,20 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 		
 		self.placeFiller = self.getControl(7777)
 		
-		self.qualityControl = self.getControl(201)
+		self.scheduleType = self.getControl(201)
 		self.prePadding = self.getControl(202)
 		self.postPadding = self.getControl(203)
-		self.extendTime = self.getControl(204)
-		
-		self.scheduleType = self.getControl(205)
+		self.recDirId = self.getControl(204)
+		self.extendTime = self.getControl(205)
 		self.timeSlot = self.getControl(206)
 		self.keepRecs = self.getControl(207)
 		self.priority = self.getControl(208)
-		
+		self.priority.setVisible(False)
+		self.qualityControl = self.getControl(205)
 		self.saveButton = self.getControl(250)
 		self.deleteButton = self.getControl(251)
 		self.recordButton = self.getControl(252)
-		self.cancelButton = self.getControl(253)
+		self.closeButton = self.getControl(253)
 		self.playButton = self.getControl(254)
 		self.playButton.setVisible(False)
 				
@@ -90,14 +90,15 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.close() 
 
 	def goRecord(self):
-		self.detailData['rectype'] = 'Once'
+		#self.detailData['rectype'] = 'Once'
 		self.detailData['status'] = "Pending"
-		self.detailData['recquality'] = "Medium"
-		self.detailData['prepadding'] = "4"
-		self.detailData['postpadding'] = "10"
-		self.detailData['rectype'] = "Once"
+		self.detailData['recquality'] = "High"
+		self.detailData['prepadding'] = "2"
+		self.detailData['postpadding'] = "1"
+		self.detailData['rectype'] = "Record Once"
 		self.detailData['maxrecs'] = "0"
 		self.detailData['recording_oid'] = 0
+		self.detailData['directory'] = "Default"
 		self._updateView()
 
 	def error_message(self):
@@ -106,8 +107,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 
 	def onClick(self, controlId):
 		source = self.getControl(controlId)
-			
-		if self.cancelButton == source:
+		if self.closeButton == source:
 			self.close()
 		elif self.recordButton == source:
 			self.goRecord()
@@ -142,11 +142,19 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			else:
 					xbmcgui.Dialog().ok('Sorry', 'Something went wrong!!')
 		elif self.scheduleType == source:
+			self.detailData['rectype']
 			if self.detailData['recording_oid'] == 0: # Only for new recording
-					self.detailData['rectype'] = self._pickFromList("Select recording type", ["Once", "Season"], self.detailData['rectype'])
+					self.detailData['rectype'] = self._pickFromList("Select recording type", ["Record Once",
+                    "Record Season (NEW episodes on this channel)",
+                    "Record Season (All episodes on this channel)",
+                    "Record Season (Daily, this timeslot)",
+                    "Record Season (Weekly, this timeslot)",
+                    "Record Season (Monday-Friday, this timeslot)",
+                    "Record Season (Weekends, this timeslot)",
+                    "Record All Episodes, All Channels"], self.detailData['rectype'])
 					self._updateView()
 		elif self.qualityControl == source:
-			self.detailData['recquality'] = self._pickFromList("Select recording quality", ["High", "Medium", "Low", "Custom1", "Custom2"], self.detailData['recquality'])
+			self.detailData['recquality'] = self._pickFromList("Select recording quality", ["Best", "Better", "Best", "Default"], self.detailData['recquality'])
 			self._updateView()
 		elif self.prePadding == source:
 			self.detailData['prepadding'] = str(self._getNumber("Select prepadding minutes", self.detailData['prepadding'], 0, 30))
@@ -160,22 +168,31 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 		elif self.keepRecs == source:
 			self.detailData['maxrecs'] = str(self._getNumber("Select recordings to keep (0 means all)", self.detailData['maxrecs'], 0, 30))
 			self._updateView()
-		elif self.playButton:
+		elif self.recDirId == source:
+			self.detailData['directory'] = self._pickFromList("Recording Directory", self.gbpvr.RecDirs, self.detailData['directory'])
+			self._updateView()
+		elif self.playButton == source:
 			import xbmcgui,xbmc
+			self.urly = self.gbpvr.getURL()
 			if self.detailData.has_key('filename') == False:
 				self.channelIcon = self.fanart.getChannelIcon(self.detailData['channel'][0])
 				if self.channelIcon is not None:
-					listitem = xbmcgui.ListItem(self.detailData['title'],thumbnailImage=self.channelIcon)
-					listitem.setInfo('video', {'Title': self.detailData['title'] +":"+self.detailData['subtitle'], 'Genre': 'Comedy'})
+					listitem = xbmcgui.ListItem(self.detailData["title"],  thumbnailImage=self.channelIcon)
+					infolabels={ "Title": self.detailData['title']  }
+					listitem.setInfo( type="Video", infoLabels=infolabels )
 				else:
-					listitem = xbmcgui.ListItem(self.detailData['title'])
-				
-				self.urly = self.gbpvr.getURL()
-
+					listitem = xbmcgui.ListItem(self.detailData['title'])				
 				url = self.urly + "/live?channel=" + self.detailData['channel'][1]
 			else:
-				listitem = xbmcgui.ListItem(self.detailData['title'])
-				url = self.detailData['filename']
+				listitem = xbmcgui.ListItem(self.detailData['title'],"")
+				infolabels={ "Title": self.detailData['title'] , 'plot': self.detailData['desc'] }
+				listitem.setInfo( type="Video", infoLabels=infolabels )
+				import os.path
+				if os.path.isfile(self.detailData['filename']):
+					url = self.detailData['filename']
+				else:
+					url = self.urly + "/live?recording=" + str(self.detailData['recording_oid'])
+
 			print "Playing " + url
 			xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem)
 			self.close();
@@ -232,7 +249,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 		
 		self.statusLabel.setVisible(True)
 		self.statusLabel.setLabel(self.detailData['status'])
-		if self.detailData['rectype'] == 'Season':
+		if self.detailData['rectype'] !="" and self.detailData['rectype'] != 'Record Once' and self.detailData['rectype'] != "Single"  and self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress":
 			self.win.setProperty('heading', 'Recurring Recording Properties')
 			self.subtitleLabel.setVisible(False)
 			self.timeLabel.setVisible(False)
@@ -252,8 +269,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.timeSlot.setVisible(False)
 			self.keepRecs.setLabel( "Recordings to Keep:", label2=str(self.detailData['maxrecs']) )
 			self.keepRecs.setVisible(True)
-			self.priority.setLabel( "Priority:", label2=str(self.detailData['priority']) )
-			self.priority.setVisible(True)
+			self.recDirId.setLabel( "Directory:", label2=str(self.detailData['directory']) )
+			self.recDirId.setVisible(True)
 			
 			self.placeFiller.setVisible(False)
 			
@@ -264,10 +281,10 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			else:
 				self.deleteButton.setVisible(False)
 
-			self.cancelButton.setVisible(True)			
-			xbmcgui.WindowXML.setFocus(self, self.qualityControl)
+			self.closeButton.setVisible(True)			
+			xbmcgui.WindowXML.setFocus(self, self.scheduleType)
 		
-		elif self.detailData['rectype'] == 'Once' or self.detailData['rectype'] == 'Single':
+		elif (self.detailData['rectype'] == 'Record Once' or self.detailData['rectype'] == 'Single')  and self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress":
 			self.win.setProperty('heading', 'Recording Properties')
 			
 			self.subtitleLabel.setVisible(True)
@@ -279,21 +296,22 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.descLabel.setVisible(True)
 			self.descLabel.setText(self.detailData['desc'])
 			self.showSeperator.setVisible(True)
-		
 			if (self.detailData['status'] == "Pending"):
-				if self.detailData['recording_oid'] > 0:
+				if self.detailData['status'] == "In-Progress":
 					self.extendTime.setLabel( "Extend End-Time:", label2='Unknown' )
 					self.extendTime.setVisible(True)
 				else:
 					self.extendTime.setVisible(False)
-					self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
-					self.qualityControl.setVisible(True)
+					self.scheduleType.setLabel( "Schedule Type:", label2=self.detailData['rectype'] )
+					self.scheduleType.setVisible(True)
 					self.prePadding.setLabel( "Pre-Padding (min.):", label2=self.detailData['prepadding'] )
 					self.prePadding.setVisible(True)
 					self.postPadding.setLabel( "Post-Padding (min.):", label2=self.detailData['postpadding'] )
 					self.postPadding.setVisible(True)
-					self.scheduleType.setLabel( "Schedule Type:", label2=self.detailData['rectype'] )
-					self.scheduleType.setVisible(True)
+					self.recDirId.setLabel( "Directory:", label2=str(self.detailData['directory']) )
+					self.recDirId.setVisible(True)
+					self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
+					self.qualityControl.setVisible(True)
 					self.saveButton.setVisible(True)		
 			else:
 				self.extendTime.setVisible(False)
@@ -305,9 +323,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			
 			self.timeSlot.setVisible(False)
 			self.keepRecs.setVisible(False)
-			self.priority.setVisible(False)
 			
-			self.placeFiller.setVisible(True)
+			#self.placeFiller.setVisible(True)
 			
 			self.recordButton.setVisible(False)
 			if self.detailData['recording_oid'] > 0:
@@ -315,11 +332,14 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			else:
 				self.deleteButton.setVisible(False)
 			
-			self.cancelButton.setVisible(True)		
-			xbmcgui.WindowXML.setFocus(self, self.qualityControl)
+			self.closeButton.setVisible(True)
+
+			if self.detailData['recording_oid'] > 0:
+				xbmcgui.WindowXML.setFocus(self, self.closeButton)
+			else:
+				xbmcgui.WindowXML.setFocus(self, self.scheduleType)
 		else:
 			self.win.setProperty('heading', 'Program Details')
-			
 			self.subtitleLabel.setVisible(True)
 			self.subtitleLabel.setLabel(self.detailData['subtitle'])
 			self.timeLabel.setVisible(True)
@@ -340,15 +360,19 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.scheduleType.setVisible(False)
 			self.timeSlot.setVisible(False)
 			self.keepRecs.setVisible(False)
-			self.priority.setVisible(False)
+			self.recDirId.setVisible(False)
 			
 			self.placeFiller.setVisible(True)
-			
-			self.recordButton.setVisible(True)
+			if self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress":
+				self.recordButton.setVisible(True)
+				self.deleteButton.setVisible(False)
+			else:
+				self.recordButton.setVisible(False)
+				self.deleteButton.setVisible(True)
 			self.saveButton.setVisible(False)
-			self.deleteButton.setVisible(False)
-			self.cancelButton.setVisible(True)
-					
+			self.closeButton.setVisible(True)
+
+			xbmcgui.WindowXML.setFocus(self, self.closeButton)
 		self.win.setProperty('busy', 'false')
 
 	def _pickFromList(self, title, choices, current):

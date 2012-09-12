@@ -733,12 +733,30 @@ class EpgWindow(xbmcgui.WindowXML):
 				myDlg.create("Retrieving NextPVR data ...", "Please wait ...")
 				myDlg.update(33, "Downloading ...")
 
-				cstart = tNew.strftime("%Y-%m-%dT%H:%M:00")
+						# Todo: Get correct times....
+				if time.daylight != 0:
+					tdate1 = tNew + timedelta(seconds=time.altzone)
+				else:
+					tdate1 = tNew + timedelta(seconds=time.timezone)
+				cstart = tdate1.strftime("%Y-%m-%dT%H:%M:00")
 				tNew = tNew + timedelta(hours=self.settings.EPG_RETR_INT)
 				self.EPGEndTime = tNew
+				if time.daylight != 0:
+					tNew = tNew + timedelta(seconds=time.altzone)
+				else:
+					tNew = tNew + timedelta(seconds=time.timezone)
 				cend = tNew.strftime("%Y-%m-%dT%H:%M:00")
+
+				
+
+#				cstart = tNew.strftime("%Y-%m-%dT%H:%M:00")
+#				tNew = tNew + timedelta(hours=self.settings.EPG_RETR_INT)
+				
+				
+#			self.EPGEndTime = tNew
+#				cend = tNew.strftime("%Y-%m-%dT%H:%M:00")
 				if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
-                                        tempData = self.gbpvr.getGuideInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW, cstart, cend)
+                                        tempData = self.gbpvr.getGuideInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW, cstart, cend, self.settings.EPG_GROUP)
                                 else:
                                         return
 				# Combine tempdata and epgdata
