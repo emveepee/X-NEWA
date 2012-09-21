@@ -44,13 +44,14 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
             self.render()
         
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.programsListBox: 
-            self.goEditSchedule()
-        elif source == self.refreshButton:
-            self.render()
-        elif source == self.conflictButton:
-            self.goConflicts()
+		source = self.getControl(controlId)
+		if source == self.programsListBox: 
+			self.goEditSchedule()
+		elif source == self.refreshButton:
+			self.gbpvr.cleanCache('upComing*.p')
+			self.render()
+		elif source == self.conflictButton:
+			self.goConflicts()
              
     def onFocus(self, controlId):
         pass
@@ -71,7 +72,7 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()

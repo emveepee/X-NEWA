@@ -167,7 +167,19 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-            
+
+            <control type="button" id="215">
+                <label>Stream Format</label>
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+                        
             <control type="button" id="299">
                 <label>EPG Settings</label>
                 <width>650</width>

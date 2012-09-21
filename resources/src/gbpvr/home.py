@@ -65,7 +65,7 @@ class HomeWindow(xbmcgui.WindowXML):
                 253 : self.goUpcomingRecordings,
                 254 : self.goSearch,
                 255 : self.goSettings,
-                256 : self.refreshOnInit,
+                256 : self.refreshButton,
 				257 : self.goExit,
                 258 : self.goRecentRecordings
             }
@@ -97,7 +97,7 @@ class HomeWindow(xbmcgui.WindowXML):
     def goRecentDetails(self):
 		import details
 		oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
-		detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R" )
+		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R" )
 		detailDialog.doModal()
 		if detailDialog.shouldRefresh:
 			self.render()
@@ -105,8 +105,8 @@ class HomeWindow(xbmcgui.WindowXML):
     def goUpcomingDetails(self):
 		import details
 
-		oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['program_oid']
-		detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="P")
+		oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['recording_oid']
+		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R")
 		detailDialog.doModal()
 		if detailDialog.shouldRefresh:
 			self.render()
@@ -147,6 +147,11 @@ class HomeWindow(xbmcgui.WindowXML):
 		self.renderUpComing()
 		self.renderRecent()
 		self.renderStats()
+
+    def refreshButton(self):
+		self.gbpvr.cleanOldCache('guideListing-*.p')
+		self.gbpvr.cleanCache('*.p')
+		self.refreshOnInit()
 
     def refreshOnInit(self):
 		self.win.setProperty('busy', 'true')

@@ -43,13 +43,14 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
             self.render()
         
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.programsListBox: 
-            self.goEditSchedule()
-        elif source == self.refreshButton:
-            self.render()
-        elif source == self.conflictButton:
-            self.goConflicts()
+		source = self.getControl(controlId)
+		if source == self.programsListBox: 
+			self.goEditSchedule()
+		elif source == self.refreshButton:
+			self.gbpvr.cleanCache('recentRecordings*.p')
+			self.render()
+		elif source == self.conflictButton:
+			self.goConflicts()
              
     def onFocus(self, controlId):
         pass
@@ -65,7 +66,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.recentData[self.programsListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
@@ -79,21 +80,24 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 			self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
 			previous = None
 			for i, t in enumerate(self.recentData):
-				listItem = xbmcgui.ListItem('Row %d' % i)
-				airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
-				listItem.setProperty('airdate', airdate)
-				listItem.setProperty('title', t['title'])
-				listItem.setProperty('status', t['status'])
-				listItem.setProperty('start', t['start'].strftime("%H:%M"))
-				duration = int((t['end'] - t['start']).seconds / 60)
-				listItem.setProperty('duration', str(duration) )
-				listItem.setProperty('channel', t['channel'][0])
-				if len(t['subtitle']) > 0:
-						listItem.setProperty('description', t['subtitle'] + "; " + t['desc'])
+				if t:
+					listItem = xbmcgui.ListItem('Row %d' % i)
+					airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
+					listItem.setProperty('airdate', airdate)
+					listItem.setProperty('title', t['title'])
+					listItem.setProperty('status', t['status'])
+					listItem.setProperty('start', t['start'].strftime("%H:%M"))
+					duration = int((t['end'] - t['start']).seconds / 60)
+					listItem.setProperty('duration', str(duration) )
+					listItem.setProperty('channel', t['channel'][0])
+					if len(t['subtitle']) > 0:
+							listItem.setProperty('description', t['subtitle'] + "; " + t['desc'])
+					else:
+							listItem.setProperty('description', t['desc'])
+					listItem.setProperty('oid', str(t['program_oid']))
+					listItems.append(listItem)
 				else:
-						listItem.setProperty('description', t['desc'])
-				listItem.setProperty('oid', str(t['program_oid']))
-				listItems.append(listItem)
+					i = i - 1
 
 			self.programsListBox.addItems(listItems)
 		except:

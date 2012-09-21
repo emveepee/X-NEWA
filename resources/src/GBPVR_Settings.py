@@ -24,7 +24,7 @@ class GBPVR_Settings:
   def __init__(self):
 	self.configpath = os.path.join(Addon('script.xbmc.x-newa').getAddonInfo('path'), self.INI_PATH)
 
-	self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8866', 'userid':'admin', 'pw':'password',  'usewol':'No', 'mac':'00:00:00:00:00:00', 'broadcast':'255.255.255.255','scroll_int':'15', 'disp_int':'60', 'retr_int':'2', 'row_h':'75', 'group':'' })
+	self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8866', 'userid':'admin', 'pw':'password',  'usewol':'No', 'mac':'00:00:00:00:00:00', 'broadcast':'255.255.255.255','scroll_int':'15', 'disp_int':'60', 'retr_int':'2', 'row_h':'75', 'group':'', 'stream':'Native' })
 	try:
 		self.config.read(self.configpath)
 	except:
@@ -48,6 +48,7 @@ class GBPVR_Settings:
 		self.EPG_RETR_INT = config.getint("EPG", "retr_int")
 		self.EPG_ROW_HEIGHT = config.getint("EPG", "row_h")
 		self.EPG_GROUP = config.get("EPG", "group")
+		self.GBPVR_STREAM = config.get("NextPVR", "stream")
 	except:
 		handleException()
 
@@ -63,7 +64,8 @@ class GBPVR_Settings:
 		self.config.set("NextPVR", "usewol", self.GBPVR_USEWOL)
 		self.config.set("NextPVR", "mac", self.GBPVR_MAC)
 		self.config.set("NextPVR", "broadcast", self.GBPVR_BROADCAST)
-		
+		self.config.set("NextPVR", "stream", self.GBPVR_STREAM)
+
 		self.config.set("EPG", "scroll_int", self.EPG_SCROLL_INT)
 		self.config.set("EPG", "disp_int", self.EPG_DISP_INT)
 		self.config.set("EPG", "retr_int", self.EPG_RETR_INT)
@@ -109,3 +111,5 @@ class GBPVR_Settings:
 		self.EPG_ROW_HEIGHT = int(val)
 	elif key == "EPG_GROUP":
 		self.EPG_GROUP = val
+	elif key == "GBPVR_STREAM":
+		self.GBPVR_STREAM = val

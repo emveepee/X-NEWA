@@ -43,44 +43,90 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 		self.win = None        
 		self.shouldRefresh = False
 		self.fanart = fanart()
-		print self
 		print repr(self)
         
 	def onInit(self):
-		self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())        
-		self.showImage = self.getControl(302)
-		self.channelImage = self.getControl(305)
-		self.genre1Image = self.getControl(306)
-		self.genre2Image = self.getControl(307)
-		self.genre3Image = self.getControl(308)
-		self.statusLabel = self.getControl(309)
+		self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+		print self.oid_type
+		if self.oid_type !="R" and self.oid_type !="E":
+			self.showImage = self.getControl(302)
+			self.channelImage = self.getControl(305)
+			self.genre1Image = self.getControl(306)
+			self.genre2Image = self.getControl(307)
+			self.genre3Image = self.getControl(308)
+			self.statusLabel = self.getControl(309)
+		else:
+			self.showImage = self.getControl(302)
+			self.channelImage = None
+			self.genre1Image = None
+			self.genre2Image = None
+			self.genre3Image = None
+			self.statusLabel = None
 		
+		
+		self.title = self.getControl(303)
+		self.channel = self.getControl(304)
 		self.subtitleLabel = self.getControl(310)
 		self.timeLabel = self.getControl(311)
 		self.descLabel = self.getControl(312)
-		self.showSeperator = self.getControl(4)
 		
-		self.placeFiller = self.getControl(7777)
+		if self.oid_type !="R" and self.oid_type !="E":		
+			self.showSeperator = self.getControl(4)
+			self.placeFiller = self.getControl(7777)
+			self.prePadding = self.getControl(202)
+			self.postPadding = self.getControl(203)
+			self.recDirId = self.getControl(204)
+			self.extendTime = self.getControl(205)
+			self.timeSlot = self.getControl(206)
+			self.keepRecs = self.getControl(207)
+			self.priority = self.getControl(208)
+			self.priority.setVisible(False)
+			self.qualityControl = self.getControl(205)
+			self.scheduleType = self.getControl(201)
+		else:
+			self.scheduleType = None
+			self.qualityControl = None
+			self.prePadding = None
+			self.postPadding = None
+			self.recDirId = None
+			self.extendTime = None
+			self.timeSlot = None
+			self.keepRecs = None
+			self.priority = None
+
+		if self.oid_type !="R"  and self.oid_type !="E":
+			self.saveButton = self.getControl(250)
+			self.resumeButton = None
+			if self.oid_type !="F":
+				self.recordButton = self.getControl(252)
+				self.quickrecordButton = None
+			else:
+				self.recordButton = self.getControl(252)
+				self.quickrecordButton = None
+		else:
+			self.saveButton = None
+			self.recordButton =  self.getControl(260)
+			self.scheduleType = None
+			self.resumeButton = self.getControl(258)
+			self.unwatchButton = self.getControl(259)
+			self.archiveButton = self.getControl(257)
+			self.archiveButton.setVisible(False)
+			if self.oid_type == "E":
+				self.recordButton = self.getControl(260)
+				self.quickrecordButton = self.getControl(252)
+			else:
+				self.quickrecordButton = self.getControl(252)
 		
-		self.scheduleType = self.getControl(201)
-		self.prePadding = self.getControl(202)
-		self.postPadding = self.getControl(203)
-		self.recDirId = self.getControl(204)
-		self.extendTime = self.getControl(205)
-		self.timeSlot = self.getControl(206)
-		self.keepRecs = self.getControl(207)
-		self.priority = self.getControl(208)
-		self.priority.setVisible(False)
-		self.qualityControl = self.getControl(205)
-		self.saveButton = self.getControl(250)
 		self.deleteButton = self.getControl(251)
-		self.recordButton = self.getControl(252)
 		self.closeButton = self.getControl(253)
 		self.playButton = self.getControl(254)
 		self.playButton.setVisible(False)
 				
 		self._getDetails()
-		self._updateView()
+		if self.oid_type =="P":
+			self.goRecord()
+		else:
+			self._updateView()
     
 	def onFocus(self, controlId):
 		pass
@@ -90,16 +136,20 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.close() 
 
 	def goRecord(self):
-		#self.detailData['rectype'] = 'Once'
-		self.detailData['status'] = "Pending"
-		self.detailData['recquality'] = "High"
-		self.detailData['prepadding'] = "2"
-		self.detailData['postpadding'] = "1"
-		self.detailData['rectype'] = "Record Once"
-		self.detailData['maxrecs'] = "0"
-		self.detailData['recording_oid'] = 0
-		self.detailData['directory'] = "Default"
-		self._updateView()
+		print self.oid_type
+		if self.oid_type =="E":		
+			self.returnvalue = "PICK"
+			self.close("PICK")
+		else:
+			self.detailData['status'] = "Pending"
+			self.detailData['recquality'] = "High"
+			self.detailData['prepadding'] = "2"
+			self.detailData['postpadding'] = "1"
+			self.detailData['rectype'] = "Record Once"
+			self.detailData['maxrecs'] = "0"
+			self.detailData['recording_oid'] = 0
+			self.detailData['directory'] = "Default"
+			self._updateView()
 
 	def error_message(self):
 		dialog = xbmcgui.Dialog()
@@ -111,7 +161,18 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.close()
 		elif self.recordButton == source:
 			self.goRecord()
-		elif self.saveButton == source:
+			self.close()
+		elif self.saveButton == source or self.quickrecordButton == source:
+			if self.quickrecordButton == source:
+				self.detailData['status'] = "Pending"
+				self.detailData['recquality'] = "High"
+				self.detailData['prepadding'] = "2"
+				self.detailData['postpadding'] = "1"
+				self.detailData['rectype'] = "Record Once"
+				self.detailData['maxrecs'] = "0"
+				self.detailData['recording_oid'] = 0
+				self.detailData['directory'] = "Default"
+
 			if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
 				try:
 					if self.detailData['recording_oid'] == 0:
@@ -171,9 +232,10 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 		elif self.recDirId == source:
 			self.detailData['directory'] = self._pickFromList("Recording Directory", self.gbpvr.RecDirs, self.detailData['directory'])
 			self._updateView()
-		elif self.playButton == source:
+		elif self.playButton == source or self.resumeButton == source:
 			import xbmcgui,xbmc
 			self.urly = self.gbpvr.getURL()
+			isVlc = False
 			if self.detailData.has_key('filename') == False:
 				self.channelIcon = self.fanart.getChannelIcon(self.detailData['channel'][0])
 				if self.channelIcon is not None:
@@ -181,21 +243,79 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 					infolabels={ "Title": self.detailData['title']  }
 					listitem.setInfo( type="Video", infoLabels=infolabels )
 				else:
-					listitem = xbmcgui.ListItem(self.detailData['title'])				
+					listitem = xbmcgui.ListItem(self.detailData['title'])
+				
 				url = self.urly + "/live?channel=" + self.detailData['channel'][1]
+				if self.settings.GBPVR_STREAM == 'VLC':
+					# vlc streaming test
+					print self.detailData['program_oid']
+					if self.gbpvr.startVlcObjectByEPGEventOID(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData['program_oid']):
+						url = self.gbpvr.getVlcURL()
+						isVlc = True
+                    
 			else:
-				listitem = xbmcgui.ListItem(self.detailData['title'],"")
+				self.showIcon = self.fanart.getShowIcon(self.detailData['title'])
+				if self.showIcon is not None:
+					listitem = xbmcgui.ListItem(self.detailData['title'],  thumbnailImage=self.showIcon)
+				else:
+					listitem = xbmcgui.ListItem(self.detailData['title'],"")
 				infolabels={ "Title": self.detailData['title'] , 'plot': self.detailData['desc'] }
 				listitem.setInfo( type="Video", infoLabels=infolabels )
+				listitem.setInfo( type="Video", infoLabels=infolabels )
+				if self.resumeButton == source:
+					bookmarkSecs = self.detailData['resume']
+					#import datetime
+					#formatSeconds = str(datetime.timedelta(seconds=bookmarkSecs))
+					#question = 'Resume from %s?' % formatSeconds
+					#resume = xbmcgui.Dialog().yesno(self.detailData['title'],'', question,'','Resume','Beginning')
+					#print resume
+					#if resume== 0:
+					listitem.setProperty('startoffset',str(bookmarkSecs))
+
 				import os.path
-				if os.path.isfile(self.detailData['filename']):
-					url = self.detailData['filename']
-				else:
-					url = self.urly + "/live?recording=" + str(self.detailData['recording_oid'])
+				url = self.detailData['filename']
+				print url
+				if os.path.isfile(url) == False:
+					if self.settings.GBPVR_STREAM == 'Native':
+						url = self.urly + "/live?recording=" +str(self.detailData['recording_oid'])
+					elif self.settings.GBPVR_STREAM == 'Direct':
+						import urllib
+						f1 = urllib.quote(url)
+						url = 'http://172.16.3.2:5050/' + f1
+					elif self.settings.GBPVR_STREAM == 'VLC':
+						# vlc streaming test
+						if self.gbpvr.startVlcObjectByScheduleOID(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData['recording_oid']):
+							url = self.gbpvr.getVlcURL()
+							isVlc = True
 
 			print "Playing " + url
-			xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem)
+			#XBMCPlayer( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem)
+
 			self.close();
+			player = XBMCPlayer(xbmc.PLAYER_CORE_MPLAYER)
+			player.play( url, listitem )
+#        ...		
+			self._lastPos = 0
+			self._duration = 0
+			while player.is_active:
+				if player.is_started:
+					try:
+						self._lastPos = player.getTime()
+						self._duration = player.getTotalTime()
+					except:
+						print "could net get last"
+
+				player.sleep(100)
+
+
+			if self.detailData.has_key('filename') == True:
+				if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+					retval = self.gbpvr.setPlaybackPositiontObject(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData, self._lastPos, self._duration )
+			if isVlc == True:
+				if self.gbpvr.stopVlcStreamObject(self.settings.GBPVR_USER, self.settings.GBPVR_PW):
+					print "vlc stopped"
+
+			print "ended"
 
 	def _getDetails(self):
 		self.win.setProperty('busy', 'true')
@@ -207,22 +327,29 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.close()
 		self.win.setProperty('busy', 'false')
 
-	def _updateView(self):        
+	def _updateView(self):  
+		
 		self.win.setProperty('busy', 'true')
-		
-		self.win.setProperty('title', self.detailData['title'])
-		self.win.setProperty('channel', self.detailData['channel'][0])
-		self.win.setProperty('genre', str(self.detailData['genres']))
-		
-		self.channelIcon = self.fanart.getChannelIcon(self.detailData['channel'][0])
-		if self.channelIcon is not None:
-			self.channelImage.setImage(self.channelIcon)
+		self.title.setLabel(self.detailData['title'])		
+		self.channel.setLabel(self.detailData['channel'][0])
+
+		#self.win.setProperty('title', self.detailData['title'])
+		#self.win.setProperty('channel', self.detailData['channel'][0])		
+		#if self.heading is not None:
+		#	self.channel.setLabel(self.detailData['channel'][0])
+
+		if self.oid_type!="R" and self.oid_type !="E":		
+			self.win.setProperty('genre', str(self.detailData['genres']))
+			self.channelIcon = self.fanart.getChannelIcon(self.detailData['channel'][0])
+			if self.channelIcon is not None:
+				self.channelImage.setImage(self.channelIcon)
 		
 		if self.epg == True:
 			from datetime import datetime
 			if datetime.now() >= self.detailData['start'] and datetime.now() < self.detailData['end']:
 				self.playButton.setVisible(True)
-				self.playButton.setLabel("Watch")
+				if self.detailData['status'] != "In-Progress":
+					self.playButton.setLabel("Watch")
 		elif self.detailData.has_key('filename') == False:
 			self.playButton.setVisible(False)
 		else:
@@ -231,58 +358,89 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 		self.showIcon = self.fanart.getShowIcon(self.detailData['title'])
 		if self.showIcon is not None:
 			self.showImage.setImage(self.showIcon)
+			
+		if self.oid_type=="NOT USED":
+			if len(self.detailData['genres']) > 0:
+				self.genreIcon = self.fanart.getGenreIcon(self.detailData['genres'][0])
+				if self.genreIcon is not None:
+					self.genre1Image.setImage(self.genreIcon)
+			
+			if len(self.detailData['genres']) > 1:
+				self.genreIcon = self.fanart.getGenreIcon(self.detailData['genres'][1])
+				if self.genreIcon is not None:
+					self.genre2Image.setImage(self.genreIcon)
+			
+			if len(self.detailData['genres']) > 2:
+				self.genreIcon = self.fanart.getGenreIcon(self.detailData['genres'][2])
+				if self.genreIcon is not None:
+					self.genre3Image.setImage(self.genreIcon)
+			
+		if self.statusLabel is not None:
+			self.statusLabel.setVisible(True)
+			self.statusLabel.setLabel(self.detailData['status'])
 		
-		if len(self.detailData['genres']) > 0:
-			self.genreIcon = self.fanart.getGenreIcon(self.detailData['genres'][0])
-			if self.genreIcon is not None:
-				self.genre1Image.setImage(self.genreIcon)
+		self.detailData['status']
+		print self.detailData['rectype']
 		
-		if len(self.detailData['genres']) > 1:
-			self.genreIcon = self.fanart.getGenreIcon(self.detailData['genres'][1])
-			if self.genreIcon is not None:
-				self.genre2Image.setImage(self.genreIcon)
-		
-		if len(self.detailData['genres']) > 2:
-			self.genreIcon = self.fanart.getGenreIcon(self.detailData['genres'][2])
-			if self.genreIcon is not None:
-				self.genre3Image.setImage(self.genreIcon)
-		
-		self.statusLabel.setVisible(True)
-		self.statusLabel.setLabel(self.detailData['status'])
 		if self.detailData['rectype'] !="" and self.detailData['rectype'] != 'Record Once' and self.detailData['rectype'] != "Single"  and self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress":
 			self.win.setProperty('heading', 'Recurring Recording Properties')
-			self.subtitleLabel.setVisible(False)
-			self.timeLabel.setVisible(False)
-			self.descLabel.setVisible(False)
-			self.showSeperator.setVisible(False)
-			self.extendTime.setVisible(False)
-		
-			self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
-			self.qualityControl.setVisible(True)
-			self.prePadding.setLabel( "Pre-Padding (min.):", label2=self.detailData['prepadding'] )
-			self.prePadding.setVisible(True)
-			self.postPadding.setLabel( "Post-Padding (min.):", label2=self.detailData['postpadding'] )
-			self.postPadding.setVisible(True)
-			self.scheduleType.setLabel( "Schedule Type:", label2=self.detailData['rectype'] )
-			self.scheduleType.setVisible(True)
-			#self.timeSlot.setLabel( "Timeslot:", label2=str(self.detailData['recdate']) )
-			self.timeSlot.setVisible(False)
-			self.keepRecs.setLabel( "Recordings to Keep:", label2=str(self.detailData['maxrecs']) )
-			self.keepRecs.setVisible(True)
-			self.recDirId.setLabel( "Directory:", label2=str(self.detailData['directory']) )
-			self.recDirId.setVisible(True)
+			self.subtitleLabel.setVisible(True)
+			self.subtitleLabel.setLabel(self.detailData['subtitle'])
+			self.timeLabel.setVisible(True)
+			ctmp = self.detailData['start'].strftime('%a, %b %d %H:%M') + " - " + self.detailData['end'].strftime('%H:%M')
+			ctmp = ctmp + " (" + str(int((self.detailData['end'] - self.detailData['start']).seconds / 60)) + " min.)"
+			self.timeLabel.setLabel(ctmp)
+			self.descLabel.setHeight(220)
+			self.descLabel.setVisible(True)
+			self.descLabel.setText(self.detailData['desc'])
+
+			if self.oid_type!="R"  and self.oid_type !="E":
+				self.subtitleLabel.setVisible(False)
+				self.timeLabel.setVisible(False)
+				self.descLabel.setVisible(False)
+
+				self.showSeperator.setVisible(False)
+				self.extendTime.setVisible(False)
 			
-			self.placeFiller.setVisible(False)
+				self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
+				self.qualityControl.setVisible(True)
+				self.prePadding.setLabel( "Pre-Padding (min.):", label2=self.detailData['prepadding'] )
+				self.prePadding.setVisible(True)
+				self.postPadding.setLabel( "Post-Padding (min.):", label2=self.detailData['postpadding'] )
+				self.postPadding.setVisible(True)
+				self.scheduleType.setLabel( "Schedule Type:", label2=self.detailData['rectype'] )
+				self.scheduleType.setVisible(True)
+				#self.timeSlot.setLabel( "Timeslot:", label2=str(self.detailData['recdate']) )
+				self.timeSlot.setVisible(False)
+				self.keepRecs.setLabel( "Recordings to Keep:", label2=str(self.detailData['maxrecs']) )
+				self.keepRecs.setVisible(True)
+				self.recDirId.setLabel( "Directory:", label2=str(self.detailData['directory']) )
+				self.recDirId.setVisible(True)
+				
+				self.placeFiller.setVisible(False)
+				self.saveButton.setVisible(True)
+
+			else:				
+				#self.placeFiller.setVisible(True)
+				self.quickrecordButton.setVisible(False)
+			
+				print self.detailData['resume']
+				if self.oid_type !="E" and self.detailData['resume'] > 0:
+					if (self.detailData['duration'] - self.detailData['resume']) < 10:
+						self.unwatchButton.setVisible(True)
+						self.resumeButton.setVisible(False)
+					else:
+						self.unwatchButton.setVisible(False)
+						self.resumeButton.setVisible(False)
+				else:
+					self.unwatchButton.setVisible(False)
+					self.resumeButton.setVisible(False)
 			
 			self.recordButton.setVisible(False)
-			self.saveButton.setVisible(True)
-			if self.detailData['recording_oid'] > 0:
-				self.deleteButton.setVisible(True)
-			else:
-				self.deleteButton.setVisible(False)
+			self.deleteButton.setVisible(True)
 
-			self.closeButton.setVisible(True)			
-			xbmcgui.WindowXML.setFocus(self, self.scheduleType)
+			self.closeButton.setVisible(True)	  
+			xbmcgui.WindowXML.setFocus(self, self.closeButton)
 		
 		elif (self.detailData['rectype'] == 'Record Once' or self.detailData['rectype'] == 'Single')  and self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress":
 			self.win.setProperty('heading', 'Recording Properties')
@@ -295,42 +453,54 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.timeLabel.setLabel(ctmp)
 			self.descLabel.setVisible(True)
 			self.descLabel.setText(self.detailData['desc'])
-			self.showSeperator.setVisible(True)
-			if (self.detailData['status'] == "Pending"):
-				if self.detailData['status'] == "In-Progress":
-					self.extendTime.setLabel( "Extend End-Time:", label2='Unknown' )
-					self.extendTime.setVisible(True)
+
+			if self.oid_type!="R"  and self.oid_type !="E":
+				self.showSeperator.setVisible(True)
+				if (self.detailData['status'] == "Pending"):
+					if self.detailData['status'] == "In-Progress":
+						self.extendTime.setLabel( "Extend End-Time:", label2='Unknown' )
+						self.extendTime.setVisible(True)
+					else:
+						self.extendTime.setVisible(False)
+						self.scheduleType.setLabel( "Schedule Type:", label2=self.detailData['rectype'] )
+						self.scheduleType.setVisible(True)
+						self.prePadding.setLabel( "Pre-Padding (min.):", label2=self.detailData['prepadding'] )
+						self.prePadding.setVisible(True)
+						self.postPadding.setLabel( "Post-Padding (min.):", label2=self.detailData['postpadding'] )
+						self.postPadding.setVisible(True)
+						self.recDirId.setLabel( "Directory:", label2=str(self.detailData['directory']) )
+						self.recDirId.setVisible(True)
+						self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
+						self.qualityControl.setVisible(True)
+						self.saveButton.setVisible(True)		
 				else:
 					self.extendTime.setVisible(False)
-					self.scheduleType.setLabel( "Schedule Type:", label2=self.detailData['rectype'] )
-					self.scheduleType.setVisible(True)
-					self.prePadding.setLabel( "Pre-Padding (min.):", label2=self.detailData['prepadding'] )
-					self.prePadding.setVisible(True)
-					self.postPadding.setLabel( "Post-Padding (min.):", label2=self.detailData['postpadding'] )
-					self.postPadding.setVisible(True)
-					self.recDirId.setLabel( "Directory:", label2=str(self.detailData['directory']) )
-					self.recDirId.setVisible(True)
-					self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
-					self.qualityControl.setVisible(True)
-					self.saveButton.setVisible(True)		
-			else:
-				self.extendTime.setVisible(False)
-				self.qualityControl.setVisible(False)
-				self.prePadding.setVisible(False)
-				self.postPadding.setVisible(False)
-				self.saveButton.setVisible(False)
-				self.scheduleType.setVisible(False)
+					self.qualityControl.setVisible(False)
+					self.prePadding.setVisible(False)
+					self.postPadding.setVisible(False)
+					self.saveButton.setVisible(False)
+					self.scheduleType.setVisible(False)
+				
+				self.timeSlot.setVisible(False)
+				self.keepRecs.setVisible(False)
+			else:				
+				#self.placeFiller.setVisible(True)
+				self.quickrecordButton.setVisible(False)
 			
-			self.timeSlot.setVisible(False)
-			self.keepRecs.setVisible(False)
-			
-			#self.placeFiller.setVisible(True)
-			
+				print self.detailData['resume']
+				if self.oid_type !="E" and self.detailData['resume'] > 0:
+					if (self.detailData['duration'] - self.detailData['resume']) < 60:
+						self.unwatchButton.setVisible(True)
+						self.resumeButton.setVisible(False)
+					else:
+						self.unwatchButton.setVisible(False)
+						self.resumeButton.setVisible(True)
+				else:
+					self.unwatchButton.setVisible(False)
+					self.resumeButton.setVisible(False)
+
 			self.recordButton.setVisible(False)
-			if self.detailData['recording_oid'] > 0:
-				self.deleteButton.setVisible(True)
-			else:
-				self.deleteButton.setVisible(False)
+			self.deleteButton.setVisible(True)
 			
 			self.closeButton.setVisible(True)
 
@@ -349,28 +519,49 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.descLabel.setHeight(220)
 			self.descLabel.setVisible(True)
 			self.descLabel.setText(self.detailData['desc'])
-			x, y = self.showSeperator.getPosition()
-			self.showSeperator.setPosition(x, y+220)
-			self.showSeperator.setVisible(True)
-			
-			self.qualityControl.setVisible(False)
-			self.prePadding.setVisible(False)
-			self.postPadding.setVisible(False)
-			self.extendTime.setVisible(False)
-			self.scheduleType.setVisible(False)
-			self.timeSlot.setVisible(False)
-			self.keepRecs.setVisible(False)
-			self.recDirId.setVisible(False)
-			
-			self.placeFiller.setVisible(True)
+
+			if self.oid_type!="R"  and self.oid_type !="E":
+				x, y = self.showSeperator.getPosition()
+				self.showSeperator.setPosition(x, y+220)
+				self.showSeperator.setVisible(True)
+				
+				self.qualityControl.setVisible(False)
+				self.prePadding.setVisible(False)
+				self.postPadding.setVisible(False)
+				self.extendTime.setVisible(False)
+				self.scheduleType.setVisible(False)
+				self.timeSlot.setVisible(False)
+				self.keepRecs.setVisible(False)
+				self.recDirId.setVisible(False)
+				self.placeFiller.setVisible(True)
+			else:
+				print self.detailData['resume']
+				if self.oid_type !="E" and self.detailData['resume'] > 0:
+					if (self.detailData['duration'] - self.detailData['resume']) < 60:
+						self.unwatchButton.setVisible(True)
+						self.resumeButton.setVisible(False)
+					else:
+						self.unwatchButton.setVisible(False)
+						self.resumeButton.setVisible(True)
+				else:
+					self.unwatchButton.setVisible(False)
+					self.resumeButton.setVisible(False)
+
 			if self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress":
 				self.recordButton.setVisible(True)
+				self.quickrecordButton.setVisible(True)
 				self.deleteButton.setVisible(False)
 			else:
-				self.recordButton.setVisible(False)
+				if self.detailData['status'] == "Completed":
+					self.deleteButton.setLabel('Delete')
 				self.deleteButton.setVisible(True)
-			self.saveButton.setVisible(False)
+				self.recordButton.setVisible(False)
+				self.quickrecordButton.setVisible(False)
+			
+			if self.oid_type!="R"  and self.oid_type !="E":
+				self.saveButton.setVisible(False)
 			self.closeButton.setVisible(True)
+
 
 			xbmcgui.WindowXML.setFocus(self, self.closeButton)
 		self.win.setProperty('busy', 'false')
@@ -397,4 +588,43 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			xbmcgui.Dialog().ok('Error', 'Value must be between %d and %d' % (min, max))
 			result = current
 			
-		return result             
+		return result
+
+#player = XBMCPlayer(xbmc.PLAYER_CORE_DVDPLAYER)
+#        player.play( url, item )
+#        ...
+#        while player.is_active:
+#            player.sleep(100)
+#            ...
+
+class XBMCPlayer(xbmc.Player):
+	def __init__( self, *args, **kwargs ):
+		self.is_started = False
+		self.is_active = True
+		print "#XBMCPlayer#"
+	
+	def onPlayBackPaused( self ):
+		xbmc.log("#Im paused#")
+		
+	def onPlayBackResumed( self ):
+		xbmc.log("#Im Resumed #")
+		
+	def onPlayBackStarted( self ):
+		print "#Playback Started#"
+		try:
+			print "#Im playing :: " + self.getPlayingFile()
+		except:
+			print "#I failed get what Im playing#"
+		self.is_started = True
+		print self.getTotalTime()
+			
+	def onPlayBackEnded( self ):
+		self.is_active = False
+		print "#Playback Ended#"
+		
+	def onPlayBackStopped( self ):
+		self.is_active = False
+		print "## Playback Stopped ##"
+	
+	def sleep(self, s):
+		xbmc.sleep(s)

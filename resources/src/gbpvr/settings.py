@@ -46,7 +46,8 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
 	self.gbpvrusewol  = self.getControl(205)
 	self.gbpvrmac = self.getControl(206)
 	self.gbpvrbroadcast = self.getControl(207)
-	
+	self.gbpvrstream = self.getControl(215)
+
 	self.epgscrollint = self.getControl(210)
 	self.epgdispint = self.getControl(211)
 	self.epgretrint = self.getControl(212)
@@ -88,6 +89,12 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self._getText(self.gbpvrmac, "GBPVR_MAC")
 	elif self.gbpvrbroadcast == source:
             self._getText(self.gbpvrbroadcast, "GBPVR_BROADCAST")
+	elif self.gbpvrstream == source:
+		choices = ['Native', 'VLC', 'Direct']
+		setting =  xbmcgui.Dialog().select("Streaming Option", choices)
+		self.settings.set("GBPVR_STREAM", choices[setting])
+		self.gbpvrstream.setLabel(self.gbpvrstream.getLabel(), label2=choices[setting])
+			#self.gbpvrbroadcast, "GBPVR_STREAM")
 	elif self.epgscrollint == source:
             self._getText(self.epgscrollint, "EPG_SCROLL_INT")	
 	elif self.epgdispint == source:
@@ -131,6 +138,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
 		self.gbpvrusewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.GBPVR_USEWOL )
 		self.gbpvrmac.setLabel( "NextPVR MAC Address:", label2=self.settings.GBPVR_MAC )
 		self.gbpvrbroadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.GBPVR_BROADCAST )
+		self.gbpvrstream.setLabel( "Streaming Format:", label2=self.settings.GBPVR_STREAM )
 		self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
 		self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )
 		self.epgretrint.setLabel( "Retrieve Interval (hrs.):", label2=str(self.settings.EPG_RETR_INT) )

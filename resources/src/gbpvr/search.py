@@ -59,8 +59,13 @@ class SearchWindow(xbmcgui.WindowXML):
     def goEditSchedule(self):
 		import details
 		oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
-		detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="P")
+		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="E")
 		detailDialog.doModal()
+		if detailDialog.returnvalue is not None:
+			if detailDialog.returnvalue == "PICK":
+				detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="P")
+				detailDialog.doModal()
+
 		if detailDialog.shouldRefresh:
 			self.render()
 

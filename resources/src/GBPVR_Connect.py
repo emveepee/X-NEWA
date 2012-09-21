@@ -13,19 +13,25 @@
 ######################################################################################################
 DEBUG = True
 # Core defines
-GBPVR_XMLINFO_PATH = "/public/services/InfoXML.aspx"
-GBPVR_WS_MANAGE_PATH = "/public/services/ManageService.asmx?WSDL"
-GBPVR_WS_SEARCH_PATH = "/public/services/SearchService.asmx?WSDL"
-GBPVR_WS_DETAIL_PATH = "/public/services/DetailService.asmx?WSDL"
-GBPVR_WS_GUIDE_PATH = "/public/services/GuideService.asmx?WSDL"
-GBPVR_WS_SCHEDULE_PATH = "/public/services/ScheduleService.asmx?WSDL"
+NEWA_XMLINFO_PATH = "/public/services/InfoXML.aspx"
+NEWA_WS_MANAGE_PATH = "/public/services/ManageService.asmx?WSDL"
+NEWA_WS_SEARCH_PATH = "/public/services/SearchService.asmx?WSDL"
+NEWA_WS_DETAIL_PATH = "/public/services/DetailService.asmx?WSDL"
+NEWA_WS_GUIDE_PATH = "/public/services/GuideService.asmx?WSDL"
+NEWA_WS_SCHEDULE_PATH = "/public/services/ScheduleService.asmx?WSDL"
+NEWA_WS_VLC_PATH = "/public/services/VlcService.asmx?WSDL"
 
 Last_Error = ""
 # For WS Search functions, sort and filters....
 # Sort fields
 
 import time
+import datetime
 from datetime import timedelta
+import tempfile
+import os.path
+import cPickle as pickle
+import xbmc
 
 class GBPVR_Connect:
 
@@ -58,8 +64,17 @@ class GBPVR_Connect:
 
   # Instantiation
   def __init__(self, ip, port):
-	self.ip = ip;
-	self.port = port;
+	self.ip = ip
+	self.port = port
+	self.vlc_url = None
+	if not os.path.exists(xbmc.translatePath('special://temp') + 'x-newa/'):
+		os.makedirs(xbmc.translatePath('special://temp') + 'x-newa/')
+	
+	self.mycache = xbmc.translatePath('special://temp') + 'x-newa/'
+	print self.mycache
+
+
+
         if not _isIP(self.ip):
                 try:
                         from socket import gethostbyaddr 
@@ -109,6 +124,78 @@ class GBPVR_Connect:
 	address = "http://" + self.ip + ":" + str(self.port)
 	return address
 
+#################################################################################################################
+  def getVlcURL(self):
+	return self.vlc_url
+
+######################################################################################################
+# Starting streaming by vlc
+######################################################################################################
+  def startVlcObjectByScheduleOID(self, userid, password, scheduleOID):
+
+	import suds.client
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_VLC_PATH
+
+	client = suds.client.Client(url,cache=None)
+
+	authObj = client.factory.create('webServiceAuthentication')
+
+	# Fill authentication object
+	authObj = self._AddAuthentication(authObj, userid, password)
+
+	client.set_options(soapheaders=authObj)
+
+	ret_soap = client.service.startVlcObjectByScheduleOID(scheduleOID, soapheaders=authObj)	
+	if ret_soap.webServiceVlcObjects.webServiceVlcObject.StreamLocation  is not None:
+		print ret_soap.webServiceVlcObjects.webServiceVlcObject.StreamLocation
+		self.vlc_url = ret_soap.webServiceVlcObjects.webServiceVlcObject.StreamLocation
+		return True
+	else:
+		return False
+
+######################################################################################################
+# Starting streaming by vlc
+######################################################################################################
+  def startVlcObjectByEPGEventOID(self, userid, password, eventOID):
+
+	import suds.client
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_VLC_PATH
+
+	client = suds.client.Client(url,cache=None)
+
+	authObj = client.factory.create('webServiceAuthentication')
+
+	# Fill authentication object
+	authObj = self._AddAuthentication(authObj, userid, password)
+
+	client.set_options(soapheaders=authObj)
+
+	ret_soap = client.service.startVlcObjectByEPGEventOID(eventOID, soapheaders=authObj)	
+	if ret_soap.webServiceVlcObjects.webServiceVlcObject.StreamLocation  is not None:
+		print ret_soap.webServiceVlcObjects.webServiceVlcObject.StreamLocation
+		self.vlc_url = ret_soap.webServiceVlcObjects.webServiceVlcObject.StreamLocation
+		return True
+	else:
+		return False
+
+
+  def stopVlcStreamObject(self, userid, password):
+
+	import suds.client
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_VLC_PATH
+
+	client = suds.client.Client(url,cache=None)
+
+	authObj = client.factory.create('webServiceAuthentication')
+
+	# Fill authentication object
+	authObj = self._AddAuthentication(authObj, userid, password)
+
+	client.set_options(soapheaders=authObj)
+
+	ret_soap = client.service.stopVlcStreamObject(soapheaders=authObj)	
+	return True
+
   ######################################################################################################
   # Retrieving XMLInfo information and returning in dictionary
   ######################################################################################################
@@ -116,7 +203,7 @@ class GBPVR_Connect:
 	import urllib2
 	from xml.dom import minidom
 
-	address = "http://" + self.ip + ":" + str(self.port) + GBPVR_XMLINFO_PATH
+	address = "http://" + self.ip + ":" + str(self.port) + NEWA_XMLINFO_PATH
 	website = urllib2.urlopen(address)
 	website_html = website.read()
 
@@ -143,15 +230,39 @@ class GBPVR_Connect:
 	self.RecDirs = self.getRecDirList(userid, password)
 	return dic
 
+  def cleanCache(self,spec):
+	import glob
+	print "clean cache for " + spec 
+	fileNames = glob.glob(self.mycache+spec)
+	for file in fileNames:
+		os.remove(file)
+	return True
+
+  def cleanOldCache(self,spec):
+	import glob
+	import os
+	print "clean old files for " + spec 
+	fileNames = glob.glob(self.mycache+spec)
+	for file in fileNames:
+		ft =  datetime.datetime.fromtimestamp(os.path.getmtime(file))
+		if ft - timedelta(hours=1) < datetime.datetime.now():
+			os.remove(file)
+	return True
+
   ######################################################################################################
   # Retrieves a list of channels...
   ######################################################################################################
   def getChannelList(self, userid, password):
 
-	import suds.client
-  	print "getChannelList start"
+	cached = self.mycache+'channel.List'
+	print "getChannelList start"
+	if checkCache(cached):
+		dic = pickle.load(open(cached,'rb'))
+		print "getChannelList cached end"
+		return dic
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SEARCH_PATH
+	import suds.client
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_SEARCH_PATH
 
 	client = suds.client.Client(url,cache=None)
 
@@ -164,12 +275,77 @@ class GBPVR_Connect:
 
 	ret_soap = client.service.getChannelListObject(soapheaders=authObj)
 	dic = {}
+
+	from xbmcaddon import Addon
+	self.channelPath = os.path.join( Addon('script.xbmc.x-newa').getAddonInfo('path'), "fanart", "Channels") + "/"
+	import imghdr
+	import urllib
+	import glob
 	for chan in ret_soap.anyType:
-		temp = chan.split(',')
+		temp = chan.split('!')
 		dic[temp[2]] = ( temp[1].encode('latin-1'),temp[0] )
+		try:
+			output = self.channelPath+temp[1]+".*"
+			icon = glob.glob(output)
+			if not icon:
+				url = self.getURL()+'/'+temp[3]
+				output = self.channelPath+"unknown" 
+				urllib.urlretrieve (url,output)
+				img = imghdr.what(self.channelPath+"unknown");
+				if img == "png":
+					os.rename(self.channelPath+"unknown", self.channelPath+temp[1]+".png")
+				elif img == "jpeg":
+					os.rename(self.channelPath+"unknown", self.channelPath+temp[1]+".jpg")
+				elif img is None:
+					print temp[1] + " is unknown"
+				else:
+					print temp[1] + " Type " + img
+			else:
+				print "Found " + icon[0]
+		except:
+			print url + " Error"
+			pass
+
   	print "getChannelList end"
+
+	pickle.dump(dic, open(cached,'wb'))
+
 	return dic
 
+  ######################################################################################################
+  # Sets the playback position
+  ######################################################################################################
+  def setPlaybackPositiontObject(self, userid, password, rec, position, duration):
+
+	import suds.client
+
+	print "setPlaybackPositiontObject start"
+
+	if int(duration) == 0 and int(position) == 0:
+		print "Not bothering with zero"
+		return True
+
+	if int(duration) == 0 and int(position) != 0:
+		duration = position + 30
+			
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_DETAIL_PATH
+	
+	client = suds.client.Client(url,cache=None)
+	
+	authObj = client.factory.create('webServiceAuthentication')
+	
+	# Fill authentication object
+	authObj = self._AddAuthentication(authObj, userid, password)
+	
+	client.set_options(soapheaders=authObj)
+	
+	ret_soap = client.service.setPlaybackPositiontObject(rec["recording_oid"],rec["filename"],
+		int(position), int(duration),soapheaders=authObj)
+	print "setPlaybackPositiontObject end"
+	if ret_soap.webServiceEPGEventObjects.webServiceReturn.Message is not None:
+		print ret_soap.webServiceEPGEventObjects.webServiceReturn.Message
+		last_Error = ret_soap.webServiceEPGEventObjects.webServiceReturn.Message
+	return (not ret_soap.webServiceEPGEventObjects.webServiceReturn.Error)
 
   ######################################################################################################
   # Retrieves a list of channelGroups...
@@ -179,7 +355,7 @@ class GBPVR_Connect:
 	import suds.client
   	print "getChannelGroupList start"
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_GUIDE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_GUIDE_PATH
 
 	client = suds.client.Client(url,cache=None)
 
@@ -205,16 +381,15 @@ class GBPVR_Connect:
 	import suds.client
 	print "getRecDirList start"
 	
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_SCHEDULE_PATH
 	
 	client = suds.client.Client(url,cache=None)
 	authObj = client.factory.create('webServiceAuthentication')
-	
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
-	
 	client.set_options(soapheaders=authObj)
 	ret_soap = client.service.getRecDirObject(soapheaders=authObj)
+	#print ret_soap
 	groups = []
 	groups.append(ret_soap.DefaultRecordingDirectory.RecDirName.encode('latin-1'))
 	if len(ret_soap.ExtraRecordingDirectories) != 0:
@@ -228,7 +403,7 @@ class GBPVR_Connect:
 	import suds.client
 
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_DETAIL_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_DETAIL_PATH
 
 	client = suds.client.Client(url,cache=None)
 
@@ -252,9 +427,21 @@ class GBPVR_Connect:
   ######################################################################################################
   def getGuideInfo(self, userid, password, timeStart, timeEnd, group):
 
+	print "getGuideInfo start "
+	print timeStart
+
+	self.cleanOldCache('guideListing-*.p')
+
+	cached = self.mycache +'guideListing-' + str(timeStart).replace(':','')  + '.p'
+	print cached
+	if checkCache(cached):
+		retArr = pickle.load(open(cached,'rb'))
+		print "getGuideInfo cached end"
+		return retArr
+
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_GUIDE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_GUIDE_PATH
 	
 	if group is not None:
 		if group not in self.channelGroups:
@@ -266,9 +453,6 @@ class GBPVR_Connect:
 					caseGroup = groups
 			group = caseGroup
 
-	print "getGuideInfo start "
-	print timeStart
-
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
 	authObj = client.factory.create('webServiceAuthentication')
@@ -278,15 +462,23 @@ class GBPVR_Connect:
 	
 	client.set_options(soapheaders=authObj)
 	ret_soap = client.service.getGuideObject( timeStart, timeEnd, channelGroup=group, soapheaders=authObj)
-  	print "getGuideInfo end"	
-	return self._progs2array(ret_soap)
+  	print "getGuideInfo end"
+	retGuide = self._progs2array(ret_soap)
+	pickle.dump(retGuide, open(cached,'wb'),pickle.HIGHEST_PROTOCOL)
+	return retGuide
   
   ######################################################################################################
   def getUpcomingRecordings(self, userid, password, amount=0):
 
+	cached = self.mycache +'upcomingRecordings-' + str(amount) + '.p'
+	print cached
+	if checkCache(cached):
+	  retArr = pickle.load(open(cached,'rb'))
+	  return retArr
+
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_MANAGE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_MANAGE_PATH
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -321,21 +513,27 @@ class GBPVR_Connect:
 	
 	# Fill authentication object
 	authObj = self._AddAuthentication(authObj, userid, password)
-
 	client.set_options(soapheaders=authObj)
 	if amount == 0:
             ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
         else:
             ret_soap = client.service.getSortedFilteredManageListObjectLimitResults(sortObj, fltrObj, amount, soapheaders=authObj)
-
-	return self._recs2array(ret_soap)
+	retArr = self._recs2array(ret_soap)
+	pickle.dump(retArr, open(cached,'wb'),pickle.HIGHEST_PROTOCOL)
+	return retArr
 
   ######################################################################################################
   def getRecentRecordings(self, userid, password, amount=0):
 
+	cached = self.mycache +'recentRecordings-' + str(amount) + '.p'
+	if checkCache(cached):
+		retArr = pickle.load(open(cached,'rb'))
+
+		return retArr
+
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_MANAGE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_MANAGE_PATH
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -372,12 +570,13 @@ class GBPVR_Connect:
 	authObj = self._AddAuthentication(authObj, userid, password)
 	
 	client.set_options(soapheaders=authObj)
-
 	if amount == 0:
             ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
 	else:
             ret_soap = client.service.getSortedFilteredManageListObjectLimitResults(sortObj, fltrObj, amount, soapheaders=authObj)
-	return self._recs2array(ret_soap)
+	retArr = self._recs2array(ret_soap)
+	pickle.dump(retArr, open(cached,'wb'),pickle.HIGHEST_PROTOCOL)
+	return retArr
 
   ######################################################################################################
   def getConflicts(self, userid, password, conflictRec):
@@ -385,7 +584,7 @@ class GBPVR_Connect:
 	import suds.client
         # First, we get a list of recordings sorted by date.....
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_MANAGE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_MANAGE_PATH
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -451,7 +650,7 @@ class GBPVR_Connect:
  
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SEARCH_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_SEARCH_PATH
 	
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -484,14 +683,21 @@ class GBPVR_Connect:
 #	logging.basicConfig(level=logging.INFO)
 #	logging.getLogger('suds.transport.http').setLevel(logging.DEBUG)
 	ret_soap = client.service.searchObject(searchObj, soapheaders=authObj)
+	print ret_soap
 	return self._recs2array1(ret_soap)
   
   ######################################################################################################
   def getScheduledRecordings(self, userid, password):
 
+	cached = self.mycache + 'scheduledRecordings.p'
+	print cached
+	if checkCache(cached):
+		retArr = pickle.load(open(cached,'rb'))
+		return retArr
+
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_MANAGE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_MANAGE_PATH
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -529,14 +735,16 @@ class GBPVR_Connect:
 	
 	client.set_options(soapheaders=authObj)
 	ret_soap = client.service.getSortedFilteredManageListObject(sortObj, fltrObj, soapheaders=authObj)
-	return self._recs2array2(ret_soap)
+	retArr = self._recs2array2(ret_soap)
+	pickle.dump(retArr, open(cached,'wb'),pickle.HIGHEST_PROTOCOL)
+	return retArr
 
   ######################################################################################################
   def getConflictedRecordings(self, userid, password):
 
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_MANAGE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_MANAGE_PATH
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -582,7 +790,7 @@ class GBPVR_Connect:
 
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_MANAGE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_MANAGE_PATH
 
 	client = suds.client.Client(url,cache=None)
 	client.set_options(cache=None)
@@ -663,7 +871,7 @@ class GBPVR_Connect:
   def updateRecording(self, userid, password, progDetails):
 	import suds.client
 
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_SCHEDULE_PATH
 
 	client = suds.client.Client(url,cache=None)
 
@@ -711,7 +919,7 @@ class GBPVR_Connect:
   ######################################################################################################
   def scheduleRecording(self, userid, password, progDetails):
 	import suds.client
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_SCHEDULE_PATH
 	client = suds.client.Client(url,cache=None)
 	authObj = client.factory.create('webServiceAuthentication')
 	
@@ -813,7 +1021,7 @@ class GBPVR_Connect:
   ######################################################################################################
   def cancelRecording(self, userid, password, progDetails):
 	import suds.client
-	url = "http://" + self.ip + ":" + str(self.port) + GBPVR_WS_SCHEDULE_PATH
+	url = "http://" + self.ip + ":" + str(self.port) + NEWA_WS_SCHEDULE_PATH
 	
 	client = suds.client.Client(url,cache=None)
 	
@@ -824,6 +1032,8 @@ class GBPVR_Connect:
 	
 	client.set_options(soapheaders=authObj)
 
+	print progDetails
+
 	if progDetails['rectype'].lower() == "recurring" or progDetails['status'].lower() == "recurring":
 		debug("Cancelling")
 		ret_soap = client.service.cancelRecurring(progDetails['recording_oid'], soapheaders=authObj)
@@ -833,9 +1043,9 @@ class GBPVR_Connect:
 	elif progDetails['status'].lower() == "conflict":
 		debug("Cancelling")
 		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
-	elif progDetails['status'].lower() == "in progress":
-		debug("Cancelling and Deleting")
-		ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
+	elif progDetails['status'].lower() == "in-progress":
+		debug("Cancelling")
+		ret_soap = client.service.cancelRecording(progDetails['recording_oid'], soapheaders=authObj)
 	elif progDetails['status'].lower() == "completed":
 		debug("Cancelling and Deleting")
 		ret_soap = client.service.cancelAndDeleteRecording(progDetails['recording_oid'], soapheaders=authObj)
@@ -902,7 +1112,7 @@ class GBPVR_Connect:
 	if soapObj.webServiceManageListing is None:
 		return retArr
 	if len(soapObj.webServiceManageListing  ) == 0:
-		return retArr
+		return retArr					  
 
 	#todo fix suds processing
 	x = soapObj.webServiceManageListing
@@ -921,53 +1131,70 @@ class GBPVR_Connect:
 	theDict = {}
 	#todo fix suds processing
 	L = epgo
-	if L[1].webServiceEPGEventObject is not None:
-		prog = L[1].webServiceEPGEventObject
-	if prog.HasSchedule:
+	try: 
+		if L[1].webServiceEPGEventObject is not None:
+			prog = L[1].webServiceEPGEventObject
+		if prog.HasSchedule:
+			rec = L[1].webServiceScheduleObject
+		else:
+			rec = None
+	except:
+		prog = None
 		rec = L[1].webServiceScheduleObject
-	if prog.Title is not None:
-		theDict['title'] = prog.Title
-	else:
-		theDict['title'] = rec.Name
+		print epgo
 
 	if time.daylight != 0:
 		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
 	else:
 		offset = 0
 
-	if prog.StartTime.year > 1:
+	if prog is not None:
+		theDict['title'] = prog.Title
 		theDict['start'] = prog.StartTime + offset
 		theDict['end'] = prog.EndTime + offset
+		if prog.Desc is not None:
+			theDict['desc'] = prog.Desc.encode('utf-8')
+		else:
+			theDict['desc'] = ""
+		if prog.Subtitle is not None:
+			theDict['subtitle'] = prog.Subtitle.encode('utf-8')
+		else:
+			theDict['subtitle'] = ""
+		theDict['program_oid'] = prog.OID
+		if prog.ChannelOid is not 0:
+			theDict['channel_oid'] = prog.ChannelOid
+		if prog.HasSchedule:
+			theDict['recording_oid'] = rec.OID
+			if prog.ChannelOid == 0:
+				theDict['channel_oid'] = rec.ChannelOid
+			if rec.RecordingFileName is not None:
+				theDict['directory'] = rec.RecordingFileName[1:-1]
+			else:
+				theDict['directory'] = "Default"
+		theDict['priority'] = 0
+		if prog.OID > 0 and rec.Status != "Completed" and rec.Status != "Failure": 
+			theDict['rec'] = True
+		else:
+			theDict['rec'] = False
+		theDict['directory'] = ""
 	else:
+		theDict['title'] = rec.Name
 		theDict['start'] = rec.StartTime + offset
 		theDict['end'] = rec.EndTime + offset
-
-	if prog.Desc is not None:
-		theDict['desc'] = prog.Desc.encode('utf-8')
-	else:
 		theDict['desc'] = ""
-
-	if prog.Subtitle is not None:
-		theDict['subtitle'] = prog.Subtitle.encode('utf-8')
-	else:
 		theDict['subtitle'] = ""
-	theDict['program_oid'] = prog.OID
-	theDict['recording_oid'] = rec.OID
-        if prog.OID > 0:
-                theDict['rec'] = True
-        else:
-                theDict['rec'] = False
-	theDict['priority'] = rec.Priority
-
-	if prog.ChannelOid is not 0:
-		theDict['channel_oid'] = prog.ChannelOid
-	else:
+		theDict['program_oid'] = None
+		theDict['recording_oid'] = rec.OID
+		theDict['priority'] = rec.Priority
 		theDict['channel_oid'] = rec.ChannelOid
+		theDict['rec'] = False
+		theDict['directory'] = ""
 
 	if rec.Status is not None:
 		theDict['status'] = rec.Status
 	else:
 		theDict['status'] = ""
+
 	if str(theDict['channel_oid']) in self.channels:
 		theDict['channel'] = self.channels[str(theDict['channel_oid'])]
 	else:
@@ -976,13 +1203,8 @@ class GBPVR_Connect:
 		theDict['rectype'] = prog.recordingType
 	else:
 		theDict['rectype'] = self.SCHEDULE_ONCE
-	if prog.HasSchedule:
-		if rec.RecordingFileName is not None:
-			theDict['directory'] = rec.RecordingFileName[1:-1]
-		else:
-			theDict['directory'] = "Default"
-	else:
-		theDict['directory'] = ""
+
+	theDict['resume'] = 0
 	return theDict
 
   ######################################################################################################
@@ -998,12 +1220,13 @@ class GBPVR_Connect:
 
 
 	if prog.HasSchedule is True:
-		rec = L.webServiceScheduleObject 
+		rec = epgo[0].webServiceScheduleObject 
 	
 	if prog.Title is not None:
 		theDict['title'] = prog.Title
 	else:
 		theDict['title'] = rec.Name
+	
 	if time.daylight != 0:
 		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
 	else:
@@ -1029,17 +1252,19 @@ class GBPVR_Connect:
 	theDict['program_oid'] = prog.OID
 
 	if prog.OID > 0:
-			theDict['rec'] = True
+		theDict['rec'] = True
 	else:
-			theDict['rec'] = False
-
+		theDict['rec'] = False
 	if prog.HasSchedule is True:
 		theDict['priority'] = rec.Priority
 		if rec.Status == 'Recurring':
 			theDict['rectype'] = prog.recordingType
 		else:
 			theDict['rectype'] = self.SCHEDULE_ONCE
-		theDict['directory'] = rec.RecordingFileName[1:-1]
+		if rec.RecordingFileName is not None:
+			theDict['directory'] = rec.RecordingFileName[1:-1]
+		else:
+			theDict['directory'] = "Default"
 		theDict['status'] = rec.Status
 		theDict['recording_oid'] = rec.OID
 	else:
@@ -1047,12 +1272,10 @@ class GBPVR_Connect:
 		theDict['rectype'] = ""
 		theDict['status'] = ""
 		theDict['recording_oid'] = ""
-
 	if prog.ChannelOid is not 0:
 		theDict['channel_oid'] = prog.ChannelOid
 	else:
 		theDict['channel_oid'] = rec.ChannelOid
-
 
 	if str(theDict['channel_oid']) in self.channels:
 		theDict['channel'] = self.channels[str(theDict['channel_oid'])][0]
@@ -1113,8 +1336,11 @@ class GBPVR_Connect:
   # Translating a (soap) programmelist into an array of dictionaries...
   ######################################################################################################
   def _progs2array(self, soapObj):
-	retArr = []
+
 	print "Processing listings start"
+
+	retArr = []
+
 	if time.daylight != 0:
 		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
 	else:
@@ -1124,34 +1350,38 @@ class GBPVR_Connect:
 		channel = {}
 		channel['name'] = chnl.channelName
 		channel['oid'] = chnl.channelOID
-		evt = chnl[3].webServiceEPGEvent
 		progs = []
-		for p2 in evt:
-			for p1 in p2:
-				prog = p1[1].webServiceEPGEventObject
-				dic = {}
-				dic['title'] = unicode(prog.Title)
-				dic['subtitle'] = unicode(prog.Subtitle)
-				if prog.Desc is not None:
-					dic['desc'] = unicode(prog.Desc)
-				else:
-					dic['desc'] = ""
+		for event in chnl.webServiceGuideChannelEPGEvents.webServiceEPGEvent:
+			prog = event.webServiceEPGEventObjects.webServiceEPGEventObject
+			dic = {}
+			dic['title'] = unicode(prog.Title)
+			dic['subtitle'] = unicode(prog.Subtitle)
+			if prog.Desc is not None:
+				dic['desc'] = unicode(prog.Desc)
+			else:
+				dic['desc'] = ""
 
-				dic['start'] = prog.StartTime + offset
-				dic['end'] = prog.EndTime + offset
+			dic['start'] = prog.StartTime + offset
+			dic['end'] = prog.EndTime + offset
 
-				dic['oid'] = prog.OID
-				if prog.HasSchedule is True:
+			dic['oid'] = prog.OID
+			if prog.HasSchedule is True:
+				rec = event.webServiceEPGEventObjects.webServiceScheduleObject
+				if rec.Status == 'Pending' or rec.Status == 'In-Progress':
 					dic['rec'] = True
 				else:
 					dic['rec'] = False
-				#todo fix genres
-				dic['genre'] = "" 
-				progs.append(dic)
+			else:
+				dic['rec'] = False
+			#todo are genres used
+			if prog.Genres:
+				dic['genres'] = prog.Genres.Genre
+			else:
+				dic['genres'] = ''		
+			progs.append(dic)
 		channel['progs'] = progs
 		retArr.append(channel)
 	print "Process listing end"
-
 	return retArr
 
 
@@ -1161,68 +1391,93 @@ class GBPVR_Connect:
   def _detail2array(self, soapObj):
 	print "Detail error returns: " + str(soapObj.webServiceEPGEventObjects.webServiceReturn.Error)
 
+	dict = {}
+
 	if soapObj.webServiceEPGEventObjects.webServiceReturn.Error is True:
 		print soapObj.webServiceEPGEventObjects.webServiceReturn.Message
 		print soapObj
-		dict = {}
 		return dict
-	
-	L = soapObj.webServiceEPGEventObjects
-
-	if L.webServiceEPGEventObject is not None:
-		prog = L.webServiceEPGEventObject
-	else:
-		prog = L.webServiceRecurringObject
-
-	if prog.HasSchedule is True:
-		rec = L.webServiceScheduleObject
-
-	dict = {}
-	if prog.Title is not None:
-		dict['title'] = prog.Title
-	else:
-		dict['title'] = rec.Name
 	
 	if  time.daylight != 0:
 		offset = timedelta(seconds=time.timezone) - timedelta(seconds=time.altzone)
 	else:
 		offset = 0
 
-	if prog.StartTime.year > 1:
-			dict['start'] = prog.StartTime + offset
-			dict['end'] = prog.EndTime + offset
-	else:
-			dict['start'] = rec.StartTime + offset
-			dict['end'] = rec.EndTime + offset
-
-	if prog.Desc is not None:
-		dict['desc'] = prog.Desc.encode('utf-8')
-	else:
-		dict['desc'] = ""
-
-	if prog.Subtitle is not None:
-		dict['subtitle'] = prog.Subtitle.encode('utf-8')
-	else:
-		dict['subtitle'] = ""
+	try:
+		L = soapObj.webServiceEPGEventObjects
 	
-	if prog.OID is not 0:
-		dict['channel_oid'] = prog.ChannelOid
-	else:
+		if L.webServiceEPGEventObject is not None:
+			prog = L.webServiceEPGEventObject
+		else:
+			prog = L.webServiceRecurringObject
+	
+		if prog.HasSchedule is True:
+			rec = L.webServiceScheduleObject
+		else:
+			rec = None
+	except:
+		prog = None
+		rec = L.webServiceScheduleObject
+		dict['title'] = rec.Name
+		dict['start'] = rec.StartTime + offset
+		dict['end'] = rec.EndTime + offset
+		dict['desc'] = ""
+		dict['subtitle'] = ""
 		dict['channel_oid'] = rec.OID
+		dict['program_oid'] = None
+		dict['genres'] = ''		
+
+	if prog is not None:
+		if prog.Title is not None:
+			dict['title'] = prog.Title
+		else:
+			dict['title'] = rec.Name
+		
+	
+		if prog.StartTime.year > 1:
+				dict['start'] = prog.StartTime + offset
+				dict['end'] = prog.EndTime + offset
+		else:
+				dict['start'] = rec.StartTime + offset
+				dict['end'] = rec.EndTime + offset
+	
+		if prog.Desc is not None:
+			dict['desc'] = prog.Desc.encode('utf-8')
+		else:
+			dict['desc'] = ""
+	
+		if prog.Subtitle is not None:
+			dict['subtitle'] = prog.Subtitle.encode('utf-8')
+		else:
+			dict['subtitle'] = ""
+		
+		if prog.OID is not 0:
+			dict['channel_oid'] = prog.ChannelOid
+		else:
+			dict['channel_oid'] = rec.OID
+		dict['program_oid'] = prog.OID
+		if prog.Genres:
+			dict['genres'] = prog.Genres.Genre
+		else:
+			dict['genres'] = ''		
 
 	if str(dict['channel_oid']) in self.channels:
 		dict['channel'] = self.channels[str(dict['channel_oid'])]
 	else:
 		dict['channel'] = "Unknown"
 		
-	dict['program_oid'] = prog.OID
 	
-	if prog.HasSchedule is True:
+	if rec is not None:
 		dict['status'] = rec.Status
 		if rec.Status == "Completed" or rec.Status == "In-Progress":
-			dict['filename'] = rec.RecordingFileName
+			f = rec.RecordingFileName.replace("\\","/")
+			dict['filename'] = f
+			dict['resume'] = rec.PlaybackPosition
+			dict['duration'] = rec.PlaybackDuration
 			dict['directory'] = None
 		else:
+			dict['resume'] = 0
+			dict['duration'] = 0
 			if rec.RecordingFileName is not None:
 				dict['directory'] = rec.RecordingFileName[1:-1]
 			else:
@@ -1246,12 +1501,12 @@ class GBPVR_Connect:
 		dict['maxrecs'] = ""
 		dict['priority'] = ""
 		dict['directory'] = ""
-	
-	dict['genres'] = []
-	try:
-		dict['genres'] = ""
-	except:
-		pass
+		dict['resume'] = 0
+
+	#try:
+	#	dict['genres'] = ""
+	#except:
+	#	pass
 
 	return dict
 
@@ -1457,4 +1712,13 @@ def debug( value ):
 				print value
 			except:
 				print "Debug() Bad chars in string"
+
+def checkCache(cached):
+	if os.path.isfile(cached) == True:
+		ft =  datetime.datetime.fromtimestamp(os.path.getmtime(cached))
+		if ft + timedelta(hours=2) > datetime.datetime.now():
+			return True
+
+	return False
+
 

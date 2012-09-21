@@ -521,9 +521,9 @@
 		<!-- Counters -->
 		<control type="image">
 			<description>Counters background</description>
-			<posx>853</posx>
+			<posx>843</posx>
 			<posy>150</posy>
-			<width>362</width>
+			<width>372</width>
 			<height>110</height>
 			<colordiffuse>66FFFFFF</colordiffuse>
 			<texture border="5">black-back.png</texture>
@@ -567,7 +567,7 @@
 		<control type="label">
 			<posx>980</posx>
 			<posy>200</posy>
-			<width>130</width>
+			<width>135</width>
 			<height>35</height>
 			<font>font16</font>
 			<textcolor>white</textcolor>

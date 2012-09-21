@@ -594,7 +594,6 @@ class EpgWindow(xbmcgui.WindowXML):
 
 		try:
 			lst = self.epgTagData[ctrlId]
-				
 			# title
 			self.getControl(self.CLBL_PROG_TITLE).setLabel(lst[3])
         
@@ -619,8 +618,14 @@ class EpgWindow(xbmcgui.WindowXML):
 		import details
 
 		oid = self.epgTagData[controlID][0]
-        	detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="E")
+        	detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="E")
         	detailDialog.doModal()
+        	if detailDialog.returnvalue is not None:
+				print detailDialog.returnvalue
+				if detailDialog.returnvalue == "PICK":
+					detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="P")
+					detailDialog.doModal()
+
         	if detailDialog.returnvalue is not None:
                         # First, get the epgData item....
                         ctrl = self.getControl(controlID)

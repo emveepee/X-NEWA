@@ -43,11 +43,12 @@ class SchedulesWindow(xbmcgui.WindowXML):
             self.render()
 
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.schedulesListBox: 
-            self.goEditSchedule()
-        elif source == self.refreshButton:
-            self.render()
+		source = self.getControl(controlId)
+		if source == self.schedulesListBox: 
+			self.goEditSchedule()
+		elif source == self.refreshButton:
+			self.gbpvr.cleanCache('scheduledRecordings.p')
+			self.render()
              
     def onFocus(self, controlId):
         pass
