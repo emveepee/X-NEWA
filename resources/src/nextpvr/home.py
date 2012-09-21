@@ -1,5 +1,5 @@
 #
-#  myGBPVR for XBMC
+#  xnewa for XBMC
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -22,9 +22,9 @@ import xbmc
 import xbmcgui
 from xbmcaddon import Addon
 
-from myGBPVRGlobals import *
-from GBPVR_Connect import GBPVR_Connect
-from GBPVR_Settings import GBPVR_Settings
+from XNEWAGlobals import *
+from XNEWA_Connect import XNEWA_Connect
+from XNEWA_Settings import XNEWA_Settings
 
 # =============================================================================
 class HomeWindow(xbmcgui.WindowXML):
@@ -33,8 +33,8 @@ class HomeWindow(xbmcgui.WindowXML):
 		self.win = None
 		self.busy = False
 		self.progressDialog = None
-		self.settings = GBPVR_Settings()
-		self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
+		self.settings = XNEWA_Settings()
+		self.xnewa = XNEWA_Connect(self.settings.NextPVR_HOST, self.settings.NextPVR_PORT)
         
     def onFocus(self, controlId):
         pass
@@ -87,7 +87,7 @@ class HomeWindow(xbmcgui.WindowXML):
                
     def goSearch(self):
 		import search
-		mywin = search.SearchWindow('nextpvr_search.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = search.SearchWindow('nextpvr_search.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
 		mywin.doModal()
 
     def goExit(self):
@@ -97,7 +97,7 @@ class HomeWindow(xbmcgui.WindowXML):
     def goRecentDetails(self):
 		import details
 		oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
-		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R" )
+		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R" )
 		detailDialog.doModal()
 		if detailDialog.shouldRefresh:
 			self.render()
@@ -106,7 +106,7 @@ class HomeWindow(xbmcgui.WindowXML):
 		import details
 
 		oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['recording_oid']
-		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr, oid=oid, type="R")
+		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R")
 		detailDialog.doModal()
 		if detailDialog.shouldRefresh:
 			self.render()
@@ -116,30 +116,30 @@ class HomeWindow(xbmcgui.WindowXML):
         
     def goTvGuide(self):
 		import epg
-		mywin = epg.EpgWindow('nextpvr_epg.xml', WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings)
+		mywin = epg.EpgWindow('nextpvr_epg.xml', WHERE_AM_I, xnewa=self.xnewa, settings=self.settings)
 		mywin.doModal()
     
     def goRecordingSchedules(self):
 		import schedules
-		mywin = schedules.SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = schedules.SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
 		mywin.doModal()
             
     def goUpcomingRecordings(self):
 		import upcoming
-		mywin = upcoming.UpcomingRecordingsWindow('nextpvr_upcoming.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = upcoming.UpcomingRecordingsWindow('nextpvr_upcoming.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
 		mywin.doModal()
         
     def goRecentRecordings(self):
 		import recent
-		mywin = recent.RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I, settings=self.settings, gbpvr=self.gbpvr)
+		mywin = recent.RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
 		mywin.doModal()
         
     def goSettings(self):
 		import settings
 		mywin = settings.settingsDialog('nextpvr_settings.xml', WHERE_AM_I, settings=self.settings)
 		mywin.doModal()
-		self.gbpvr = GBPVR_Connect(self.settings.GBPVR_HOST, self.settings.GBPVR_PORT)
-		#self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+		self.xnewa = NextPVR_Connect(self.settings.NextPVR_HOST, self.settings.NextPVR_PORT)
+		#self.statusData = self.xnewa.GetNextPVRInfo(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
 
 		self.refreshOnInit()
 
@@ -149,17 +149,17 @@ class HomeWindow(xbmcgui.WindowXML):
 		self.renderStats()
 
     def refreshButton(self):
-		self.gbpvr.cleanOldCache('guideListing-*.p')
-		self.gbpvr.cleanCache('*.p')
+		self.xnewa.cleanOldCache('guideListing-*.p')
+		self.xnewa.cleanCache('*.p')
 		self.refreshOnInit()
 
     def refreshOnInit(self):
 		self.win.setProperty('busy', 'true')
-		if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+		if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
 			try:
-				self.statusData = self.gbpvr.GetGBPVRInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
-				self.upcomingData = self.gbpvr.getUpcomingRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW, 10)
-				self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW, 10)
+				self.statusData = self.xnewa.GetNextPVRInfo(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
+				self.upcomingData = self.xnewa.getUpcomingRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
+				self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
 				self.renderUpComing()
 				self.renderRecent()
 				self.renderStats()				

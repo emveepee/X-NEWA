@@ -21,7 +21,7 @@ import datetime, time
 import xbmcgui
 import os
 
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 
 # ==============================================================================
 class SearchWindow(xbmcgui.WindowXML):
@@ -31,7 +31,7 @@ class SearchWindow(xbmcgui.WindowXML):
 	self.win = None
 
        	self.settings = kwargs['settings']
-       	self.gbpvr = kwargs['gbpvr']
+       	self.xnewa = kwargs['xnewa']
         
     def onInit(self):
         if not self.win:
@@ -59,11 +59,11 @@ class SearchWindow(xbmcgui.WindowXML):
     def goEditSchedule(self):
 		import details
 		oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
-		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="E")
+		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
 		detailDialog.doModal()
 		if detailDialog.returnvalue is not None:
 			if detailDialog.returnvalue == "PICK":
-				detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="P")
+				detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
 				detailDialog.doModal()
 
 		if detailDialog.shouldRefresh:
@@ -77,9 +77,9 @@ class SearchWindow(xbmcgui.WindowXML):
 	listItems = []
 	self.win.setProperty('busy', 'true')
 
-	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
                 try:
-                        self.searchData = self.gbpvr.searchProgram(self.settings.GBPVR_USER, self.settings.GBPVR_PW, myText)
+                        self.searchData = self.xnewa.searchProgram(self.settings.NextPVR_USER, self.settings.NextPVR_PW, myText)
                         previous = None
                         if len(self.searchData) == 0:
                             self.win.setProperty('busy', 'false')
@@ -109,12 +109,12 @@ class SearchWindow(xbmcgui.WindowXML):
                         self.programsListBox.addItems(listItems)
                 except:
                         self.win.setProperty('busy', 'false')
-                        xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+                        xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
                     
 		self.win.setProperty('busy', 'false')
 	else:
                 self.win.setProperty('busy', 'false')
-		xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+		xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 		self.close()
 
     def _getText(self, cTitle, cText):

@@ -20,7 +20,7 @@
 import os
 import xbmcgui
 
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 # =============================================================================            
 class settingsDialog(xbmcgui.WindowXMLDialog):
     """
@@ -39,14 +39,14 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
     def onInit(self):
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
 
-	self.gbpvrip = self.getControl(201)
-	self.gbpvrport = self.getControl(202)
-	self.gbpvruser = self.getControl(203)
-	self.gbpvrpw = self.getControl(204)
-	self.gbpvrusewol  = self.getControl(205)
-	self.gbpvrmac = self.getControl(206)
-	self.gbpvrbroadcast = self.getControl(207)
-	self.gbpvrstream = self.getControl(215)
+	self.nextpvr_ip = self.getControl(201)
+	self.nextpvr_port = self.getControl(202)
+	self.nextpvr_user = self.getControl(203)
+	self.nextpvr_pw = self.getControl(204)
+	self.nextpvr_usewol  = self.getControl(205)
+	self.nextpvr_mac = self.getControl(206)
+	self.nextpvr_broadcast = self.getControl(207)
+	self.nextpvr_stream = self.getControl(215)
 
 	self.epgscrollint = self.getControl(210)
 	self.epgdispint = self.getControl(211)
@@ -73,28 +73,28 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         elif self.saveButton == source:
             self.settings.save()
             self.close()
-	elif self.gbpvrip == source:
-            self._getText(self.gbpvrip, "GBPVR_HOST")	
-	elif self.gbpvrport == source:
-            self._getText(self.gbpvrport, "GBPVR_PORT")	
-	elif self.gbpvruser == source:
-            self._getText(self.gbpvruser, "GBPVR_USER")	
-	elif self.gbpvrpw == source:
-            self._getText(self.gbpvrpw, "GBPVR_PW")	
-	elif self.gbpvrpw == source:
-            self._getText(self.gbpvrpw, "GBPVR_PW")	
-	elif self.gbpvrusewol == source:
-            self._getYN(self.gbpvrusewol, "GBPVR_USEWOL")	
-	elif self.gbpvrmac == source:
-            self._getText(self.gbpvrmac, "GBPVR_MAC")
-	elif self.gbpvrbroadcast == source:
-            self._getText(self.gbpvrbroadcast, "GBPVR_BROADCAST")
-	elif self.gbpvrstream == source:
+	elif self.nextpvr_ip == source:
+            self._getText(self.nextpvr_ip, "NextPVR_HOST")	
+	elif self.nextpvr_port == source:
+            self._getText(self.nextpvr_port, "NextPVR_PORT")	
+	elif self.nextpvr_user == source:
+            self._getText(self.nextpvr_user, "NextPVR_USER")	
+	elif self.nextpvr_pw == source:
+            self._getText(self.nextpvr_pw, "NextPVR_PW")	
+	elif self.nextpvr_pw == source:
+            self._getText(self.nextpvr_pw, "NextPVR_PW")	
+	elif self.nextpvr_usewol == source:
+            self._getYN(self.nextpvr_usewol, "NextPVR_USEWOL")	
+	elif self.nextpvr_mac == source:
+            self._getText(self.nextpvr_mac, "NextPVR_MAC")
+	elif self.nextpvr_broadcast == source:
+            self._getText(self.nextpvr_broadcast, "NextPVR_BROADCAST")
+	elif self.nextpvr_stream == source:
 		choices = ['Native', 'VLC', 'Direct']
 		setting =  xbmcgui.Dialog().select("Streaming Option", choices)
-		self.settings.set("GBPVR_STREAM", choices[setting])
-		self.gbpvrstream.setLabel(self.gbpvrstream.getLabel(), label2=choices[setting])
-			#self.gbpvrbroadcast, "GBPVR_STREAM")
+		self.settings.set("NextPVR_STREAM", choices[setting])
+		self.nextpvr_stream.setLabel(self.nextpvr_stream.getLabel(), label2=choices[setting])
+			#self.nextpvr_broadcast, "NextPVR_STREAM")
 	elif self.epgscrollint == source:
             self._getText(self.epgscrollint, "EPG_SCROLL_INT")	
 	elif self.epgdispint == source:
@@ -131,14 +131,14 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         
 	self.win.setProperty('busy', 'true')
 	try:
-		self.gbpvrip.setLabel( "NextPVR IP Address:", label2=self.settings.GBPVR_HOST )
-		self.gbpvrport.setLabel( "NextPVR Port Number:", label2=str(self.settings.GBPVR_PORT) )
-		self.gbpvruser.setLabel( "NextPVR Userid:", label2=self.settings.GBPVR_USER )
-		self.gbpvrpw.setLabel( "NextPVR Password:", label2=self.settings.GBPVR_PW )
-		self.gbpvrusewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.GBPVR_USEWOL )
-		self.gbpvrmac.setLabel( "NextPVR MAC Address:", label2=self.settings.GBPVR_MAC )
-		self.gbpvrbroadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.GBPVR_BROADCAST )
-		self.gbpvrstream.setLabel( "Streaming Format:", label2=self.settings.GBPVR_STREAM )
+		self.nextpvr_ip.setLabel( "NextPVR IP Address:", label2=self.settings.NextPVR_HOST )
+		self.nextpvr_port.setLabel( "NextPVR Port Number:", label2=str(self.settings.NextPVR_PORT) )
+		self.nextpvr_user.setLabel( "NextPVR Userid:", label2=self.settings.NextPVR_USER )
+		self.nextpvr_pw.setLabel( "NextPVR Password:", label2=self.settings.NextPVR_PW )
+		self.nextpvr_usewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.NextPVR_USEWOL )
+		self.nextpvr_mac.setLabel( "NextPVR MAC Address:", label2=self.settings.NextPVR_MAC )
+		self.nextpvr_broadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.NextPVR_BROADCAST )
+		self.nextpvr_stream.setLabel( "Streaming Format:", label2=self.settings.NextPVR_STREAM )
 		self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
 		self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )
 		self.epgretrint.setLabel( "Retrieve Interval (hrs.):", label2=str(self.settings.EPG_RETR_INT) )
@@ -147,7 +147,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
 	except:
 		handleException()
 	try:
-		xbmcgui.WindowXML.setFocus(self, self.gbpvrip)
+		xbmcgui.WindowXML.setFocus(self, self.nextpvr_ip)
 	except:
 		handleException()
 

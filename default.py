@@ -2,24 +2,23 @@
 # -*- coding: UTF-8 -*-
 
 """
-	myGBPVR
+	X-NEWA
 
-	Controlling GB-PVR from within XBMC.
+	Controlling NextPVR from within XBMC.
 
-	Written By Ton van der Poel
+	Originally Written By Ton van der Poel
+	Updated By emveepee
 
 	THANKS:
 	To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
 
 
-    Additional support may be found on xboxmediacenter or gbpvr forum.	
+    Additional support may be found on xboxmediacenter or NextPVR forums.	
 """
 
-__scriptname__ = "myGBPVR"
-__author__     = "Ton van der Poel"
+__scriptname__ = "X-NEWA"
+__author__     = "emveepee"
 __credits__    = "bunch of ppl"
-__svn_revision__ = 1558
-__version__    = "[Beta SVN %d]" % __svn_revision__
 
 if __name__ == '__main__':
 	import os, sys, xbmc
@@ -29,8 +28,8 @@ if __name__ == '__main__':
 	sys.path.append(os.path.join(DIR_HOME, 'resources', 'src'))
 	sys.path.append(os.path.join(DIR_HOME, 'resources', 'lib'))
 	print sys.path
-	from gbpvr.home import HomeWindow
-	from myGBPVRGlobals import *
+	from nextpvr.home import HomeWindow
+	from XNEWAGlobals import *
 	try:
 		# start script main
 		DIR_HOME = WHERE_AM_I

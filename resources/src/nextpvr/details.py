@@ -19,7 +19,7 @@
 import os
 import xbmcgui
 
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 from fanart import fanart
 # =============================================================================            
 class DetailDialog(xbmcgui.WindowXMLDialog):
@@ -28,9 +28,9 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 	"""
 
 	def __init__(self, *args, **kwargs):
-		# Need to get: oid and gbpvr....
+		# Need to get: oid and xnewa....
 		self.settings = kwargs['settings']
-		self.gbpvr = kwargs['gbpvr']
+		self.xnewa = kwargs['xnewa']
 		
 		self.oid = kwargs['oid']
 		self.oid_type = kwargs['type']
@@ -173,16 +173,16 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 				self.detailData['recording_oid'] = 0
 				self.detailData['directory'] = "Default"
 
-			if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+			if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
 				try:
 					if self.detailData['recording_oid'] == 0:
-						if self.gbpvr.scheduleRecording(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData):
+						if self.xnewa.scheduleRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData):
 							self.returnvalue = "REC"
 							self.close("REC")
 						else:
 							self.error_message()
 					else:
-						if self.gbpvr.updateRecording(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData):
+						if self.xnewa.updateRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData):
 							self.returnvalue = "REC"
 							self.close("REC")
 						else:
@@ -191,9 +191,9 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 				except:
 					xbmcgui.Dialog().ok('Sorry', 'An error occurred!')
 		elif self.deleteButton == source:
-			if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+			if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
 					try:
-							if self.gbpvr.cancelRecording(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData):
+							if self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData):
 									self.returnvalue = "DEL"
 									self.close("DEL")
 							else:
@@ -230,11 +230,11 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 			self.detailData['maxrecs'] = str(self._getNumber("Select recordings to keep (0 means all)", self.detailData['maxrecs'], 0, 30))
 			self._updateView()
 		elif self.recDirId == source:
-			self.detailData['directory'] = self._pickFromList("Recording Directory", self.gbpvr.RecDirs, self.detailData['directory'])
+			self.detailData['directory'] = self._pickFromList("Recording Directory", self.xnewa.RecDirs, self.detailData['directory'])
 			self._updateView()
 		elif self.playButton == source or self.resumeButton == source:
 			import xbmcgui,xbmc
-			self.urly = self.gbpvr.getURL()
+			self.urly = self.xnewa.getURL()
 			isVlc = False
 			if self.detailData.has_key('filename') == False:
 				self.channelIcon = self.fanart.getChannelIcon(self.detailData['channel'][0])
@@ -246,11 +246,11 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 					listitem = xbmcgui.ListItem(self.detailData['title'])
 				
 				url = self.urly + "/live?channel=" + self.detailData['channel'][1]
-				if self.settings.GBPVR_STREAM == 'VLC':
+				if self.settings.NextPVR_STREAM == 'VLC':
 					# vlc streaming test
 					print self.detailData['program_oid']
-					if self.gbpvr.startVlcObjectByEPGEventOID(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData['program_oid']):
-						url = self.gbpvr.getVlcURL()
+					if self.xnewa.startVlcObjectByEPGEventOID(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData['program_oid']):
+						url = self.xnewa.getVlcURL()
 						isVlc = True
                     
 			else:
@@ -276,16 +276,16 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 				url = self.detailData['filename']
 				print url
 				if os.path.isfile(url) == False:
-					if self.settings.GBPVR_STREAM == 'Native':
+					if self.settings.NextPVR_STREAM == 'Native':
 						url = self.urly + "/live?recording=" +str(self.detailData['recording_oid'])
-					elif self.settings.GBPVR_STREAM == 'Direct':
+					elif self.settings.NextPVR_STREAM == 'Direct':
 						import urllib
 						f1 = urllib.quote(url)
 						url = 'http://172.16.3.2:5050/' + f1
-					elif self.settings.GBPVR_STREAM == 'VLC':
+					elif self.settings.NextPVR_STREAM == 'VLC':
 						# vlc streaming test
-						if self.gbpvr.startVlcObjectByScheduleOID(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData['recording_oid']):
-							url = self.gbpvr.getVlcURL()
+						if self.xnewa.startVlcObjectByScheduleOID(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData['recording_oid']):
+							url = self.xnewa.getVlcURL()
 							isVlc = True
 
 			print "Playing " + url
@@ -309,21 +309,21 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 
 
 			if self.detailData.has_key('filename') == True:
-				if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
-					retval = self.gbpvr.setPlaybackPositiontObject(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.detailData, self._lastPos, self._duration )
+				if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+					retval = self.xnewa.setPlaybackPositiontObject(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData, self._lastPos, self._duration )
 			if isVlc == True:
-				if self.gbpvr.stopVlcStreamObject(self.settings.GBPVR_USER, self.settings.GBPVR_PW):
+				if self.xnewa.stopVlcStreamObject(self.settings.NextPVR_USER, self.settings.NextPVR_PW):
 					print "vlc stopped"
 
 			print "ended"
 
 	def _getDetails(self):
 		self.win.setProperty('busy', 'true')
-		if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
-			self.detailData = self.gbpvr.getDetails(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.oid, self.oid_type)
+		if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+			self.detailData = self.xnewa.getDetails(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.oid, self.oid_type)
 		else:
 			self.win.setProperty('busy', 'false')
-			xbmcgui.Dialog().ok('Sorry', 'Unable to contact GBPVR server!!')
+			xbmcgui.Dialog().ok('Sorry', 'Unable to contact NextPVR server!!')
 			self.close()
 		self.win.setProperty('busy', 'false')
 

@@ -1,15 +1,15 @@
 ######################################################################################################
-# Class for connecting to a GBPVR instance
+# Class for connecting to a NextPVR instance
 #
 # Requires: 	PyCrypto (for Rijnsdael Authentication)
 #  		Suds (for SOAP interaction)
 #  		PBKDF2 (RFC PBKDF2 support)
 #
 # Usage: Instantiate a new class with ip and portnumber
-#  I.e. myGBPVR = new GBPVR_Connect('127.0.0.1', 80)
+#  I.e. xnewa = new XNEWA_Connect('127.0.0.1', 80)
 # Then, call methods on the new class
-#  I.e. myGBPVR.AreYouThere()
-#       myGBPVR.GetChannelList('gbpvruser', 'gbpvrpw')
+#  I.e. xnewa.AreYouThere()
+#       xnewa.GetChannelList('admin', 'password')
 ######################################################################################################
 DEBUG = True
 # Core defines
@@ -33,7 +33,7 @@ import os.path
 import cPickle as pickle
 import xbmc
 
-class GBPVR_Connect:
+class XNEWA_Connect:
 
   SORT_DATE = 0
   SORT_CHANNEL = 1
@@ -88,7 +88,7 @@ class GBPVR_Connect:
   #Core Functions
 
   ######################################################################################################
-  # Checking to see if the GBPVR server is awake...
+  # Checking to see if the NextPVR server is awake...
   ######################################################################################################
   def AreYouThere(self, usewol=False, mac=None, broadcast='192.168.2.255', _retry=0):
 
@@ -199,7 +199,7 @@ class GBPVR_Connect:
   ######################################################################################################
   # Retrieving XMLInfo information and returning in dictionary
   ######################################################################################################
-  def GetGBPVRInfo(self, userid, password):
+  def GetNextPVRInfo(self, userid, password):
 	import urllib2
 	from xml.dom import minidom
 

@@ -21,7 +21,7 @@ import os
 import xbmcgui
 import operator
 
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 
 # ==============================================================================
 class SchedulesWindow(xbmcgui.WindowXML):
@@ -31,7 +31,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 	self.win = None
 
        	self.settings = kwargs['settings']
-       	self.gbpvr = kwargs['gbpvr']
+       	self.xnewa = kwargs['xnewa']
         
     def onInit(self):
         if not self.win:
@@ -47,7 +47,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 		if source == self.schedulesListBox: 
 			self.goEditSchedule()
 		elif source == self.refreshButton:
-			self.gbpvr.cleanCache('scheduledRecordings.p')
+			self.xnewa.cleanCache('scheduledRecordings.p')
 			self.render()
              
     def onFocus(self, controlId):
@@ -63,7 +63,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.scheduleData[self.schedulesListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid,type="F")
+        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid,type="F")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
@@ -71,10 +71,10 @@ class SchedulesWindow(xbmcgui.WindowXML):
     def render(self):
 	listItems = []
 
-	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
 		self.win.setProperty('busy', 'true')
 		try:
-                        self.scheduleData = self.gbpvr.getScheduledRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+                        self.scheduleData = self.xnewa.getScheduledRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
                         self.scheduleData.sort(key=operator.itemgetter('priority'))
                         previous = None
                         for i, t in enumerate(self.scheduleData):
@@ -88,12 +88,12 @@ class SchedulesWindow(xbmcgui.WindowXML):
                         self.schedulesListBox.addItems(listItems)
                 except:
                         self.win.setProperty('busy', 'false')
-                        xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+                        xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
                     
 		self.win.setProperty('busy', 'false')
 	else:
 		#Todo: Show error message
-		xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+		xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 		self.close()
         
 

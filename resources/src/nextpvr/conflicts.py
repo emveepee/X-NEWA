@@ -21,7 +21,7 @@ import datetime, time
 import xbmcgui
 import os
 
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 
 # ==============================================================================
 class ConflictedRecordingsWindow(xbmcgui.WindowXML):
@@ -31,7 +31,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
 	self.win = None
 
        	self.settings = kwargs['settings']
-       	self.gbpvr = kwargs['gbpvr']
+       	self.xnewa = kwargs['xnewa']
         
     def onInit(self):
         if not self.win:
@@ -59,9 +59,9 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
 
     def goEditSchedule(self):
 	self.win.setProperty('busy', 'true')
-	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
             try:
-                    theConflicts = self.gbpvr.getConflicts(self.settings.GBPVR_USER, self.settings.GBPVR_PW, self.conflictedData[self.programsListBox.getSelectedPosition()])
+                    theConflicts = self.xnewa.getConflicts(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.conflictedData[self.programsListBox.getSelectedPosition()])
                     theDlg = xbmcgui.Dialog()
                     theArr = []
                     for prog in theConflicts:
@@ -70,7 +70,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
                     pos = theDlg.select('Choose recording to cancel', theArr)
                     if pos >= 0:
                         if xbmcgui.Dialog().yesno("Delete Recording", "Are you sure you want to delete recording: " + theArr[pos] + "?"):
-                                self.gbpvr.cancelRecording(self.settings.GBPVR_USER, self.settings.GBPVR_PW, theConflicts[pos])
+                                self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, theConflicts[pos])
                                 self.render()
             except:
                     self.win.setProperty('busy', 'false')
@@ -84,9 +84,9 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
 	listItems = []
 
 	self.win.setProperty('busy', 'true')
-	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
                 try:
-                        self.conflictedData = self.gbpvr.getConflictedRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+                        self.conflictedData = self.xnewa.getConflictedRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
                         if len(self.conflictedData) == 0:
                             xbmcgui.Dialog().ok('Good News!', 'No conflicted recordings found!')
                             self.close()
@@ -110,12 +110,12 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
                         self.programsListBox.addItems(listItems)
                 except:
                         self.win.setProperty('busy', 'false')
-                        xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+                        xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
                     
 		self.win.setProperty('busy', 'false')
 	else:
 		self.win.setProperty('busy', 'false')
-		xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+		xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 		self.close()
 
     def formattedAirDate(self, previous, current):

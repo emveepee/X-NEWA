@@ -3,15 +3,15 @@
 import traceback
 import sys
 
-#myGBPVR Specific global vars....
+#XNEWA Specific global vars....
 #TIME_SCROLL_INTERVAL = 15 #Minutes
 #TIME_DISPLAY = 60 #Minutes
 #EPG_RETRIEVE_INTERVAL = 2 #Hours
 
-#GBPVR_HOST = '127.0.0.1'
-#GBPVR_WEB_PORT = 4242
-#GBPVR_USER = 'ton'
-#GBPVR_PW = 'ton'
+#NextPVR_HOST = '127.0.0.1'
+#NextPVR_WEB_PORT = 4242
+#NextPVR_USER = 'ton'
+#NextPVR_PW = 'ton'
 
 
 # Standard xbmc stuff....
@@ -168,7 +168,7 @@ from xbmcaddon import Addon
 WHERE_AM_I = Addon('script.xbmc.x-newa').getAddonInfo('path')
 
 # Script doc constants
-__scriptname__ = "myGBPVRGlobals"
+__scriptname__ = "XNEWAGlobals"
 __version__ = '2.0.0'
 __author__ = 'emveepee'
 __original_author__ = 'Ton van der Poel'

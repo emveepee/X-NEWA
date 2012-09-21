@@ -2,21 +2,21 @@
 # Class for storing specific settings
 #
 # Usage: Instantiate a new class and use properties to retrieve global settings...
-#          I.e. mysettings= gbpvr_settings()
+#          I.e. mysettings= xnewa_settings()
 #        Then, use properties
-#          I.e. print mysettings.GBPVR_HOST
-#               print mysettings.GBPVR_PORT
+#          I.e. print mysettings.NextPVR_HOST
+#               print mysettings.NextPVR_PORT
 ######################################################################################################
 
 import os
 import ConfigParser
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 import traceback
 import sys
 from xbmcaddon import Addon
 # Core defines
 
-class GBPVR_Settings:
+class XNEWA_Settings:
 
   INI_PATH = 'x-newa.ini'
 
@@ -36,19 +36,19 @@ class GBPVR_Settings:
 		config.add_section("EPG")
 
 	try:
-		self.GBPVR_HOST = config.get("NextPVR", "host")
-		self.GBPVR_PORT = config.getint("NextPVR", "port")
-		self.GBPVR_USER = config.get("NextPVR", "userid")
-		self.GBPVR_PW = config.get("NextPVR", "pw")
-		self.GBPVR_USEWOL = config.get("NextPVR", "usewol")
-		self.GBPVR_MAC = config.get("NextPVR", "mac")
-		self.GBPVR_BROADCAST = config.get("NextPVR", "broadcast")
+		self.NextPVR_HOST = config.get("NextPVR", "host")
+		self.NextPVR_PORT = config.getint("NextPVR", "port")
+		self.NextPVR_USER = config.get("NextPVR", "userid")
+		self.NextPVR_PW = config.get("NextPVR", "pw")
+		self.NextPVR_USEWOL = config.get("NextPVR", "usewol")
+		self.NextPVR_MAC = config.get("NextPVR", "mac")
+		self.NextPVR_BROADCAST = config.get("NextPVR", "broadcast")
 		self.EPG_SCROLL_INT = config.getint("EPG", "scroll_int")
 		self.EPG_DISP_INT = config.getint("EPG", "disp_int")
 		self.EPG_RETR_INT = config.getint("EPG", "retr_int")
 		self.EPG_ROW_HEIGHT = config.getint("EPG", "row_h")
 		self.EPG_GROUP = config.get("EPG", "group")
-		self.GBPVR_STREAM = config.get("NextPVR", "stream")
+		self.NextPVR_STREAM = config.get("NextPVR", "stream")
 	except:
 		handleException()
 
@@ -57,14 +57,14 @@ class GBPVR_Settings:
   ######################################################################################################
   def save(self):
 	try:
-		self.config.set("NextPVR", "host", self.GBPVR_HOST)
-		self.config.set("NextPVR", "port", self.GBPVR_PORT)
-		self.config.set("NextPVR", "userid", self.GBPVR_USER)
-		self.config.set("NextPVR", "pw", self.GBPVR_PW)
-		self.config.set("NextPVR", "usewol", self.GBPVR_USEWOL)
-		self.config.set("NextPVR", "mac", self.GBPVR_MAC)
-		self.config.set("NextPVR", "broadcast", self.GBPVR_BROADCAST)
-		self.config.set("NextPVR", "stream", self.GBPVR_STREAM)
+		self.config.set("NextPVR", "host", self.NextPVR_HOST)
+		self.config.set("NextPVR", "port", self.NextPVR_PORT)
+		self.config.set("NextPVR", "userid", self.NextPVR_USER)
+		self.config.set("NextPVR", "pw", self.NextPVR_PW)
+		self.config.set("NextPVR", "usewol", self.NextPVR_USEWOL)
+		self.config.set("NextPVR", "mac", self.NextPVR_MAC)
+		self.config.set("NextPVR", "broadcast", self.NextPVR_BROADCAST)
+		self.config.set("NextPVR", "stream", self.NextPVR_STREAM)
 
 		self.config.set("EPG", "scroll_int", self.EPG_SCROLL_INT)
 		self.config.set("EPG", "disp_int", self.EPG_DISP_INT)
@@ -81,26 +81,26 @@ class GBPVR_Settings:
 	return 
 
   def usewol(self):
-          return self.GBPVR_USEWOL.lower() == "yes"
+          return self.NextPVR_USEWOL.lower() == "yes"
 
   ######################################################################################################
   # Setting one setting....
   ######################################################################################################
   def set(self, key, val):
-	if key =="GBPVR_HOST":
-		self.GBPVR_HOST = val
-	elif key == "GBPVR_PORT":
-		self.GBPVR_PORT = int(val)
-	elif key == "GBPVR_USER":
-		self.GBPVR_USER = val
-	elif key == "GBPVR_PW":
-		self.GBPVR_PW = val
-	elif key == "GBPVR_USEWOL":
-		self.GBPVR_USEWOL = val
-	elif key == "GBPVR_MAC":
-		self.GBPVR_MAC = val
-	elif key == "GBPVR_BROADCAST":
-		self.GBPVR_BROADCAST = val
+	if key =="NextPVR_HOST":
+		self.NextPVR_HOST = val
+	elif key == "NextPVR_PORT":
+		self.NextPVR_PORT = int(val)
+	elif key == "NextPVR_USER":
+		self.NextPVR_USER = val
+	elif key == "NextPVR_PW":
+		self.NextPVR_PW = val
+	elif key == "NextPVR_USEWOL":
+		self.NextPVR_USEWOL = val
+	elif key == "NextPVR_MAC":
+		self.NextPVR_MAC = val
+	elif key == "NextPVR_BROADCAST":
+		self.NextPVR_BROADCAST = val
 	elif key == "EPG_SCROLL_INT":
 		self.EPG_SCROLL_INT = int(val)
 	elif key == "EPG_DISP_INT":
@@ -111,5 +111,5 @@ class GBPVR_Settings:
 		self.EPG_ROW_HEIGHT = int(val)
 	elif key == "EPG_GROUP":
 		self.EPG_GROUP = val
-	elif key == "GBPVR_STREAM":
-		self.GBPVR_STREAM = val
+	elif key == "NextPVR_STREAM":
+		self.NextPVR_STREAM = val

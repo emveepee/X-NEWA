@@ -20,7 +20,7 @@ class fanart:
 
   # Instantiation
   def __init__(self):
-	from myGBPVRGlobals import *
+	from XNEWAGlobals import *
 
 	self.channelPath = os.path.join( WHERE_AM_I, self.FANART_PATH, self.CHANNEL_PATH)
 	self.showPath = os.path.join( WHERE_AM_I, self.FANART_PATH, self.SHOW_PATH)

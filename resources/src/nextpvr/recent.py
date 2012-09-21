@@ -21,7 +21,7 @@ import datetime, time
 import xbmcgui
 import os
 
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 
 # ==============================================================================
 class RecentRecordingsWindow(xbmcgui.WindowXML):
@@ -31,7 +31,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 	self.win = None
 
        	self.settings = kwargs['settings']
-       	self.gbpvr = kwargs['gbpvr']
+       	self.xnewa = kwargs['xnewa']
         
     def onInit(self):
         if not self.win:
@@ -47,7 +47,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 		if source == self.programsListBox: 
 			self.goEditSchedule()
 		elif source == self.refreshButton:
-			self.gbpvr.cleanCache('recentRecordings*.p')
+			self.xnewa.cleanCache('recentRecordings*.p')
 			self.render()
 		elif source == self.conflictButton:
 			self.goConflicts()
@@ -66,7 +66,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 	import details
 
 	oid = self.recentData[self.programsListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, type="R")
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
@@ -74,10 +74,10 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
     def render(self):
 	listItems = []
 
-	if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
 		self.win.setProperty('busy', 'true')
 		try:
-			self.recentData = self.gbpvr.getRecentRecordings(self.settings.GBPVR_USER, self.settings.GBPVR_PW)
+			self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
 			previous = None
 			for i, t in enumerate(self.recentData):
 				if t:
@@ -102,10 +102,10 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 			self.programsListBox.addItems(listItems)
 		except:
 			self.win.setProperty('busy', 'false')
-			xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+			xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 		self.win.setProperty('busy', 'false')
 	else:
-		xbmcgui.Dialog().ok('Error', 'Unable to contact GBPVR Server!')
+		xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
 		self.close()
 
     def formattedAirDate(self, previous, current):

@@ -31,7 +31,7 @@ __date__ = '2012-09-09'
 xbmc.log(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 
 # Shared resources
-from myGBPVRGlobals import *
+from XNEWAGlobals import *
 #todo what is DIR_HOME?
 DIR_HOME =  WHERE_AM_I.replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
@@ -59,12 +59,12 @@ class EpgWindow(xbmcgui.WindowXML):
 	CLBL_CH_NAME = 1310
 	
 	def __init__(self, *args, **kwargs):
-		debug("--> myGBPVR()__init__")
+		debug("--> xnewa()__init__")
 #        	xbmcgui.WindowXML.__init__(self, *args, **kwargs)
 
-		# Need to get: oid and gbpvr....
+		# Need to get: oid and xnewa....
         	self.settings = kwargs['settings']
-        	self.gbpvr = kwargs['gbpvr']
+        	self.xnewa = kwargs['xnewa']
 
 		self.currentTime = datetime.now()
 
@@ -86,7 +86,7 @@ class EpgWindow(xbmcgui.WindowXML):
 		self.isStartup = True
 		self.fanart = fanart()
 
-		ret = self.loadGBPVR()
+		ret = self.loadNextPVR()
 		#ret = True
 		if not ret:
 			self.cleanup()
@@ -94,7 +94,7 @@ class EpgWindow(xbmcgui.WindowXML):
 		else:
 			self.ready = True
 
-		debug("<-- myGBPVR()__init__")
+		debug("<-- xnewa()__init__")
 
 	#################################################################################################################
 	def onInit( self ):
@@ -125,9 +125,9 @@ class EpgWindow(xbmcgui.WindowXML):
 		debug("< onInit()")
 
 	#################################################################################################################
-	def loadGBPVR(self, theDate=None):
+	def loadNextPVR(self, theDate=None):
 		# Todo: Error-Handling
-		debug("--> loadGBPVR" )
+		debug("--> loadNextPVR" )
 		success = True
 
                 if theDate is None:
@@ -155,9 +155,9 @@ class EpgWindow(xbmcgui.WindowXML):
 
 
 		channelGroup = self.settings.EPG_GROUP
-                if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
+                if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
                     try:
-                        self.epgData = self.gbpvr.getGuideInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW, cstart, cend, channelGroup)
+                        self.epgData = self.xnewa.getGuideInfo(self.settings.NextPVR_USER, self.settings.NextPVR_PW, cstart, cend, channelGroup)
                     except:
                         xbmcgui.Dialog().ok('Sorry', 'Error retrieving EPG data!')
 
@@ -184,7 +184,7 @@ class EpgWindow(xbmcgui.WindowXML):
 
 		myDlg.update(100, "Complete")
 		myDlg.close()
-		debug("<-- loadGBPVR() success=%s" % success)
+		debug("<-- loadNextPVR() success=%s" % success)
 		return True
 
 	###############################################################################################################
@@ -618,12 +618,12 @@ class EpgWindow(xbmcgui.WindowXML):
 		import details
 
 		oid = self.epgTagData[controlID][0]
-        	detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="E")
+        	detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="E")
         	detailDialog.doModal()
         	if detailDialog.returnvalue is not None:
 				print detailDialog.returnvalue
 				if detailDialog.returnvalue == "PICK":
-					detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, gbpvr=self.gbpvr, settings=self.settings, oid=oid, epg=True, type="P")
+					detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
 					detailDialog.doModal()
 
         	if detailDialog.returnvalue is not None:
@@ -674,7 +674,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 theDlg.ok("Here","Would now skip to: " + theDate.strftime("%A, %B %d %H:%M") )
                 self.initDate = theDate
                 self.epgStartTime = theDate
-                self.loadGBPVR(theDate)
+                self.loadNextPVR(theDate)
                 self.updateTimeBars(0)
                 self.channelTop = -999
                 self.updateChannels(0)
@@ -760,8 +760,8 @@ class EpgWindow(xbmcgui.WindowXML):
 				
 #			self.EPGEndTime = tNew
 #				cend = tNew.strftime("%Y-%m-%dT%H:%M:00")
-				if self.gbpvr.AreYouThere(self.settings.usewol(), self.settings.GBPVR_MAC, self.settings.GBPVR_BROADCAST):
-                                        tempData = self.gbpvr.getGuideInfo(self.settings.GBPVR_USER, self.settings.GBPVR_PW, cstart, cend, self.settings.EPG_GROUP)
+				if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+                                        tempData = self.xnewa.getGuideInfo(self.settings.NextPVR_USER, self.settings.NextPVR_PW, cstart, cend, self.settings.EPG_GROUP)
                                 else:
                                         return
 				# Combine tempdata and epgdata
@@ -1018,14 +1018,14 @@ try:
 	# start script main
 	#todo figure out what this is
 	debug("--> Home Directory is: " + DIR_HOME)
-	myEPG = myGBPVR("script-myGBPVR-main.xml", DIR_HOME, "Default")
+	myEPG = xnewa("script-xnewa-main.xml", DIR_HOME, "Default")
 	if myEPG.ready:
 		myEPG.doModal()
 	del myEPG
 except:
 	handleException()
 debug("exiting script: " + __scriptname__)
-moduleList = ['mytvLib', 'bbbLib', 'bbbGUILib','smbLib', 'IMDbWin', 'IMDbLib','AlarmClock','FavShows','myGBPVRGlobals.saveProgramme','myGBPVRGlobals.datasource','tv.com','myGBPVRGlobals.mytvFavShows','wol']
+moduleList = ['mytvLib', 'bbbLib', 'bbbGUILib','smbLib', 'IMDbWin', 'IMDbLib','AlarmClock','FavShows','XNEWAGlobals.saveProgramme','XNEWAGlobals.datasource','tv.com','XNEWAGlobals.mytvFavShows','wol']
 for m in moduleList:
 	try:
 		del sys.modules[m]
