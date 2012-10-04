@@ -28,10 +28,10 @@ class SearchWindow(xbmcgui.WindowXML):
     
     def __init__(self, *args, **kwargs):
         self.closed = False
-	self.win = None
+        self.win = None
 
-       	self.settings = kwargs['settings']
-       	self.xnewa = kwargs['xnewa']
+        self.settings = kwargs['settings']
+        self.xnewa = kwargs['xnewa']
         
     def onInit(self):
         if not self.win:
@@ -51,82 +51,81 @@ class SearchWindow(xbmcgui.WindowXML):
         pass
             
     def onAction(self, action):
-        #log.debug('Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId()))
+        #print 'Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId())
         if action.getId() in (EXIT_SCRIPT):
             self.closed = True
             self.close()
 
     def goEditSchedule(self):
-		import details
-		oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
-		detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
-		detailDialog.doModal()
-		if detailDialog.returnvalue is not None:
-			if detailDialog.returnvalue == "PICK":
-				detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
-				detailDialog.doModal()
+        import details
+        oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
+        detailDialog.doModal()
+        if detailDialog.returnvalue is not None:
+            if detailDialog.returnvalue == "PICK":
+                detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
+                detailDialog.doModal()
 
-		if detailDialog.shouldRefresh:
-			self.render()
+        if detailDialog.shouldRefresh:
+            self.render()
 
     def render(self):
         myText = self._getText("Please enter search phrase:","")
         if myText is None:
             self.close()
-    
-	listItems = []
-	self.win.setProperty('busy', 'true')
+            return
 
-	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
-                try:
-                        self.searchData = self.xnewa.searchProgram(self.settings.NextPVR_USER, self.settings.NextPVR_PW, myText)
-                        previous = None
-                        if len(self.searchData) == 0:
-                            self.win.setProperty('busy', 'false')
-                            xbmcgui.Dialog().ok('Error', 'Search returned no results')
-                            
-                        for i, t in enumerate(self.searchData):
-                                if t['rec']:
-                                        pre = '[B]'
-                                        post = '[/B]'
-                                else:
-                                        pre = ''
-                                        post = ''
-                                listItem = xbmcgui.ListItem('Row %d' % i)
-                                airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
-                                listItem.setProperty('airdate', airdate)
-                                listItem.setProperty('title', pre + t['title'] + post)
-                                listItem.setProperty('start', pre + t['start'].strftime("%H:%M") + post)
-                                duration = int((t['end'] - t['start']).seconds / 60)
-                                listItem.setProperty('duration', pre + str(duration) + post)
-                                listItem.setProperty('channel', pre + t['channel'] + post)
-                                if len(t['subtitle']) > 0:
-                                        listItem.setProperty('description', pre + t['subtitle'] + "; " + t['desc'] + post)
-                                else:
-                                        listItem.setProperty('description', pre + t['desc'] + post)
-                                listItem.setProperty('oid', str(t['program_oid']))
-                                listItems.append(listItem)
-                        self.programsListBox.addItems(listItems)
-                except:
-                        self.win.setProperty('busy', 'false')
-                        xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
+        listItems = []
+        self.win.setProperty('busy', 'true')
+
+        if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+            try:
+                self.searchData = self.xnewa.searchProgram(self.settings.NextPVR_USER, self.settings.NextPVR_PW, myText)
+                previous = None
+                if len(self.searchData) == 0:
+                    self.win.setProperty('busy', 'false')
+                    xbmcgui.Dialog().ok('Error', 'Search returned no results')
                     
-		self.win.setProperty('busy', 'false')
-	else:
+                for i, t in enumerate(self.searchData):
+                    if t['rec']:
+                            pre = '[B]'
+                            post = '[/B]'
+                    else:
+                            pre = ''
+                            post = ''
+                    listItem = xbmcgui.ListItem('Row %d' % i)
+                    airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
+                    listItem.setProperty('airdate', airdate)
+                    listItem.setProperty('title', pre + t['title'] + post)
+                    listItem.setProperty('start', pre + t['start'].strftime("%H:%M") + post)
+                    duration = int((t['end'] - t['start']).seconds / 60)
+                    listItem.setProperty('duration', pre + str(duration) + post)
+                    listItem.setProperty('channel', pre + t['channel'] + post)
+                    if len(t['subtitle']) > 0:
+                            listItem.setProperty('description', pre + t['subtitle'] + "; " + t['desc'] + post)
+                    else:
+                            listItem.setProperty('description', pre + t['desc'] + post)
+                    listItem.setProperty('oid', str(t['program_oid']))
+                    listItems.append(listItem)
+                self.programsListBox.addItems(listItems)
+            except:
                 self.win.setProperty('busy', 'false')
-		xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
-		self.close()
+                xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
+                
+            self.win.setProperty('busy', 'false')
+        else:
+            self.win.setProperty('busy', 'false')
+            xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
+            self.close()
 
     def _getText(self, cTitle, cText):
-	kbd = xbmc.Keyboard(cText, cTitle)
-
-	kbd.doModal()
-
+        kbd = xbmc.Keyboard(cText, cTitle)
+        kbd.doModal()
         txt = None
-	if kbd.isConfirmed():
-		txt = kbd.getText()
-		
-	return txt
+        if kbd.isConfirmed():
+            txt = kbd.getText()
+            
+        return txt
 
     def formattedAirDate(self, previous, current):
         result = ''
@@ -135,9 +134,9 @@ class SearchWindow(xbmcgui.WindowXML):
             if current == today:
                 result = 'Today'
             else:
-		tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%a, %b %d')
-		if current == tomorrow:
-                	result = 'Tomorrow'
-            	else:
-                	result = current
+                tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%a, %b %d')
+                if current == tomorrow:
+                    result = 'Tomorrow'
+                else:
+                    result = current
         return result, current

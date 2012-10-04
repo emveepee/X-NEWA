@@ -54,9 +54,8 @@
             <posy>135</posy>
             <itemgap>32</itemgap>
             <control type="label"><description>title</description><label>Title</label></control>
-            <control type="label"><description>desc</description><label>Channel</label></control>
-            
             <control type="label"><description>air date</description><label>Air Date</label></control>
+            <control type="label"><description>desc</description><label>Channel</label></control>                     
             <control type="label"><description>channel</description><label>Subtitle</label></control>
             <!--
             <control type="label"><description>category</description><label>SCRIPT614</label></control>
@@ -83,6 +82,12 @@
                 <info>Window.Property('title')</info>
                 <scroll>auto</scroll>
             </control>
+            <control type="label" id="311">
+                <description>Air Date</description>
+                <textcolor>0xffddddff</textcolor>
+                <info>Window.Property(airDate)</info>
+            </control>                        
+            
             <control type="label" id="304">
                 <description>Channel Label</description>
                 <align>left</align>
@@ -90,11 +95,6 @@
                 <texturenofocus>-</texturenofocus>
                 <label>$INFO[Window.Property(channel)]</label>
             </control>            
-            <control type="label" id="311">
-                <description>Air Date</description>
-                <textcolor>0xffddddff</textcolor>
-                <info>Window.Property(airDate)</info>
-            </control>                        
                                         
             <control type="label" id="310">
                 <description>subtitle</description>
@@ -169,6 +169,18 @@
             <visible>!Player.HasVideo</visible>
         </control>
                       
+        <control type="image" id="305">
+            <description>Channel Image</description>
+            <posx>210r</posx>
+            <posy>120</posy>
+            <width>200</width>
+            <height>110</height>
+            <texture background="false">-</texture>
+            <!--info>Window.Property(thumbnail)</info-->
+            <aspectratio>fill</aspectratio>
+            <fadetime>400</fadetime>
+        </control>
+        
         <control type="image" id="302">
             <description>Preview Thumbnail</description>
             <posx>20</posx>
@@ -179,9 +191,8 @@
             <!--info>Window.Property(thumbnail)</info-->
             <aspectratio>fill</aspectratio>
             <fadetime>400</fadetime>
-            <visible>!Player.HasVideo</visible>
-        </control>
-        
+            <visible>!Player.HasVideo</visible>            
+        </control>        
         <control type="videowindow" id="4011">
             <posx>320</posx>
             <posy>320</posy>

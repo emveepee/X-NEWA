@@ -1,6 +1,6 @@
 <window>
       <id>3003</id>
-      <defaultcontrol>250</defaultcontrol>
+      <defaultcontrol>251</defaultcontrol>
       <type>window</type>
       <coordinates>
             <system>1</system>
@@ -39,7 +39,7 @@
                         <texture border="50,0,0,45">vpanel1.png</texture>
                   </control>
                   <control type="group" id="499">
-                        <description>Recent recordings</description>
+                        <description>All recordings</description>
                         <posx>315</posx>
                         <posy>150</posy>
                         <onup>2000</onup>
@@ -71,7 +71,7 @@
                               <scroll>true</scroll>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Recent Recordings[/B]</label>
+                              <label>[B]What's New[/B]</label>
                         </control>
                         <control type="image">
                               <description>table header</description>
@@ -269,7 +269,7 @@
                               <scroll>true</scroll>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Upcoming Recordings[/B]</label>
+                              <label>[B]Pending Recordings[/B]</label>
                         </control>
                         <control type="image">
                               <description>upcoming recordings table header</description>
@@ -737,17 +737,6 @@
                   <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
                   <animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
                   <animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-                  <control type="button" id="250" >
-                        <label>Watch Recordings</label>
-                        <width>285</width>
-                        <align>left</align>
-                        <textoffsetx>40</textoffsetx>
-                        <texturefocus>button_focus.png</texturefocus>
-                        <texturenofocus>button_nofocus.png</texturenofocus>
-                        <enabled>true</enabled>
-                        <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
-                  </control>
                   <control type="button" id="251">
                         <label>TV Guide</label>
                         <width>285</width>
@@ -756,28 +745,28 @@
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
-                  </control>
-                  <control type="button" id="253">
-                        <label>Upcoming Recordings</label>
-                        <width>285</width>
-                        <align>left</align>
-                        <textoffsetx>40</textoffsetx>
-                        <texturefocus>button_focus.png</texturefocus>
-                        <texturenofocus>button_nofocus.png</texturenofocus>
-                        <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
+                        <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
                   </control>
                   <control type="button" id="258">
-                        <label>Recent Recordings</label>
+                        <label>All Recordings</label>
                         <width>285</width>
                         <align>left</align>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
+                        <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(recent),false)</enable>
                   </control>
+                  <control type="button" id="253">
+                        <label>Pending Recordings</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(upcoming),false)</enable>
+                  </control>                  
                   <control type="button" id="252">
                         <label>Recurring Recordings</label>
                         <width>285</width>
@@ -786,17 +775,28 @@
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
+                        <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(scheduled),false)</enable>
                   </control>
+                  <control type="button" id="250" >
+                        <label>TV Shows</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <enabled>true</enabled>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)</enable>
+                  </control>                  
                   <control type="button" id="254">
-                        <label>Search Program</label>
+                        <label>Search Guide</label>
                         <width>285</width>
                         <align>left</align>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
+                        <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
                   </control>
                   <control type="button" id="255">
                         <label>Settings</label>
@@ -816,8 +816,21 @@
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
+                        <visible>!substring(Window.Property(offline),true)</visible>
                         <enable>!substring(Window.Property(busy),true)</enable>
                   </control>
+                  <control type="button" id="259">
+                        <label>Go Online</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <pulseonselect>true</pulseonselect>
+                        <visible>substring(Window.Property(offline),true)</visible>
+                        <enable>!substring(Window.Property(busy),true)</enable>                        
+                  </control>
+                  
                   <control type="button" id="257">
                         <label>Exit</label>
                         <width>285</width>

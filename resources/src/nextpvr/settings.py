@@ -29,34 +29,34 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         
     def __init__(self, *args, **kwargs):
         xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
-
-	# Get settings from arguments...
+        # Get settings from arguments...
         self.settings = kwargs['settings']
-
+        self.xnewa = kwargs['xnewa']
         self.win = None        
         self.shouldRefresh = False
+        self.changeGroup = False
         
     def onInit(self):
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+        self.nextpvr_ip = self.getControl(201)
+        self.nextpvr_port = self.getControl(202)
+        self.nextpvr_user = self.getControl(203)
+        self.nextpvr_pw = self.getControl(204)
+        self.nextpvr_usewol  = self.getControl(205)
+        self.nextpvr_mac = self.getControl(206)
+        self.nextpvr_broadcast = self.getControl(207)
+        self.nextpvr_stream = self.getControl(215)
+        self.nextpvr_icon_dl = self.getControl(216)
 
-	self.nextpvr_ip = self.getControl(201)
-	self.nextpvr_port = self.getControl(202)
-	self.nextpvr_user = self.getControl(203)
-	self.nextpvr_pw = self.getControl(204)
-	self.nextpvr_usewol  = self.getControl(205)
-	self.nextpvr_mac = self.getControl(206)
-	self.nextpvr_broadcast = self.getControl(207)
-	self.nextpvr_stream = self.getControl(215)
-
-	self.epgscrollint = self.getControl(210)
-	self.epgdispint = self.getControl(211)
-	self.epgretrint = self.getControl(212)
-	self.epgrowh = self.getControl(213)
-	self.epgGroup = self.getControl(214)
-	
+        self.epgscrollint = self.getControl(210)
+        self.epgdispint = self.getControl(211)
+        self.epgretrint = self.getControl(212)
+        self.epgrowh = self.getControl(213)
+        self.epgGroup = self.getControl(214)
+    
         self.saveButton = self.getControl(250)
         self.cancelButton = self.getControl(253)
-	self._updateView()
+        self._updateView()
 
     def onFocus(self, controlId):
         pass
@@ -71,56 +71,64 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         if self.cancelButton == source:
             self.close()
         elif self.saveButton == source:
+            if self.changeGroup:
+                self.xnewa.cleanCache('guideListing-*.p')
             self.settings.save()
             self.close()
-	elif self.nextpvr_ip == source:
-            self._getText(self.nextpvr_ip, "NextPVR_HOST")	
-	elif self.nextpvr_port == source:
-            self._getText(self.nextpvr_port, "NextPVR_PORT")	
-	elif self.nextpvr_user == source:
-            self._getText(self.nextpvr_user, "NextPVR_USER")	
-	elif self.nextpvr_pw == source:
-            self._getText(self.nextpvr_pw, "NextPVR_PW")	
-	elif self.nextpvr_pw == source:
-            self._getText(self.nextpvr_pw, "NextPVR_PW")	
-	elif self.nextpvr_usewol == source:
-            self._getYN(self.nextpvr_usewol, "NextPVR_USEWOL")	
-	elif self.nextpvr_mac == source:
+        elif self.nextpvr_ip == source:
+            self._getText(self.nextpvr_ip, "NextPVR_HOST")    
+        elif self.nextpvr_port == source:
+           self._getText(self.nextpvr_port, "NextPVR_PORT")    
+        elif self.nextpvr_user == source:
+            self._getText(self.nextpvr_user, "NextPVR_USER")    
+        elif self.nextpvr_pw == source:
+            self._getText(self.nextpvr_pw, "NextPVR_PW")    
+        elif self.nextpvr_pw == source:
+            self._getText(self.nextpvr_pw, "NextPVR_PW")    
+        elif self.nextpvr_usewol == source:
+            self._getYN(self.nextpvr_usewol, "NextPVR_USEWOL")    
+        elif self.nextpvr_mac == source:
             self._getText(self.nextpvr_mac, "NextPVR_MAC")
-	elif self.nextpvr_broadcast == source:
+        elif self.nextpvr_broadcast == source:
             self._getText(self.nextpvr_broadcast, "NextPVR_BROADCAST")
-	elif self.nextpvr_stream == source:
-		choices = ['Native', 'VLC', 'Direct']
-		setting =  xbmcgui.Dialog().select("Streaming Option", choices)
-		self.settings.set("NextPVR_STREAM", choices[setting])
-		self.nextpvr_stream.setLabel(self.nextpvr_stream.getLabel(), label2=choices[setting])
-			#self.nextpvr_broadcast, "NextPVR_STREAM")
-	elif self.epgscrollint == source:
-            self._getText(self.epgscrollint, "EPG_SCROLL_INT")	
-	elif self.epgdispint == source:
-            self._getText(self.epgdispint, "EPG_DISP_INT")	
-	elif self.epgretrint == source:
-            self._getText(self.epgretrint, "EPG_RETR_INT")	
-	elif self.epgrowh == source:
-            self._getText(self.epgrowh, "EPG_ROW_HEIGHT")	
-	elif self.epgGroup == source:
-            self._getText(self.epgGroup, "EPG_GROUP")	
+        elif self.nextpvr_stream == source:
+            choices = ['Native', 'VLC', 'Direct']
+            setting =  xbmcgui.Dialog().select("Streaming Option", choices)
+            self.settings.set("NextPVR_STREAM", choices[setting])
+            self.nextpvr_stream.setLabel(self.nextpvr_stream.getLabel(), label2=choices[setting])
+        elif self.nextpvr_icon_dl == source:
+            self._getYN(self.nextpvr_icon_dl, "NextPVR_ICON_DL")    
+        elif self.epgscrollint == source:
+            self._getText(self.epgscrollint, "EPG_SCROLL_INT")    
+        elif self.epgdispint == source:
+            self._getText(self.epgdispint, "EPG_DISP_INT")    
+        elif self.epgretrint == source:
+            self._getText(self.epgretrint, "EPG_RETR_INT")    
+        elif self.epgrowh == source:
+            self._getText(self.epgrowh, "EPG_ROW_HEIGHT")    
+        elif self.epgGroup == source:
+            choices = self.xnewa.channelGroups
+            setting =  xbmcgui.Dialog().select("Channel Group", choices)
+            if choices[setting] != self.settings.EPG_GROUP:
+                self.settings.set("EPG_GROUP", choices[setting])
+                self.epgGroup.setLabel(self.epgGroup.getLabel(), label2=choices[setting])
+                self.changeGroup = True
 
     def _getText(self, ctrl, key):
-	cTitle = ctrl.getLabel()
-	cText = ctrl.getLabel2()
-	kbd = xbmc.Keyboard(cText, cTitle)
+        cTitle = ctrl.getLabel()
+        cText = ctrl.getLabel2()
+        kbd = xbmc.Keyboard(cText, cTitle)
 
-	kbd.doModal()
+        kbd.doModal()
 
-	if kbd.isConfirmed():
-		txt = kbd.getText()
-		self.settings.set(key, txt)
-		ctrl.setLabel(cTitle, label2=txt)
-	
+        if kbd.isConfirmed():
+            txt = kbd.getText()
+            self.settings.set(key, txt)
+            ctrl.setLabel(cTitle, label2=txt)
+    
     def _getYN(self, ctrl, key):
-	cTitle = ctrl.getLabel()
-	theList = ["No", "Yes"]
+        cTitle = ctrl.getLabel()
+        theList = ["No", "Yes"]
         selected = xbmcgui.Dialog().select(cTitle, theList)
         if selected < 0:
                 return
@@ -129,29 +137,31 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         
     def _updateView(self):
         
-	self.win.setProperty('busy', 'true')
-	try:
-		self.nextpvr_ip.setLabel( "NextPVR IP Address:", label2=self.settings.NextPVR_HOST )
-		self.nextpvr_port.setLabel( "NextPVR Port Number:", label2=str(self.settings.NextPVR_PORT) )
-		self.nextpvr_user.setLabel( "NextPVR Userid:", label2=self.settings.NextPVR_USER )
-		self.nextpvr_pw.setLabel( "NextPVR Password:", label2=self.settings.NextPVR_PW )
-		self.nextpvr_usewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.NextPVR_USEWOL )
-		self.nextpvr_mac.setLabel( "NextPVR MAC Address:", label2=self.settings.NextPVR_MAC )
-		self.nextpvr_broadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.NextPVR_BROADCAST )
-		self.nextpvr_stream.setLabel( "Streaming Format:", label2=self.settings.NextPVR_STREAM )
-		self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
-		self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )
-		self.epgretrint.setLabel( "Retrieve Interval (hrs.):", label2=str(self.settings.EPG_RETR_INT) )
-		self.epgrowh.setLabel( "Row Height (px):", label2=str(self.settings.EPG_ROW_HEIGHT) )
-		self.epgGroup.setLabel( "Channel Group", label2=str(self.settings.EPG_GROUP) )
-	except:
-		handleException()
-	try:
-		xbmcgui.WindowXML.setFocus(self, self.nextpvr_ip)
-	except:
-		handleException()
+        self.win.setProperty('busy', 'true')
+        try:
+            self.nextpvr_ip.setLabel( "NextPVR IP Address:", label2=self.settings.NextPVR_HOST )
+            self.nextpvr_port.setLabel( "NextPVR Port Number:", label2=str(self.settings.NextPVR_PORT) )
+            self.nextpvr_user.setLabel( "NextPVR Userid:", label2=self.settings.NextPVR_USER )
+            self.nextpvr_pw.setLabel( "NextPVR Password:", label2=self.settings.NextPVR_PW )
+            self.nextpvr_usewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.NextPVR_USEWOL )
+            self.nextpvr_mac.setLabel( "NextPVR MAC Address:", label2=self.settings.NextPVR_MAC )
+            self.nextpvr_broadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.NextPVR_BROADCAST )
+            self.nextpvr_stream.setLabel( "Streaming Format:", label2=self.settings.NextPVR_STREAM )
+            self.nextpvr_icon_dl.setLabel( "Fetch Covers:", label2=self.settings.NextPVR_ICON_DL )
 
-	self.win.setProperty('busy', 'false')
+            self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
+            self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )
+            self.epgretrint.setLabel( "Retrieve Interval (hrs.):", label2=str(self.settings.EPG_RETR_INT) )
+            self.epgrowh.setLabel( "Row Height (px):", label2=str(self.settings.EPG_ROW_HEIGHT) )
+            self.epgGroup.setLabel( "Channel Group", label2=str(self.settings.EPG_GROUP) )
+        except:
+            handleException()
+        try:
+            xbmcgui.WindowXML.setFocus(self, self.nextpvr_ip)
+        except:
+            handleException()
+
+        self.win.setProperty('busy', 'false')
 
     def _chooseFromList(self, translations, title, property, setter):
         """

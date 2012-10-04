@@ -98,7 +98,7 @@
             
             <control type="button" id="202">
                 <label>NextPVR Port Number:</label>
-                <label2>4242</label2>
+                <label2>8866</label2>
                 <width>650</width>
                 <height>35</height>
                 <align>left</align>
@@ -110,7 +110,7 @@
             
             <control type="button" id="203">
                 <label>NextPVR Userid:</label>
-                <label2>ton</label2>
+                <label2>admin</label2>
                 <width>650</width>
                 <height>35</height>
                 <align>left</align>
@@ -122,7 +122,7 @@
             
             <control type="button" id="204">
                 <label>NextPVR Password:</label>
-                <label2>xxx</label2>
+                <label2>password</label2>
                 <width>650</width>
                 <height>35</height>
                 <align>left</align>
@@ -179,6 +179,18 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
+            
+            <control type="button" id="216">
+                <label>Fetch Cover</label>
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>            
                         
             <control type="button" id="299">
                 <label>EPG Settings</label>
