@@ -22,17 +22,21 @@ import xbmcgui
 import os
 
 from XNEWAGlobals import *
+from xbmcaddon import Addon
+from fix_utf8 import smartUTF8
+
+__language__ = Addon('script.xbmc.x-newa').getLocalizedString
 
 # ==============================================================================
 class UpcomingRecordingsWindow(xbmcgui.WindowXML):
-    
+
     def __init__(self, *args, **kwargs):
         self.closed = False
-	self.win = None
+        self.win = None
 
-       	self.settings = kwargs['settings']
-       	self.xnewa = kwargs['xnewa']
-        
+        self.settings = kwargs['settings']
+        self.xnewa = kwargs['xnewa']
+
     def onInit(self):
         if not self.win:
             self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
@@ -42,85 +46,98 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
             self.win.setProperty('busy', 'true')
 
             self.render()
-        
+
     def onClick(self, controlId):
-		source = self.getControl(controlId)
-		if source == self.programsListBox: 
-			self.goEditSchedule()
-		elif source == self.refreshButton:
-			self.xnewa.cleanCache('upComing*.p')
-			self.render()
-		elif source == self.conflictButton:
-			self.goConflicts()
-             
+        source = self.getControl(controlId)
+        if source == self.programsListBox:
+            self.goEditSchedule()
+        elif source == self.refreshButton:
+            self.xnewa.cleanCache('upComing*.p')
+            self.render()
+        elif source == self.conflictButton:
+            self.goConflicts()
+
     def onFocus(self, controlId):
         pass
-            
+
     def onAction(self, action):
         #log.debug('Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId()))
-        if action.getId() in (EXIT_SCRIPT):
+        if action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
             self.closed = True
             self.close()
 
     def goConflicts(self):
         import conflicts
-	mywin = conflicts.ConflictedRecordingsWindow('nextpvr_conflicts.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
+        mywin = conflicts.ConflictedRecordingsWindow('nextpvr_conflicts.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
 
     def goEditSchedule(self):
 
-	import details
+        import details
 
-	oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, type="R")
+        oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['recording_oid']
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
 
     def render(self):
-	listItems = []
-
-	if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
-		self.win.setProperty('busy', 'true')
-		try:
-                        self.upcomingData = self.xnewa.getUpcomingRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
-                        previous = None
-                        for i, t in enumerate(self.upcomingData):
-                                listItem = xbmcgui.ListItem('Row %d' % i)
-                                airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
-                                listItem.setProperty('airdate', airdate)
-                                listItem.setProperty('title', t['title'])
-                                listItem.setProperty('start', t['start'].strftime("%H:%M"))
-                                duration = int((t['end'] - t['start']).seconds / 60)
-                                listItem.setProperty('duration', str(duration) )
-                                listItem.setProperty('channel', t['channel'][0])
-                                if len(t['subtitle']) > 0:
-                                        listItem.setProperty('description', t['subtitle'] + "; " + t['desc'])
-                                else:
-                                        listItem.setProperty('description', t['desc'])
-                                listItem.setProperty('oid', str(t['program_oid']))
-                                listItems.append(listItem)
+        listItems = []
+        self.programsListBox.reset()
+        if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+            self.win.setProperty('busy', 'true')
+            try:
+                self.upcomingData = self.xnewa.getUpcomingRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
+                if self.upcomingData != None:
+                    previous = None
+                    for i, t in enumerate(self.upcomingData):
+                        listItem = xbmcgui.ListItem('Row %d' % i)
+                        airdate, previous = self.formattedAirDate(previous, self.xnewa.formatDate(t['start']))
+                        listItem.setProperty('airdate', airdate)
+                        listItem.setProperty('airdate_long', self.xnewa.formatDate(t['start'], withyear=True))
+                        if ( t['significance'] == ''):
+                            listItem.setProperty('title', t['title'])
+                        else:
+                            listItem.setProperty('title', '{0} : {1}'.format(t['title'],t['significance']))
+                        listItem.setProperty('status', t['status'])
+                        listItem.setProperty('start', self.xnewa.formatTime(t['start']))
+                        listItem.setProperty('end', self.xnewa.formatTime(t['end']))
+                        duration = int((t['end'] - t['start']).seconds / 60)
+                        listItem.setProperty('duration', str(duration) )
+                        listItem.setProperty('channel', t['channel'][0])
+                        listItem.setProperty('description', t['desc'])
+                        if t['season'] == 0:
+                            listItem.setProperty('episode', t['subtitle'])
+                        else:
+                            listItem.setProperty('episode','({0}x{1}) {2}'.format(t['season'],t['episode'],t['subtitle']))
+                        listItem.setProperty('oid', str(t['program_oid']))
+                        listItems.append(listItem)
+                    if len(listItems) > 0:
                         self.programsListBox.addItems(listItems)
-                except:
-                        self.win.setProperty('busy', 'false')
-                        xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
-                    
-		self.win.setProperty('busy', 'false')
-	else:
-		#Todo: Show error message
-		xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
-		self.close()
+                        self.win.setFocusId(600)
+                    else:
+                        self.win.setFocusId(999)
+
+            except:
+                self.win.setProperty('busy', 'false')
+                xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
+
+            self.win.setProperty('busy', 'false')
+        else:
+            #Todo: Show error message
+            xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
+            self.close()
 
     def formattedAirDate(self, previous, current):
         result = ''
         if not previous or previous <> current:
-            today = datetime.date.today().strftime('%a, %b %d')
+            today = self.xnewa.formatDate(datetime.date.today())
             if current == today:
-                result = 'Today'
+                result = smartUTF8(__language__(30133))
             else:
-		tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%a, %b %d')
-		if current == tomorrow:
-                	result = 'Tomorrow'
-            	else:
-                	result = current
+                tomorrow = self.xnewa.formatDate(datetime.date.today() + datetime.timedelta(days=1))
+                if current == tomorrow:
+                    result = smartUTF8(__language__(30134))
+                else:
+                    result = current
         return result, current

@@ -1,0 +1,113 @@
+<window>
+	<id>3008</id>
+	<allowoverlays>true</allowoverlays>
+	<type>window</type>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+<!-- ############ Begin Background ############ -->
+		<include>CommonBackground</include>
+		<control type="group">
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<left>2</left>
+				<top>60</top>
+				<width>1276</width>
+				<height>625</height>
+				<texture border="15">ContentPanel.png</texture>
+			</control>
+		</control>
+		<include>BehindDialogFadeOut</include>
+		<include>ScrollOffsetLabel</include>
+		<control type="image">
+			<description>Section header image</description>
+			<left>20</left>
+			<top>3</top>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_video.png</texture>
+		</control>
+		<control type="grouplist">
+			<left>65</left>
+			<top>5</top>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<control type="label" id="999">
+				<include>WindowTitleCommons</include>
+				<label>$ADDON[script.xbmc.x-newa 30000] [COLOR=blue] - [/COLOR] $ADDON[script.xbmc.x-newa 30052]</label>
+			</control>
+		</control>
+		<include>Clock</include>
+<!-- ############ End Background ############ -->
+<!-- ############ Begin EPG ############ -->
+	<control type="group" id="1300">
+		<posx>20</posx>
+		<posy>70</posy>
+		<height>520</height>
+		<animation effect="fade" time="200" start="100" end="50" condition="!Control.IsEnabled(1000)">conditional</animation>
+		<control type="label" id="1310">
+			<description>channel name control</description>
+			<width>230</width>
+			<visible>true</visible>
+		</control>
+	</control>
+<!-- ############ End EPG ############ -->
+<!-- ############ Begin Program Details ############ -->
+		<control type="group" id="1000">
+			<posx>250</posx>
+			<posy>45</posy>
+			<height>65</height>
+			<visible>true</visible>
+			<control type="label" id="1020">
+				<description>TITLE control</description>
+				<posy>525</posy>
+				<width>1000</width>
+				<height>40</height>
+				<align>left</align>
+				<font>font13_title</font>
+				<label>-</label>
+				<scroll>true</scroll>
+				<scrollspeed>30</scrollspeed>
+			</control>
+			<control type="label" id="1021">
+				<description>TIME control</description>
+				<posy>550</posy>
+				<width>1000</width>
+				<height>30</height>
+				<align>left</align>
+				<font>font12</font>
+				<label>-</label>
+				<scroll>true</scroll>
+				<scrollspeed>30</scrollspeed>
+			</control>		
+			<control type="label" id="1030">
+				<description>DESCRIPTION control</description>
+				<posy>570</posy>
+				<width>1000</width>
+				<height>55</height>
+				<wrapmultiline>true</wrapmultiline>			
+				<align>left</align>
+				<font>font12</font>
+				<label>-</label>			
+				<scroll>true</scroll>
+				<scrollspeed>30</scrollspeed>
+			</control>
+		</control>
+<!-- ############ End Program Details ############ -->
+<!-- ############ Begin unused but required ############ -->
+		<control type="group">
+			<description>Not used but required</description>
+			<visible>false</visible>
+			<control type="image" id="1301"></control>
+			<control type="image" id="1302"></control>
+		</control>
+<!-- ############ End unused but required ############ -->
+	</controls>
+</window>

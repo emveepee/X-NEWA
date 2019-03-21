@@ -1,0 +1,345 @@
+<!-- This is the dialog box that shows the detail for an individual recording -->
+<!-- Recurring recording details are in nextpvr_details.xml -->
+<window>
+	<id>3000</id>
+	<defaultcontrol>253</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="group">
+<!-- ############ Begin Background ############ -->
+			<visible>!Window.IsVisible(FileBrowser)</visible>
+			<animation effect="slide" start="1100,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="1100,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<control type="image">
+				<left>180</left>
+				<top>0</top>
+				<width>1100</width>
+				<height>720</height>
+				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<left>230</left>
+				<top>0</top>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+<!-- ############ End Background ############ -->
+<!-- ############ Begin Content ############ -->
+			<control type="group">
+				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>300</width>
+					<height>720</height>
+					<texture flipx="true" flipy="true">SideFade.png</texture>
+				</control>
+				<control type="label" id="303">
+					<description>Program Name</description>
+					<left>210</left>
+					<top>40</top>
+					<width>1030</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>-</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="group">
+					<top>90</top>
+					<left>210</left>
+					<include>VisibleFadeEffect</include>
+					<control type="image">
+						<animation effect="fade" delay="400" start="0" end="100" time="100">WindowOpen</animation>
+						<description>No Artwork Fallback</description>
+						<width>270</width>
+						<height>380</height>
+						<texture>DefaultVideo.png</texture>
+						<aspectratio>stretch</aspectratio>
+						<colordiffuse>99FFFFFF</colordiffuse>
+					</control>
+					<control type="image" id="302">
+						<description>Current Fanart image</description>
+						<width>270</width>
+						<height>380</height>
+						<texture>-</texture>
+						<aspectratio>stretch</aspectratio>
+					</control>
+					<control type="image" id="305">
+						<description>Channel Image</description>
+						<posx>830</posx>
+						<width>200</width>
+						<height>110</height>
+						<texture background="false">-</texture>
+						<aspectratio align="right">keep</aspectratio>
+					</control>
+<!-- ############ Begin Labels ############ -->
+					<control type="grouplist" id="3000">
+						<posx>250</posx>
+						<control type="label">
+							<description>Episode Title</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>blue</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30040]:</label>
+							<visible>!IsEmpty(Control.GetLabel(310))</visible>
+						</control>
+						<control type="label">
+							<description>Status</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>blue</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30013]:</label>
+							<visible>!IsEmpty(Control.GetLabel(309))</visible>
+						</control>
+						<control type="label">
+							<description>Channel</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>blue</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30012]:</label>
+						</control>
+						<control type="label">
+							<description>Air Date</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>blue</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30009]:</label>
+						</control>
+						<control type="label">
+							<description>Duration</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>blue</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30056]:</label>
+						</control>
+					</control>
+					<control type="grouplist" id="4000">
+						<posx>425</posx>
+						<control type="label" id="310">
+							<description>Episode title</description>
+							<width>565</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>-</label>
+							<visible>!IsEmpty(Control.GetLabel(310))</visible>
+						</control>
+						<control type="label">
+							<description>Status</description>
+							<width>565</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>$INFO[Control.GetLabel(309)]</label>
+							<visible>IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+						</control>
+						<control type="label">
+							<description>Status</description>
+							<width>565</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>[RED]$INFO[Control.GetLabel(309)][/RED]</label>
+							<visible>!IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+						</control>
+						<control type="label" id="304">
+							<description>Channel</description>
+							<width>565</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>-</label>
+						</control>
+						<control type="label">
+							<description>Air Date</description>
+							<width>565</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>$INFO[Control.GetLabel(317)], $INFO[Control.GetLabel(314)]</label>
+						</control>
+						<control type="label">
+							<description>Duration</description>
+							<width>565</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>$INFO[Control.GetLabel(318)] $ADDON[script.xbmc.x-newa 30029]</label>
+						</control>
+					</control>
+				</control>
+<!-- ############ End Labels ############ -->
+<!-- ############ Begin Description ############ -->				
+				<control type="textbox" id="311">
+					<description>Description</description>
+					<left>210</left>
+					<top>525</top>
+					<width>1030</width>
+					<height>120</height>
+					<font>font13</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<pagecontrol>61</pagecontrol>
+					<label>-</label>
+					<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+<!-- ############ End Description ############ -->				
+<!-- ############ Begin Navigation Buttons ############ -->
+				<control type="grouplist" id="2000">
+					<left>210</left>
+					<top>660</top>
+					<width>1030</width>
+					<height>40</height>
+					<itemgap>2</itemgap>
+					<align>center</align>
+					<orientation>horizontal</orientation>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<ondown>9000</ondown>
+					<onup>9000</onup>
+					<control type="button" id="258">
+						<description>Resume</description>
+						<label>$ADDON[script.xbmc.x-newa 30032]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="259">
+						<description>Unwatch</description>
+						<label>$ADDON[script.xbmc.x-newa 30033]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="252">
+						<description>Quick Record</description>
+						<label>$ADDON[script.xbmc.x-newa 30035] $ADDON[script.xbmc.x-newa 30034]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="260">
+						<description>Record</description>
+						<label>$ADDON[script.xbmc.x-newa 30034]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="254">
+						<description>Play</description>
+						<label>$ADDON[script.xbmc.x-newa 30036]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="251">
+						<description>Delete</description>
+						<label>$ADDON[script.xbmc.x-newa 30038]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="257">
+						<description>Archive (or Cancel)</description>
+						<label>$ADDON[script.xbmc.x-newa 30039]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<onclick>SetFocus(300)</onclick>
+					</control>
+					<control type="button" id="255">
+						<description>Refresh</description>
+						<label>$ADDON[script.xbmc.x-newa 30024]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+					<control type="button" id="253">
+						<description>Close</description>
+						<label>$ADDON[script.xbmc.x-newa 30031]</label>
+						<include>ButtonInfoDialogsCommonValues</include>
+					</control>
+				</control>
+<!-- ############ End Navigation Buttons ############ -->
+			</control>
+<!-- ############ End Content ############ -->
+		</control>
+<!-- ############ Begin Busy Indicator ############ -->
+		<control type="group">
+			<animation effect="fade" time="100">WindowOpen</animation>
+			<animation effect="fade" time="200">WindowClose</animation>
+			<visible>substring(Window.Property(busy),true)</visible>
+			<left>1070</left>
+			<top>640</top>
+			<control type="image">
+				<description>background image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>200</width>
+				<height>70</height>
+				<texture border="20">OverlayDialogBackground.png</texture>
+			</control>
+			<control type="image">
+				<description>Busy animation</description>
+				<left>20</left>
+				<top>20</top>
+				<width>32</width>
+				<height>32</height>
+				<texture>busy.png</texture>
+				<aspectratio>keep</aspectratio>
+				<animation effect="rotate" start="0" end="360" center="36,36" time="1200" loop="true" condition="true">conditional</animation>
+			</control>
+			<control type="label">
+				<description>Busy label</description>
+				<left>60</left>
+				<top>20</top>
+				<width>120</width>
+				<height>32</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[31004]</label>
+				<font>font12</font>
+			</control>
+		</control>
+<!-- ############ End Busy Indicator ############ -->
+<!-- ############ Begin Invisible but Required Controls ############ -->
+		<control type="group">
+			<visible>false</visible>
+			<control type="label" id="309"></control>
+			<control type="label" id="312"></control>
+			<control type="label" id="313"></control>
+			<control type="label" id="314"></control>
+			<control type="label" id="315"></control>
+			<control type="label" id="316"></control>
+			<control type="label" id="317"></control>
+			<control type="label" id="318"></control>
+		</control>
+<!-- ############ End Unused but Required Controls ############ -->
+	</controls>
+</window>

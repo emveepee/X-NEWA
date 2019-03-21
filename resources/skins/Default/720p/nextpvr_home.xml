@@ -1,6 +1,7 @@
 <window>
       <id>3003</id>
       <defaultcontrol>251</defaultcontrol>
+      <backgroundcolor>0</backgroundcolor>
       <type>window</type>
       <coordinates>
             <system>1</system>
@@ -71,7 +72,7 @@
                               <scroll>true</scroll>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]What's New[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30014][/B]</label>
                         </control>
                         <control type="image">
                               <description>table header</description>
@@ -91,10 +92,10 @@
                               <selectedcolor>FFe2ff43</selectedcolor>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Title[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
                         </control>
                         <control type="label">
-                              <posx>700</posx>
+                              <posx>695</posx>
                               <posy>300</posy>
                               <width>200</width>
                               <height>35</height>
@@ -103,7 +104,7 @@
                               <selectedcolor>FFe2ff43</selectedcolor>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Date/Time[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30009]/$ADDON[script.xbmc.x-newa 30010][/B]</label>
                         </control>
                         <control type="label">
                               <posx>975</posx>
@@ -115,7 +116,7 @@
                               <selectedcolor>FFe2ff43</selectedcolor>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Status[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30013][/B]</label>
                         </control>
                         <!-- ============================================= -->
                         <!-- Recent Recordings Table -->
@@ -158,9 +159,9 @@
                                           <scrollspeed>30</scrollspeed>
                                     </control>
                                     <control type="label">
-                                          <posx>385</posx>
+                                          <posx>380</posx>
                                           <posy>0</posy>
-                                          <width>250</width>
+                                          <width>265</width>
                                           <height>30</height>
                                           <font>font12</font>
                                           <textcolor>0xffddddff</textcolor>
@@ -168,7 +169,7 @@
                                           <selectedcolor>FFe2ff43</selectedcolor>
                                           <align>left</align>
                                           <aligny>center</aligny>
-                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <label>$INFO[ListItem.Property(date)] $INFO[ListItem.Property(start)] - $INFO[ListItem.Property(end)]</label>
                                           <scroll>true</scroll>
                                           <scrollspeed>30</scrollspeed>
                                     </control>
@@ -205,7 +206,6 @@
                                           <texture border="3">input-nofocus.png</texture>
                                           <visible>!Control.HasFocus(249)</visible>
                                     </control>
-
                                     <control type="label">
                                           <posx>10</posx>
                                           <posy>0</posy>
@@ -222,9 +222,9 @@
                                           <scrollspeed>30</scrollspeed>
                                     </control>
                                     <control type="label">
-                                          <posx>385</posx>
+                                          <posx>380</posx>
                                           <posy>0</posy>
-                                          <width>250</width>
+                                          <width>265</width>
                                           <height>30</height>
                                           <font>font12</font>
                                           <textcolor>0xffddddff</textcolor>
@@ -232,7 +232,7 @@
                                           <selectedcolor>FFe2ff43</selectedcolor>
                                           <align>left</align>
                                           <aligny>center</aligny>
-                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <label>$INFO[ListItem.Property(date)] $INFO[ListItem.Property(start)] - $INFO[ListItem.Property(end)]</label>
                                           <scroll>true</scroll>
                                           <scrollspeed>30</scrollspeed>
                                     </control>
@@ -269,7 +269,7 @@
                               <scroll>true</scroll>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Pending Recordings[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30003] $ADDON[script.xbmc.x-newa 30002][/B]</label>
                         </control>
                         <control type="image">
                               <description>upcoming recordings table header</description>
@@ -289,10 +289,10 @@
                               <selectedcolor>FFe2ff43</selectedcolor>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Title[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
                         </control>
                         <control type="label">
-                              <posx>700</posx>
+                              <posx>695</posx>
                               <posy>480</posy>
                               <width>500</width>
                               <height>35</height>
@@ -301,7 +301,7 @@
                               <selectedcolor>FFe2ff43</selectedcolor>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Date/Time[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30009]/$ADDON[script.xbmc.x-newa 30010][/B]</label>
                         </control>
                         <control type="label">
                               <posx>975</posx>
@@ -313,7 +313,7 @@
                               <selectedcolor>FFe2ff43</selectedcolor>
                               <align>left</align>
                               <aligny>center</aligny>
-                              <label>[B]Channel[/B]</label>
+                              <label>[B]$ADDON[script.xbmc.x-newa 30012][/B]</label>
                         </control>
                         <!-- ============================================= -->
                         <!-- Upcoming Recordings -->
@@ -356,9 +356,9 @@
                                           <scrollspeed>30</scrollspeed>
                                     </control>
                                     <control type="label">
-                                          <posx>385</posx>
+                                          <posx>380</posx>
                                           <posy>0</posy>
-                                          <width>250</width>
+                                          <width>265</width>
                                           <height>30</height>
                                           <font>font12</font>
                                           <textcolor>0xffddddff</textcolor>
@@ -366,7 +366,7 @@
                                           <selectedcolor>FFe2ff43</selectedcolor>
                                           <align>left</align>
                                           <aligny>center</aligny>
-                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <label>$INFO[ListItem.Property(date)] $INFO[ListItem.Property(start)] - $INFO[ListItem.Property(end)]</label>
                                           <scroll>true</scroll>
                                           <scrollspeed>30</scrollspeed>
                                     </control>
@@ -420,9 +420,9 @@
                                           <scrollspeed>30</scrollspeed>
                                     </control>
                                     <control type="label">
-                                          <posx>385</posx>
+                                          <posx>380</posx>
                                           <posy>0</posy>
-                                          <width>250</width>
+                                          <width>265</width>
                                           <height>30</height>
                                           <font>font12</font>
                                           <textcolor>0xffddddff</textcolor>
@@ -430,7 +430,7 @@
                                           <selectedcolor>FFe2ff43</selectedcolor>
                                           <align>left</align>
                                           <aligny>center</aligny>
-                                          <label>$INFO[ListItem.Property(date)] - $INFO[ListItem.Property(end)]</label>
+                                          <label>$INFO[ListItem.Property(date)] $INFO[ListItem.Property(start)] - $INFO[ListItem.Property(end)]</label>
                                           <scroll>true</scroll>
                                           <scrollspeed>30</scrollspeed>
                                     </control>
@@ -472,7 +472,7 @@
 			<scroll>true</scroll>
 			<align>left</align>
 			<aligny>center</aligny>
-			<label>[B]Free Space[/B]</label>
+			<label>[B]$ADDON[script.xbmc.x-newa 30015][/B]</label>
 		</control>
 		<control type="image" id="247">
 			<posx>325</posx>
@@ -504,7 +504,7 @@
 			<scroll>true</scroll>
 			<align>left</align>
 			<aligny>center</aligny>
-			<label>xx Gb</label>
+			<label>$ADDON[script.xbmc.x-newa 30016]</label>
 		</control>
 		<control type="label" id="244">
 			<posx>575</posx>
@@ -516,14 +516,14 @@
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>xx Gb</label>
+			<label>...</label>
 		</control>
 		<!-- Counters -->
 		<control type="image">
 			<description>Counters background</description>
-			<posx>843</posx>
+			<posx>813</posx>
 			<posy>150</posy>
-			<width>372</width>
+			<width>402</width>
 			<height>110</height>
 			<colordiffuse>66FFFFFF</colordiffuse>
 			<texture border="5">black-back.png</texture>
@@ -538,19 +538,19 @@
 			<scroll>true</scroll>
 			<align>left</align>
 			<aligny>center</aligny>
-			<label>[B]Counters[/B]</label>
+			<label>[B]$ADDON[script.xbmc.x-newa 30017][/B]</label>
 		</control>
 		<control type="label">
-			<posx>980</posx>
+			<posx>960</posx>
 			<posy>175</posy>
-			<width>100</width>
+			<width>150</width>
 			<height>35</height>
 			<font>font16</font>
 			<textcolor>white</textcolor>
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>Pending:</label>
+			<label>$ADDON[script.xbmc.x-newa 30003]:</label>
 		</control>
 		<control type="label" id="243">
 			<posx>1020</posx>
@@ -565,16 +565,16 @@
 			<label>[B]-[/B]</label>
 		</control>
 		<control type="label">
-			<posx>980</posx>
+			<posx>960</posx>
 			<posy>200</posy>
-			<width>135</width>
+			<width>150</width>
 			<height>35</height>
 			<font>font16</font>
 			<textcolor>white</textcolor>
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>In Progress:</label>
+			<label>$ADDON[script.xbmc.x-newa 30004]:</label>
 		</control>
 		<control type="label" id="242">
 			<posx>1020</posx>
@@ -589,16 +589,16 @@
 			<label>[B]-[/B]</label>
 		</control>
 		<control type="label">
-			<posx>980</posx>
+			<posx>960</posx>
 			<posy>225</posy>
-			<width>110</width>
+			<width>140</width>
 			<height>35</height>
 			<font>font16</font>
 			<textcolor>white</textcolor>
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>Available:</label>
+			<label>$ADDON[script.xbmc.x-newa 30005]:</label>
 		</control>
 		<control type="label" id="241">
 			<posx>1020</posx>
@@ -622,7 +622,7 @@
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>Failed:</label>
+			<label>$ADDON[script.xbmc.x-newa 30006]:</label>
 		</control>
 		<control type="label" id="240">
 			<posx>1210</posx>
@@ -639,14 +639,14 @@
 		<control type="label">
 			<posx>1170</posx>
 			<posy>200</posy>
-			<width>100</width>
+			<width>115</width>
 			<height>35</height>
 			<font>font16</font>
 			<textcolor>white</textcolor>
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>Conflict:</label>
+			<label>$ADDON[script.xbmc.x-newa 30008]:</label>
 		</control>
 		<control type="label" id="239">
 			<posx>1210</posx>
@@ -670,7 +670,7 @@
 			<scroll>true</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>Recurring:</label>
+			<label>$ADDON[script.xbmc.x-newa 30007]:</label>
 		</control>
 		<control type="label" id="238">
 			<posx>1210</posx>
@@ -701,7 +701,7 @@
                   <posy>20</posy>
                   <width>460</width>
                   <height>90</height>
-                  <texture>nextPVR.png</texture>
+                  <texture>NextPVR.png</texture>
                   <aspectratio align="left">keep</aspectratio>
                   <animation effect="fade" time="200">WindowOpen</animation>
                   <animation effect="fade" time="200">WindowClose</animation>
@@ -725,11 +725,12 @@
             <!-- ============================================= -->
             <control type="grouplist" id="2000">
                   <description>Buttons</description>
+                  <font>font14</font>
                   <posx>0</posx>
                   <posy>122</posy>
                   <itemgap>1</itemgap>
-                  <onup>2000</onup>
-                  <ondown>2000</ondown>
+                  <onup>257</onup>
+                  <ondown>251</ondown>
                   <onleft>248</onleft>
                   <onright>249</onright>
                   <!-- Copy of include Window_OpenClose_Left_Panel_Animation -->
@@ -738,9 +739,11 @@
                   <animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
                   <animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
                   <control type="button" id="251">
-                        <label>TV Guide</label>
+                        <label>$ADDON[script.xbmc.x-newa 30019]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
@@ -748,9 +751,11 @@
                         <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
                   </control>
                   <control type="button" id="258">
-                        <label>All Recordings</label>
+                        <label>$ADDON[script.xbmc.x-newa 30002]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
@@ -758,19 +763,36 @@
                         <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(recent),false)</enable>
                   </control>
                   <control type="button" id="253">
-                        <label>Pending Recordings</label>
+                        <label>$ADDON[script.xbmc.x-newa 30003] $ADDON[script.xbmc.x-newa 30002]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
                         <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(upcoming),false)</enable>
-                  </control>                  
-                  <control type="button" id="252">
-                        <label>Recurring Recordings</label>
+                  </control>
+                  <control type="button" id="260" >
+                        <label>$ADDON[script.xbmc.x-newa 30021]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                        <textoffsetx>40</textoffsetx>
+                        <texturefocus>button_focus.png</texturefocus>
+                        <texturenofocus>button_nofocus.png</texturenofocus>
+                        <enabled>true</enabled>
+                        <pulseonselect>true</pulseonselect>
+                        <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
+                  </control>
+                  <control type="button" id="252">
+                        <label>$ADDON[script.xbmc.x-newa 30007] $ADDON[script.xbmc.x-newa 30002]</label>
+                        <width>285</width>
+                        <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
@@ -778,40 +800,36 @@
                         <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(scheduled),false)</enable>
                   </control>
                   <control type="button" id="250" >
-                        <label>TV Shows</label>
+                        <label>$ADDON[script.xbmc.x-newa 30022]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <enabled>true</enabled>
                         <pulseonselect>true</pulseonselect>
                         <enable>!substring(Window.Property(busy),true)</enable>
-                  </control>                  
+                  </control>
                   <control type="button" id="254">
-                        <label>Search Guide</label>
+                        <label>$ADDON[script.xbmc.x-newa 30023]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
                         <enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
                   </control>
-                  <control type="button" id="255">
-                        <label>Settings</label>
-                        <width>285</width>
-                        <align>left</align>
-                        <textoffsetx>40</textoffsetx>
-                        <texturefocus>button_focus.png</texturefocus>
-                        <texturenofocus>button_nofocus.png</texturenofocus>
-                        <pulseonselect>true</pulseonselect>
-                        <enable>!substring(Window.Property(busy),true)</enable>
-                  </control>
                   <control type="button" id="256">
-                        <label>Refresh</label>
+                        <label>$ADDON[script.xbmc.x-newa 30024]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
@@ -820,21 +838,25 @@
                         <enable>!substring(Window.Property(busy),true)</enable>
                   </control>
                   <control type="button" id="259">
-                        <label>Go Online</label>
+                        <label>$ADDON[script.xbmc.x-newa 30025]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>
                         <pulseonselect>true</pulseonselect>
                         <visible>substring(Window.Property(offline),true)</visible>
-                        <enable>!substring(Window.Property(busy),true)</enable>                        
+                        <enable>!substring(Window.Property(busy),true)</enable>
                   </control>
-                  
+
                   <control type="button" id="257">
-                        <label>Exit</label>
+                        <label>$ADDON[script.xbmc.x-newa 30026]</label>
                         <width>285</width>
                         <align>left</align>
+                        <textcolor name="white">FFFFFFFF</textcolor>
+                        <focusedcolor name="white">FFFFFFFF</focusedcolor>
                         <textoffsetx>40</textoffsetx>
                         <texturefocus>button_focus.png</texturefocus>
                         <texturenofocus>button_nofocus.png</texturenofocus>

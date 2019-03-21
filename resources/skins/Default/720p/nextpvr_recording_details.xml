@@ -53,14 +53,14 @@
             <posx>320</posx>
             <posy>135</posy>
             <itemgap>32</itemgap>
-            <control type="label"><description>title</description><label>Title</label></control>
-            <control type="label"><description>air date</description><label>Air Date</label></control>
-            <control type="label"><description>desc</description><label>Channel</label></control>                     
-            <control type="label"><description>channel</description><label>Subtitle</label></control>
+            <control type="label"><description>title</description><label>$ADDON[script.xbmc.x-newa 30011]</label></control>
+            <control type="label"><description>air date</description><label>$ADDON[script.xbmc.x-newa 30009]</label></control>
+            <control type="label"><description>channel</description><label>$ADDON[script.xbmc.x-newa 30012]</label></control>                     
+            <control type="label"><description>episode</description><label>$ADDON[script.xbmc.x-newa 30040]</label></control>
             <!--
             <control type="label"><description>category</description><label>SCRIPT614</label></control>
             -->
-            <control type="label"><description>episode</description><label>Description</label></control>
+            <control type="label"><description>description</description><label>$ADDON[script.xbmc.x-newa 30041]</label></control>
         </control>
 
         <!-- ============================================= -->
@@ -82,10 +82,10 @@
                 <info>Window.Property('title')</info>
                 <scroll>auto</scroll>
             </control>
-            <control type="label" id="311">
+            <control type="label">
                 <description>Air Date</description>
                 <textcolor>0xffddddff</textcolor>
-                <info>Window.Property(airDate)</info>
+                <label>$INFO[Control.GetLabel(316)] $INFO[Control.GetLabel(314)] - $INFO[Control.GetLabel(315)] ($INFO[Control.GetLabel(318)] $ADDON[script.xbmc.x-newa 30029])</label>
             </control>                        
             
             <control type="label" id="304">
@@ -105,7 +105,7 @@
                 <info>Window.Property(subtitle)</info>
             </control>
             
-            <control type="textbox" id="312">
+            <control type="textbox" id="311">
                 <description>Show desc</description>
                 <width>750</width>
                 <height>90</height>
@@ -278,7 +278,9 @@
 			
         <control type="button" id="253">
             <description>Close button</description>
-            <label>Close</label>
+            <label>$ADDON[script.xbmc.x-newa 30031]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -290,7 +292,9 @@
         <control type="button" id="258">
             <description>Resume button</description>
             <height>40</height>
-            <label>Resume</label>
+            <label>$ADDON[script.xbmc.x-newa 30032]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -302,7 +306,9 @@
         <control type="button" id="259">
             <description>Unwatch button</description>
             <height>40</height>
-            <label>Unwatch</label>
+            <label>$ADDON[script.xbmc.x-newa 30033]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -314,7 +320,9 @@
         <control type="button" id="252">
             <description>Quick Record button</description>
             <height>40</height>
-            <label>Quick Record</label>
+            <label>$ADDON[script.xbmc.x-newa 30035] $ADDON[script.xbmc.x-newa 30034]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -324,7 +332,9 @@
         <control type="button" id="260">
             <description>Record button</description>
             <height>40</height>
-            <label>Record</label>
+            <label>$ADDON[script.xbmc.x-newa 30034]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -334,7 +344,9 @@
         <control type="button" id="254">
             <description>Play button</description>
             <height>40</height>
-            <label>Play</label>
+            <label>$ADDON[script.xbmc.x-newa 30036]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -347,7 +359,9 @@
         
         <control type="button" id="251">
             <description>Delete button</description>
-            <label>Cancel</label>
+            <label>$ADDON[script.xbmc.x-newa 30038]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -359,7 +373,9 @@
         
         <control type="button" id="257">
             <description>Archive or Cancel button</description>
-            <label>Archive</label>
+            <label>$ADDON[script.xbmc.x-newa 30039]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -374,7 +390,9 @@
 
         <control type="button" id="255">
             <description>Refresh button</description>
-            <label>Refresh</label>
+            <label>$ADDON[script.xbmc.x-newa 30024]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -430,8 +448,20 @@
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
     </control>
-    
-    
+<!-- ############ Begin Invisible but Required Controls ############ -->
+		<control type="group">
+			<visible>false</visible>
+			<control type="label" id="309"></control>
+			<control type="label" id="312"></control>
+			<control type="label" id="313"></control>
+			<control type="label" id="314"></control>
+			<control type="label" id="315"></control>
+			<control type="label" id="316"></control>
+			<control type="label" id="317"></control>
+			<control type="label" id="318"></control>
+		</control>
+<!-- ############ End Unused but Required Controls ############ -->
+        
   </controls>
 
 </window>

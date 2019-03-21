@@ -15,7 +15,7 @@
 # written by: Jeff Ortel ( jortel@redhat.com )
 
 """
-Contains classes for general suds options.
+Contains classes for transport options.
 """
 
 
@@ -26,9 +26,6 @@ from suds.properties import *
 class Options(Skin):
     """
     Options:
-        - B{cache} - The http I{transport} cache.  May be set (None) for no caching.
-                - type: L{Cache}
-                - default: L{NoCache}
         - B{proxy} - An http proxy to be specified on requests.
              The proxy is defined as {protocol:proxy,}
                 - type: I{dict}
@@ -49,12 +46,12 @@ class Options(Skin):
                 - default: None
     """    
     def __init__(self, **kwargs):
+        domain = __name__
         definitions = [
-            Definition('cache', Cache, NoCache()),
             Definition('proxy', dict, {}),
             Definition('timeout', (int,float), 90),
             Definition('headers', dict, {}),
             Definition('username', basestring, None),
             Definition('password', basestring, None),
         ]
-        Skin.__init__(self, definitions, kwargs)
+        Skin.__init__(self, domain, definitions, kwargs)

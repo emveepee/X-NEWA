@@ -91,7 +91,7 @@
 		<control type="label" id="1020">
 			<description>TITLE control</description>
 			<posx>255-</posx>
-			<posy>610</posy>
+			<posy>600</posy>
 			<width>700</width>
 			<height>45</height>
 			<align>left</align>
@@ -103,7 +103,7 @@
 		<control type="label" id="1021">
 			<description>TITLE control</description>
 			<posx>20r</posx>
-			<posy>610</posy>
+			<posy>600</posy>
 			<width>300</width>
 			<height>45</height>
 			<align>right</align>
@@ -115,7 +115,7 @@
 		<control type="label" id="1030">
 			<description>TITLE DESC control</description>
 			<posx>260</posx>
-			<posy>640</posy>
+			<posy>630</posy>
 			<width>1000</width>
 			<height>60</height>
             <wrapmultiline>true</wrapmultiline>            
@@ -224,6 +224,7 @@
 					<posy>0</posy>
 					<width>220</width>
 					<height>25</height>
+                    <!--multiline>true</multiline-->
 					<font>special11</font>
 					<aligny>center</aligny>
 					<selectedcolor>FFe2ff43</selectedcolor>

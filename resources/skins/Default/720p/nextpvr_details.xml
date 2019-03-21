@@ -40,6 +40,8 @@
             <font>font20</font>
             <info>Window.Property(heading)</info>
             <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
         </control>
         
         <control type="image">
@@ -66,6 +68,8 @@
                 
         <control type="label" id="303">
             <description>Title Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>220</posx>
             <posy>95</posy>
             <width>400</width>
@@ -74,11 +78,14 @@
             <texturefocus>-</texturefocus>
             <texturenofocus>-</texturenofocus>
             <label>$INFO[Window.Property(title)]</label>
+        
             <scroll>auto</scroll>
         </control>
         
         <control type="label" id="304">
             <description>Channel Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>695</posx>
             <posy>135</posy>
             <width>400</width>
@@ -89,16 +96,29 @@
             <label>$INFO[Window.Property(channel)]</label>
         </control>
 
-        <control type="label" id="309">
+        <control type="label">
             <description>Status Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>695</posx>
             <posy>185</posy>
             <width>400</width>
             <align>right</align>
             <font>font12</font>
-            <texturefocus>-</texturefocus>
-            <texturenofocus>-</texturenofocus>
-            <label>$INFO[Window.Property(status)]</label>
+            <label>$INFO[Control.GetLabel(309)]</label>
+            <visible>IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+        </control>
+        <control type="label">
+            <description>Status Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <posx>695</posx>
+            <posy>185</posy>
+            <width>400</width>
+            <align>right</align>
+            <font>font12</font>
+            <label>[RED]$INFO[Control.GetLabel(309)][/RED]</label>
+            <visible>!IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
         </control>
 
         <control type="image" id="305">
@@ -143,14 +163,15 @@
             <posy>145</posy>
             <width>30</width>
             <height>30</height>
-            <align>right</align>
-            <aspectratio>keep</aspectratio>
             <align>left</align>
+            <aspectratio>keep</aspectratio>
             <texture></texture>
         </control>
 
         <control type="label" id="309">
             <description>Genre Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>220</posx>
             <posy>185</posy>
             <width>400</width>
@@ -175,6 +196,8 @@
         
         <control type="label" id="310">
             <description>Subtitle Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>55</posx>
             <posy>220</posy>
             <width>300</width>
@@ -186,22 +209,39 @@
             <scroll>auto</scroll>
         </control>
 
-        <control type="label" id="311">
+        <control type="label">
             <description>Time Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>695</posx>
             <posy>220</posy>
             <width>400</width>
             <align>right</align>
             <font>font12</font>
+            <label>$INFO[Control.GetLabel(314)] - $INFO[Control.GetLabel(315)]</label>
+         </control>
+
+        <control type="textbox" id="311">
+            <description>Desc Label</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <posx>55</posx>
+            <posy>245</posy>
+            <width>640</width>
+            <height>70</height>
+            <align>left</align>
+            <font>font12</font>
             <texturefocus>-</texturefocus>
             <texturenofocus>-</texturenofocus>
             <label></label>
-         </control>
-
-        <control type="textbox" id="312">
-            <description>Desc Label</description>
+            <autoscroll delay="4000" time="1000" repeat="6000">true</autoscroll>
+        </control>
+        <control type="textbox" id="313">
+            <description>Recording Status</description>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
             <posx>55</posx>
-            <posy>245</posy>
+            <posy>220</posy>
             <width>640</width>
             <height>70</height>
             <align>left</align>
@@ -246,6 +286,8 @@
             
             <control type="button" id="201">
                 <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -257,6 +299,8 @@
             </control>
             
             <control type="button" id="202">
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
                 <label></label>
                 <label2></label2>
                 <width>650</width>
@@ -270,6 +314,8 @@
             
             <control type="button" id="203">
                 <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -282,6 +328,8 @@
             
             <control type="button" id="204">
                 <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -294,6 +342,8 @@
             
             <control type="button" id="205">
                 <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -306,6 +356,8 @@
 
             <control type="button" id="206">
                 <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -318,6 +370,8 @@
 
             <control type="button" id="207">
                 <label></label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -329,8 +383,10 @@
             </control>
 
             <control type="button" id="208">
-                <label>Priority</label>
-                <label2>Not Supported</label2>
+                <label>$ADDON[script.xbmc.x-newa 30042]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <label2>$ADDON[script.xbmc.x-newa 30049]</label2>
                 <width>650</width>
                 <height>35</height>
                 <align>left</align>
@@ -352,7 +408,9 @@
             <onup>2000</onup>
             
             <control type="button" id="250">
-                <label>Save</label>
+                <label>$ADDON[script.xbmc.x-newa 30053]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -361,7 +419,9 @@
             </control>
 
             <control type="button" id="251">
-                <label>Delete</label>
+                <label>$ADDON[script.xbmc.x-newa 30054]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -370,7 +430,9 @@
             </control>
             
             <control type="button" id="252">
-                <label>Record</label>
+                <label>$ADDON[script.xbmc.x-newa 30034]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -379,7 +441,9 @@
             </control>
             
             <control type="button" id="253">
-                <label>Close</label>
+                <label>$ADDON[script.xbmc.x-newa 30031]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -388,7 +452,9 @@
             </control>
 
             <control type="button" id="254">
-                <label>Play</label>
+                <label>$ADDON[script.xbmc.x-newa 30036]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -409,5 +475,21 @@
             <visible>substring(Window.Property(busy),true)</visible>
             <animation effect="fade" time="250">VisibleChange</animation>
         </control>
+<!-- ############ Required Controls ############ -->
+		<control type="group">
+			<visible>false</visible>
+			<control type="image" id="4"></control>
+			<control type="image" id="306"></control>
+			<control type="image" id="307"></control>
+			<control type="image" id="308"></control>
+			<control type="label" id="309"></control>
+			<control type="label" id="312"></control>
+			<control type="label" id="314"></control>
+			<control type="label" id="315"></control>
+			<control type="label" id="316"></control>
+			<control type="label" id="317"></control>
+			<control type="label" id="318"></control>
+		</control>
+<!-- ############ End Unused but Required Controls ############ -->
     </controls>
 </window>

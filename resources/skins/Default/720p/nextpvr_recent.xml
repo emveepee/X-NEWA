@@ -78,7 +78,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Date[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30009][/B]</label>
         </control>
 
         <control type="label">
@@ -91,7 +91,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Title[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -105,6 +105,7 @@
             <align>left</align>
             <aligny>center</aligny>
             <label>[B]Status[/B]</label>
+            <visible>substring(Window.Property(recordings),true)</visible>
         </control>
 
         <control type="label">
@@ -117,7 +118,8 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Start Time[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30028][/B]</label>
+            <visible>substring(Window.Property(recordings),true)</visible>
         </control>
 
         <control type="label">
@@ -130,7 +132,21 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Channel[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30012][/B]</label>       
+            <visible>substring(Window.Property(recordings),true)</visible>
+        </control>
+        <control type="label">
+            <posx>1015</posx>
+            <posy>140</posy>
+            <width>100</width>
+            <height>35</height>
+            <font>font12</font>
+            <textcolor>ffddddff</textcolor>
+            <selectedcolor>FFe2ff43</selectedcolor>
+            <align>left</align>
+            <aligny>center</aligny>
+            <label>[B]$ADDON[script.xbmc.x-newa 30055][/B]</label>       
+            <visible>!substring(Window.Property(recordings),true)</visible>
         </control>
 
         <!-- ============================================= -->
@@ -197,8 +213,24 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(title)]</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
                 
+                <control type="label">
+                    <posx>150</posx>
+                    <posy>0</posy>
+                    <width>450</width>
+                    <height>30</height>
+                    <font>font12</font>
+                    <textcolor>DDFFFFFF</textcolor>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(title)]</label>
+                    <visible>!substring(Window.Property(recordings),true)</visible>
+                </control>
+                               
+                               
                 <control type="label">
                     <posx>350</posx>
                     <posy>0</posy>
@@ -222,7 +254,8 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] min.)</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
                 <control type="label">
@@ -235,7 +268,21 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(count)]</label>
+                    <visible>!substring(Window.Property(recordings),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>700</posx>
+                    <posy>0</posy>
+                    <width>200</width>
+                    <height>30</height>
+                    <font>font12</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(channel)]</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
                 
             </itemlayout>
@@ -285,6 +332,19 @@
                 <control type="label">
                     <posx>150</posx>
                     <posy>0</posy>
+                    <width>450</width>
+                    <height>31</height>
+                    <font>font12</font>
+                    <textcolor>DDFFFFFF</textcolor>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(title)]</label>
+                    <visible>!substring(Window.Property(recordings),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>150</posx>
+                    <posy>0</posy>
                     <width>190</width>
                     <height>31</height>
                     <font>font12</font>
@@ -293,6 +353,7 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(title)]</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
                 <control type="label">
@@ -318,20 +379,35 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] min.)</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>                    
                 </control>
 
                 <control type="label">
                     <posx>700</posx>
                     <posy>0</posy>
                     <width>200</width>
-                    <height>31</height>
+                    <height>30</height>
+                    <font>font12</font>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(count)]</label>
+                    <visible>!substring(Window.Property(recordings),true)</visible>
+                </control>
+                <control type="label">
+                    <posx>700</posx>
+                    <posy>0</posy>
+                    <width>200</width>
+                    <height>30</height>
                     <font>font12</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(channel)]</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
                 <control type="label">
@@ -344,7 +420,21 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(episode)]; $INFO[ListItem.Property(description)]</label>
+                    <visible>!IsEmpty(ListItem.Property(episode))</visible>
+                </control> 
+                <control type="label">
+                    <posx>150</posx>
+                    <posy>31</posy>
+                    <width>750</width>
+                    <height>31</height>
+                    <font>font11</font>
+                    <textcolor>DDced8da</textcolor>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(description)]</label>
+                    <visible>IsEmpty(ListItem.Property(episode))</visible>
                 </control> 
 
             </focusedlayout>
@@ -378,7 +468,7 @@
 <!--            <visible>Player.HasVideo</visible>-->
 <!--        </control>-->
                       
-        <control type="videowindow" id="4011">
+        <control type="videowindow">
             <posx>30</posx>
             <posy>60</posy>
             <width>230</width>
@@ -420,13 +510,13 @@
       <align>left</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>Recent Recordings</label>
+      <label>$ADDON[script.xbmc.x-newa 30020] $ADDON[script.xbmc.x-newa 30002]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
       <visible>false</visible>
     </control>
 
-    <control type="label">
+    <control type="label" id="4014">
       <description>screen title</description>
       <posx>70r</posx>
       <posy>25</posy>
@@ -435,7 +525,7 @@
       <align>right</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>[B]Recent Recordings[/B]</label>
+      <label>[B]$INFO[Window.Property(archive)] $ADDON[script.xbmc.x-newa 30002][/B]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -476,15 +566,63 @@
         
         <control type="button" id="251">
             <description>Refresh button</description>
-            <label>Refresh</label>
+            <label>$ADDON[script.xbmc.x-newa 30024]</label>
             <width>285</width>
             <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
             <pulseonselect>true</pulseonselect>
             <enable>!substring(Window.Property(busy),true)</enable>
         </control>
+        <control type="button" id="252">
+            <description>Import button</description>
+            <label> $ADDON[script.xbmc.x-newa 30027]</label>
+            <width>285</width>
+            <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+            <enable>!substring(Window.Property(busy),true)</enable>
+        </control>
+        <control type="button" id="253">
+            <description>Sort button</description>
+            <label> $ADDON[script.xbmc.x-newa 30122]</label>
+            <width>285</width>
+            <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+            <enable>!substring(Window.Property(busy),true)</enable>
+        </control>        
+		<control type="radiobutton" id="255">
+		    <description>Filter</description>                    
+            <width>260</width>            
+            <textoffsetx>40</textoffsetx>
+            <label>Filter</label>
+            <enable>!substring(Window.Property(busy),true)</enable>            
+		</control>        
+        <control type="button" id="254">
+            <description>Action button</description>
+            <label>Process Tagged Files</label>
+            <width>285</width>
+            <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+            <enable>substring(Window.Property(tagged),true)</enable>
+        </control>                
          
     </control>
     

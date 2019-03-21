@@ -25,108 +25,12 @@ from suds.xsd import *
 from suds.xsd.sxbase import *
 from suds.xsd.query import *
 from suds.sax import splitPrefix, Namespace
-from suds.sax.parser import Parser
 from suds.transport import TransportError
+from suds.reader import DocumentReader
 from urlparse import urljoin
 
 
 log = getLogger(__name__)
-
-
-class Factory:
-    """
-    @cvar tags: A factory to create object objects based on tag.
-    @type tags: {tag:fn,}
-    """
-
-    tags =\
-    {
-        'import' : lambda x,y: Import(x,y),
-        'include' : lambda x,y: Include(x,y), 
-        'complexType' : lambda x,y: Complex(x,y),
-        'group' : lambda x,y: Group(x,y),
-        'attributeGroup' : lambda x,y: AttributeGroup(x,y), 
-        'simpleType' : lambda x,y: Simple(x,y), 
-        'element' : lambda x,y: Element(x,y),
-        'attribute' : lambda x,y: Attribute(x,y),
-        'sequence' : lambda x,y: Sequence(x,y),
-        'all' : lambda x,y: All(x,y),
-        'choice' : lambda x,y: Choice(x,y),
-        'complexContent' : lambda x,y: ComplexContent(x,y),
-        'simpleContent' : lambda x,y: SimpleContent(x,y),
-        'restriction' : lambda x,y: Restriction(x,y),
-        'enumeration' : lambda x,y: Enumeration(x,y),
-        'extension' : lambda x,y: Extension(x,y),
-        'any' : lambda x,y: Any(x,y),
-    }
-    
-    @classmethod
-    def create(cls, root, schema):
-        """
-        Create an object based on the root tag name.
-        @param root: An XML root element.
-        @type root: L{Element}
-        @param schema: A schema object.
-        @type schema: L{schema.Schema}
-        @return: The created object.
-        @rtype: L{SchemaObject} 
-        """
-        fn = cls.tags.get(root.name)
-        if fn is not None:
-            return fn(schema, root)
-        else:
-            return None
-
-    @classmethod
-    def build(cls, root, schema, filter=('*',)):
-        """
-        Build an xsobject representation.
-        @param root: An schema XML root.
-        @type root: L{sax.element.Element}
-        @param filter: A tag filter.
-        @type filter: [str,...]
-        @return: A schema object graph.
-        @rtype: L{sxbase.SchemaObject}
-        """
-        children = []
-        for node in root.getChildren(ns=Namespace.xsdns):
-            if '*' in filter or node.name in filter:
-                child = cls.create(node, schema)
-                if child is None:
-                    continue
-                children.append(child)
-                c = cls.build(node, schema, child.childtags())
-                child.rawchildren = c
-        return children
-    
-    @classmethod
-    def collate(cls, children):
-        imports = []
-        elements = {}
-        attributes = {}
-        types = {}
-        groups = {}
-        agrps = {}
-        for c in children:
-            if isinstance(c, (Import, Include)):
-                imports.append(c)
-                continue
-            if isinstance(c, Attribute):
-                attributes[c.qname] = c
-                continue
-            if isinstance(c, Element):
-                elements[c.qname] = c
-                continue
-            if isinstance(c, Group):
-                groups[c.qname] = c
-                continue
-            if isinstance(c, AttributeGroup):
-                agrps[c.qname] = c
-                continue
-            types[c.qname] = c
-        for i in imports:
-            children.remove(i)
-        return (children, imports, attributes, elements, types, groups, agrps)
 
 
 class RestrictionMatcher:
@@ -134,7 +38,7 @@ class RestrictionMatcher:
     For use with L{NodeFinder} to match restriction.
     """
     def match(self, n):
-        return ( n.restriction() and n.ref is not None )
+        return isinstance(n, Restriction)
     
 
 class TypedContent(Content):
@@ -169,14 +73,15 @@ class TypedContent(Content):
     
     def qref(self):
         """
-        Get the I{type} qualified reference.
-        This method takes into account types defined
-        through restriction.
+        Get the I{type} qualified reference to the referenced xsd type.
+        This method takes into account simple types defined through
+        restriction with are detected by determining that self is simple
+        (len=0) and by finding a restriction child.
         @return: The I{type} qualified reference.
         @rtype: qref
         """
         qref = self.type
-        if qref is None:
+        if qref is None and len(self) == 0:
             ls = []
             m = RestrictionMatcher()
             finder = NodeFinder(m, 1)
@@ -211,6 +116,12 @@ class Complex(SchemaObject):
     def extension(self):
         for c in self.rawchildren:
             if c.extension():
+                return True
+        return False
+    
+    def mixed(self):
+        for c in self.rawchildren:
+            if isinstance(c, SimpleContent) and c.mixed():
                 return True
         return False
 
@@ -283,13 +194,16 @@ class Simple(SchemaObject):
     """
 
     def childtags(self):
-        return ('restriction', 'any',)
+        return ('restriction', 'any', 'list',)
     
     def enum(self):
         for child, ancestry in self.children():
             if isinstance(child, Enumeration):
                 return True
         return False
+    
+    def mixed(self):
+        return len(self)
 
     def description(self):
         return ('name',)
@@ -305,6 +219,21 @@ class Simple(SchemaObject):
             if c.restriction():
                 return True
         return False
+    
+
+class List(SchemaObject):
+    """
+    Represents an (xsd) schema <xs:list/> node
+    """
+
+    def childtags(self):
+        return ()
+
+    def description(self):
+        return ('name',)
+    
+    def xslist(self):
+        return True
 
    
 class Restriction(SchemaObject):
@@ -420,6 +349,9 @@ class SimpleContent(SchemaObject):
             if c.restriction():
                 return True
         return False
+    
+    def mixed(self):
+        return len(self)
 
 
 class Enumeration(Content):
@@ -550,7 +482,7 @@ class Extension(SchemaObject):
 
     def description(self):
         return ('ref',)
-
+    
 
 class Import(SchemaObject):
     """
@@ -590,9 +522,11 @@ class Import(SchemaObject):
             self.location = self.locations.get(self.ns[1])
         self.opened = False
         
-    def open(self):
+    def open(self, options):
         """
         Open and import the refrenced schema.
+        @param options: An options dictionary.
+        @type options: L{options.Options}
         @return: The referenced schema.
         @rtype: L{Schema}
         """
@@ -605,7 +539,7 @@ class Import(SchemaObject):
             if self.location is None:
                 log.debug('imported schema (%s) not-found', self.ns[1])
             else:
-                result = self.download()
+                result = self.download(options)
         log.debug('imported:\n%s', result)
         return result
     
@@ -616,16 +550,17 @@ class Import(SchemaObject):
         else:
             return self.schema.locate(self.ns)
 
-    def download(self):
+    def download(self, options):
         """ download the schema """
         url = self.location
         try:
             if '://' not in url:
                 url = urljoin(self.schema.baseurl, url)
-            transport = self.schema.options.transport
-            root = Parser(transport).parse(url=url).root()
+            reader = DocumentReader(options)
+            d = reader.open(url)
+            root = d.root()
             root.set('url', url)
-            return self.schema.instance(root, url)
+            return self.schema.instance(root, url, options)
         except TransportError:
             msg = 'imported schema (%s) at (%s), failed' % (self.ns[1], url)
             log.error('%s, %s', self.id, msg, exc_info=True)
@@ -653,9 +588,11 @@ class Include(SchemaObject):
             self.location = self.locations.get(self.ns[1])
         self.opened = False
         
-    def open(self):
+    def open(self, options):
         """
         Open and include the refrenced schema.
+        @param options: An options dictionary.
+        @type options: L{options.Options}
         @return: The referenced schema.
         @rtype: L{Schema}
         """
@@ -663,21 +600,22 @@ class Include(SchemaObject):
             return
         self.opened = True
         log.debug('%s, including location="%s"', self.id, self.location)
-        result = self.download()
+        result = self.download(options)
         log.debug('included:\n%s', result)
         return result
 
-    def download(self):
+    def download(self, options):
         """ download the schema """
         url = self.location
         try:
             if '://' not in url:
                 url = urljoin(self.schema.baseurl, url)
-            transport = self.schema.options.transport
-            root = Parser(transport).parse(url=url).root()
+            reader = DocumentReader(options)
+            d = reader.open(url)
+            root = d.root()
             root.set('url', url)
             self.__applytns(root)
-            return self.schema.instance(root, url)
+            return self.schema.instance(root, url, options)
         except TransportError:
             msg = 'include schema at (%s), failed' % url
             log.error('%s, %s', self.id, msg, exc_info=True)
@@ -762,11 +700,126 @@ class Any(Content):
     def any(self):
         return True
     
+    
+class Factory:
+    """
+    @cvar tags: A factory to create object objects based on tag.
+    @type tags: {tag:fn,}
+    """
+
+    tags =\
+    {
+        'import' : Import,
+        'include' : Include, 
+        'complexType' : Complex,
+        'group' : Group,
+        'attributeGroup' : AttributeGroup, 
+        'simpleType' : Simple,
+        'list' : List,
+        'element' : Element,
+        'attribute' : Attribute,
+        'sequence' : Sequence,
+        'all' : All,
+        'choice' : Choice,
+        'complexContent' : ComplexContent,
+        'simpleContent' : SimpleContent,
+        'restriction' : Restriction,
+        'enumeration' : Enumeration,
+        'extension' : Extension,
+        'any' : Any,
+    }
+    
+    @classmethod
+    def maptag(cls, tag, fn):
+        """
+        Map (override) tag => I{class} mapping.
+        @param tag: An xsd tag name.
+        @type tag: str
+        @param fn: A function or class.
+        @type fn: fn|class.
+        """
+        cls.tags[tag] = fn
+    
+    @classmethod
+    def create(cls, root, schema):
+        """
+        Create an object based on the root tag name.
+        @param root: An XML root element.
+        @type root: L{Element}
+        @param schema: A schema object.
+        @type schema: L{schema.Schema}
+        @return: The created object.
+        @rtype: L{SchemaObject} 
+        """
+        fn = cls.tags.get(root.name)
+        if fn is not None:
+            return fn(schema, root)
+        else:
+            return None
+
+    @classmethod
+    def build(cls, root, schema, filter=('*',)):
+        """
+        Build an xsobject representation.
+        @param root: An schema XML root.
+        @type root: L{sax.element.Element}
+        @param filter: A tag filter.
+        @type filter: [str,...]
+        @return: A schema object graph.
+        @rtype: L{sxbase.SchemaObject}
+        """
+        children = []
+        for node in root.getChildren(ns=Namespace.xsdns):
+            if '*' in filter or node.name in filter:
+                child = cls.create(node, schema)
+                if child is None:
+                    continue
+                children.append(child)
+                c = cls.build(node, schema, child.childtags())
+                child.rawchildren = c
+        return children
+    
+    @classmethod
+    def collate(cls, children):
+        imports = []
+        elements = {}
+        attributes = {}
+        types = {}
+        groups = {}
+        agrps = {}
+        for c in children:
+            if isinstance(c, (Import, Include)):
+                imports.append(c)
+                continue
+            if isinstance(c, Attribute):
+                attributes[c.qname] = c
+                continue
+            if isinstance(c, Element):
+                elements[c.qname] = c
+                continue
+            if isinstance(c, Group):
+                groups[c.qname] = c
+                continue
+            if isinstance(c, AttributeGroup):
+                agrps[c.qname] = c
+                continue
+            types[c.qname] = c
+        for i in imports:
+            children.remove(i)
+        return (children, imports, attributes, elements, types, groups, agrps)
+
+    
 
 
 #######################################################
 # Static Import Bindings :-(
 #######################################################
-Import.bind('http://schemas.xmlsoap.org/soap/encoding/')
-Import.bind('http://www.w3.org/XML/1998/namespace', 'http://www.w3.org/2001/xml.xsd')
-Import.bind('http://www.w3.org/2001/XMLSchema', 'http://www.w3.org/2001/XMLSchema.xsd')
+Import.bind(
+    'http://schemas.xmlsoap.org/soap/encoding/',
+    'suds://schemas.xmlsoap.org/soap/encoding/')
+Import.bind(
+    'http://www.w3.org/XML/1998/namespace',
+    'http://www.w3.org/2001/xml.xsd')
+Import.bind(
+    'http://www.w3.org/2001/XMLSchema',
+    'http://www.w3.org/2001/XMLSchema.xsd')

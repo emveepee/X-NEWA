@@ -22,100 +22,131 @@ import xbmcgui
 import os
 
 from XNEWAGlobals import *
+from xbmcaddon import Addon
+from fix_utf8 import smartUTF8
+
+__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+
 
 # ==============================================================================
 class SearchWindow(xbmcgui.WindowXML):
-    
+
     def __init__(self, *args, **kwargs):
         self.closed = False
         self.win = None
 
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
-        
+        self.option = 0
+
     def onInit(self):
         if not self.win:
             self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             self.programsListBox = self.getControl(600)
             self.searchButton = self.getControl(250)
-            self.render()
-        
+            self.optionsButton = self.getControl(251)
+            self.render(False)
+            self.win.setFocusId(250)
+
     def onClick(self, controlId):
         source = self.getControl(controlId)
-        if source == self.programsListBox: 
+        if source == self.programsListBox:
             self.goEditSchedule()
         elif source == self.searchButton:
             self.render()
-             
+        elif source == self.optionsButton:
+            options = [__language__(30011),__language__(30041),__language__(32008),__language__(30020)]
+            self.option += 1
+            if self.option > 3:
+                self.option = 0
+            self.optionsButton.setLabel(__language__(32007) + ': ' + options[self.option])
+
+
+
     def onFocus(self, controlId):
         pass
-            
+
     def onAction(self, action):
         #print 'Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId())
-        if action.getId() in (EXIT_SCRIPT):
+        if action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
             self.closed = True
             self.close()
 
     def goEditSchedule(self):
         import details
         oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
-        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
-        detailDialog.doModal()
-        if detailDialog.returnvalue is not None:
-            if detailDialog.returnvalue == "PICK":
-                detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
-                detailDialog.doModal()
+        if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+            detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
+            detailDialog.doModal()
+            if detailDialog.returnvalue is not None:
+                if detailDialog.returnvalue == "PICK":
+                    detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
+                    detailDialog.doModal()
 
         if detailDialog.shouldRefresh:
             self.render()
 
-    def render(self):
-        myText = self._getText("Please enter search phrase:","")
-        if myText is None:
-            self.close()
-            return
+    def render(self, reload=True):
+        if reload:
+            myText = self._getText("%s:" % smartUTF8(__language__(30151)),"")
+            print( 'the text is %s' % myText )
+            if myText is None or myText == '':
+                self.close()
+                return
+            xbmc.executebuiltin("ActivateWindow(busydialog)")
+            self.xnewa.cleanCache('search.List')
+        else:
+            myText = None
 
         listItems = []
+        self.programsListBox.reset()
         self.win.setProperty('busy', 'true')
 
         if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
             try:
-                self.searchData = self.xnewa.searchProgram(self.settings.NextPVR_USER, self.settings.NextPVR_PW, myText)
+                self.searchData = self.xnewa.searchProgram(self.settings.NextPVR_USER, self.settings.NextPVR_PW, myText,self.option)
                 previous = None
-                if len(self.searchData) == 0:
-                    self.win.setProperty('busy', 'false')
-                    xbmcgui.Dialog().ok('Error', 'Search returned no results')
-                    
-                for i, t in enumerate(self.searchData):
-                    if t['rec']:
-                            pre = '[B]'
-                            post = '[/B]'
+                if not self.searchData:
+                    if reload == True:
+                        self.win.setProperty('busy', 'false')
+                        xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), smartUTF8(__language__(30123)))
+                    self.win.setFocusId(250)
+                else:
+                    self.searchData = sorted(self.searchData, key = lambda x: (x['start']))
+                    for i, t in enumerate(self.searchData):
+                        if t['rec']:
+                            self.win.setProperty('recording', 'true')
+                        else:
+                            self.win.setProperty('recording', '')
+                        listItem = xbmcgui.ListItem('Row %d' % i)
+                        airdate, previous = self.formattedAirDate(previous, self.xnewa.formatDate(t['start']))
+                        listItem.setProperty('airdate', airdate)
+                        listItem.setProperty('airdate_long',  self.xnewa.formatDate(t['start'], withyear=True))
+                        listItem.setProperty('title', t['title'])
+                        listItem.setProperty('start', self.xnewa.formatTime(t['start']))
+                        listItem.setProperty('end', self.xnewa.formatTime(t['end']))
+                        duration = int((t['end'] - t['start']).seconds / 60)
+                        listItem.setProperty('duration', str(duration))
+                        listItem.setProperty('channel', t['channel'][0])
+                        listItem.setProperty('description', t['desc'])
+                        listItem.setProperty('episode', t['subtitle'])
+                        listItem.setProperty('oid', str(t['program_oid']))
+                        listItems.append(listItem)
+                    if len(listItems) > 0:
+                        self.programsListBox.addItems(listItems)
+                        self.win.setFocusId(600)
                     else:
-                            pre = ''
-                            post = ''
-                    listItem = xbmcgui.ListItem('Row %d' % i)
-                    airdate, previous = self.formattedAirDate(previous, t['start'].strftime('%a, %b %d'))
-                    listItem.setProperty('airdate', airdate)
-                    listItem.setProperty('title', pre + t['title'] + post)
-                    listItem.setProperty('start', pre + t['start'].strftime("%H:%M") + post)
-                    duration = int((t['end'] - t['start']).seconds / 60)
-                    listItem.setProperty('duration', pre + str(duration) + post)
-                    listItem.setProperty('channel', pre + t['channel'] + post)
-                    if len(t['subtitle']) > 0:
-                            listItem.setProperty('description', pre + t['subtitle'] + "; " + t['desc'] + post)
-                    else:
-                            listItem.setProperty('description', pre + t['desc'] + post)
-                    listItem.setProperty('oid', str(t['program_oid']))
-                    listItems.append(listItem)
-                self.programsListBox.addItems(listItems)
+                        self.win.setFocusId(999)
+
             except:
                 self.win.setProperty('busy', 'false')
-                xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
-                
+                xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
+            if reload:
+                xbmc.executebuiltin("Dialog.Close(busydialog)")
             self.win.setProperty('busy', 'false')
         else:
             self.win.setProperty('busy', 'false')
-            xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
+            xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
             self.close()
 
     def _getText(self, cTitle, cText):
@@ -124,19 +155,19 @@ class SearchWindow(xbmcgui.WindowXML):
         txt = None
         if kbd.isConfirmed():
             txt = kbd.getText()
-            
+
         return txt
 
     def formattedAirDate(self, previous, current):
         result = ''
         if not previous or previous <> current:
-            today = datetime.date.today().strftime('%a, %b %d')
+            today = self.xnewa.formatDate(datetime.date.today())
             if current == today:
-                result = 'Today'
+                result = smartUTF8(__language__(30133))
             else:
-                tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%a, %b %d')
+                tomorrow = self.xnewa.formatDate(datetime.date.today() + datetime.timedelta(days=1))
                 if current == tomorrow:
-                    result = 'Tomorrow'
+                    result = smartUTF8(__language__(30134))
                 else:
                     result = current
         return result, current

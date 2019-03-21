@@ -23,11 +23,12 @@ from logging import getLogger
 from suds import *
 from suds.xsd import *
 from suds.sax.element import Element
+from suds.sax import Namespace
 
 log = getLogger(__name__)
 
 
-class SchemaObject:
+class SchemaObject(object):
     """
     A schema object is an extension to object object with
     with schema awareness.
@@ -220,6 +221,14 @@ class SchemaObject:
     def sequence(self):
         """
         Get whether this is an <xs:sequence/>
+        @return: True if <xs:sequence/>, else False
+        @rtype: boolean
+        """
+        return False
+    
+    def xslist(self):
+        """
+        Get whether this is an <xs:list/>
         @return: True if any, else False
         @rtype: boolean
         """
@@ -288,6 +297,12 @@ class SchemaObject:
         @rtype: boolean
         """
         return False
+    
+    def mixed(self):
+        """
+        Get whether this I{mixed} content.
+        """
+        return False
         
     def find(self, qref, classes=()):
         """
@@ -334,15 +349,31 @@ class SchemaObject:
         """
         return (None, [])
     
+    def autoqualified(self):
+        """
+        The list of I{auto} qualified attribute values.
+        Qualification means to convert values into I{qref}.
+        @return: A list of attibute names.
+        @rtype: list
+        """
+        return ['type', 'ref']
+    
     def qualify(self):
         """
         Convert attribute values, that are references to other
-        objects, into I{qref}.
+        objects, into I{qref}.  Qualfied using default document namespace.
+        Since many wsdls are written improperly: when the document does
+        not define a default namespace, the schema target namespace is used
+        to qualify references.
         """
         defns = self.root.defaultNamespace()
-        for a in ('type', 'ref'):
+        if Namespace.none(defns):
+            defns = self.schema.tns
+        for a in self.autoqualified():
             ref = getattr(self, a)
             if ref is None:
+                continue
+            if isqref(ref):
                 continue
             qref = qualify(ref, self.root, defns)
             log.debug('%s, convert %s="%s" to %s', self.id, a, ref, qref)
@@ -352,6 +383,7 @@ class SchemaObject:
         """
         Merge another object as needed.
         """
+        other.qualify()
         for n in ('name',
                   'qname',
                   'min',

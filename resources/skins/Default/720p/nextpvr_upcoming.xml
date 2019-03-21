@@ -78,7 +78,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Date[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30009][/B]</label>
         </control>
 
         <control type="label">
@@ -91,7 +91,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Title[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -104,7 +104,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Start Time[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30028][/B]</label>
         </control>
 
         <control type="label">
@@ -117,7 +117,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Channel[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30012][/B]</label>
         </control>
 
         <!-- ============================================= -->
@@ -207,7 +207,7 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] min.)</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
                 </control>
 
                 <control type="label">
@@ -319,7 +319,7 @@
 
                     <aligny>center</aligny>
 
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] min.)</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
                 </control>
 
 
@@ -348,27 +348,30 @@
                 </control>
 
                 <control type="label">
-
                     <posx>150</posx>
-
                     <posy>31</posy>
-
                     <width>750</width>
-
                     <height>31</height>
-
                     <font>font11</font>
-
                     <textcolor>DDced8da</textcolor>
-
                     <selectedcolor>FFe2ff43</selectedcolor>
-
                     <align>left</align>
-
                     <aligny>center</aligny>
-
+                    <label>$INFO[ListItem.Property(episode)]; $INFO[ListItem.Property(description)]</label>
+                    <visible>!IsEmpty(ListItem.Property(episode))</visible>
+                </control>
+                <control type="label">
+                    <posx>150</posx>
+                    <posy>31</posy>
+                    <width>750</width>
+                    <height>31</height>
+                    <font>font11</font>
+                    <textcolor>DDced8da</textcolor>
+                    <selectedcolor>FFe2ff43</selectedcolor>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(description)]</label>
-
+                    <visible>IsEmpty(ListItem.Property(episode))</visible>
                 </control>
                 
             </focusedlayout>
@@ -444,7 +447,7 @@
       <align>left</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>Upcoming Recordings</label>
+      <label>$ADDON[script.xbmc.x-newa 30003] $ADDON[script.xbmc.x-newa 30002]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
       <visible>false</visible>
@@ -459,7 +462,7 @@
       <align>right</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>[B]Upcoming Recordings[/B]</label>
+      <label>[B]$ADDON[script.xbmc.x-newa 30003] $ADDON[script.xbmc.x-newa 30002][/B]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -500,9 +503,11 @@
         
         <control type="button" id="250">
             <description>Conflict button</description>
-            <label>Conflicts</label>
+            <label>$ADDON[script.xbmc.x-newa 30008]</label>
             <width>285</width>
             <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
@@ -511,9 +516,11 @@
         </control>
         <control type="button" id="251">
             <description>Refresh button</description>
-            <label>Refresh</label>
+            <label>$ADDON[script.xbmc.x-newa 30024]</label>
             <width>285</width>
             <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>

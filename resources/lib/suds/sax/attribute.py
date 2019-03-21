@@ -80,12 +80,13 @@ class Attribute:
         @return: self
         @rtype: L{Attribute}
         """
-        post = sax.encoder.encode(value)
-        encoded = ( post != value )
-        self.value = Text(post, encoded=encoded)
+        if isinstance(value, Text):
+            self.value = value
+        else:
+            self.value = Text(value)
         return self
         
-    def getValue(self, default=''):
+    def getValue(self, default=Text('')):
         """
         Get the attributes value with optional default.
         @param default: An optional value to be return when the
@@ -95,13 +96,9 @@ class Attribute:
         @rtype: L{Text}
         """
         if self.hasText():
-            if self.value.encoded:
-                result = Text(sax.encoder.decode(self.value))
-            else:
-                result = self.value
+            return self.value
         else:
-            result = default
-        return result
+            return default
     
     def hasText(self):
         """
@@ -137,6 +134,26 @@ class Attribute:
             ns = self.parent.resolvePrefix(prefix)
         return ns
     
+    def match(self, name=None, ns=None):
+        """
+        Match by (optional) name and/or (optional) namespace.
+        @param name: The optional attribute tag name.
+        @type name: str
+        @param ns: An optional namespace.
+        @type ns: (I{prefix}, I{name})
+        @return: True if matched.
+        @rtype: boolean
+        """
+        if name is None:
+            byname = True
+        else:
+            byname = ( self.name == name )
+        if ns is None:
+            byns = True
+        else:
+            byns = ( self.namespace()[1] == ns[1] )
+        return ( byname and byns )
+    
     def __eq__(self, rhs):
         """ equals operator """
         return rhs is not None and \
@@ -156,4 +173,9 @@ class Attribute:
     
     def __unicode__(self):
         """ get an xml string representation """
-        return u'%s="%s"' % (self.qname(), self.value)
+        n = self.qname()
+        if self.hasText():
+            v = self.value.escape()
+        else:
+            v = self.value
+        return u'%s="%s"' % (n, v)

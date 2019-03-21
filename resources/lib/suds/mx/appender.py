@@ -24,6 +24,7 @@ from suds.mx import *
 from suds.sudsobject import footprint
 from suds.sudsobject import Object, Property
 from suds.sax.element import Element
+from suds.sax.text import Text
 from copy import deepcopy
 
 log = getLogger(__name__)
@@ -67,16 +68,22 @@ class ContentAppender:
         self.appenders = (
             (Matcher(None),
                 NoneAppender(marshaller)),
+            (Matcher(null),
+                NoneAppender(marshaller)),
             (Matcher(Property),
                 PropertyAppender(marshaller)),
             (Matcher(Object),
                 ObjectAppender(marshaller)),
             (Matcher(Element), 
                 ElementAppender(marshaller)),
+            (Matcher(Text), 
+                TextAppender(marshaller)),
             (Matcher(list), 
                 ListAppender(marshaller)),
             (Matcher(tuple), 
                 ListAppender(marshaller)),
+            (Matcher(dict), 
+                DictAppender(marshaller)),
         )
         
     def append(self, parent, content):
@@ -184,7 +191,7 @@ class PrimativeAppender(Appender):
         if content.tag.startswith('_'):
             attr = content.tag[1:]
             value = tostr(content.value)
-            if value is not None and len(value):
+            if value:
                 parent.set(attr, value)
         else:
             child = self.node(content)
@@ -234,6 +241,35 @@ class ObjectAppender(Appender):
         for item in object:
             cont = Content(tag=item[0], value=item[1])
             Appender.append(self, child, cont)
+            
+
+class DictAppender(Appender):
+    """
+    An python I{dict} appender.
+    """
+        
+    def append(self, parent, content):
+        d = content.value
+        if self.optional(content) and len(d) == 0:
+            return
+        child = self.node(content)
+        parent.append(child)
+        for item in d.items():
+            cont = Content(tag=item[0], value=item[1])
+            Appender.append(self, child, cont)
+            
+
+class ElementWrapper(Element):
+    """
+    Element wrapper.
+    """
+    
+    def __init__(self, content):
+        Element.__init__(self, content.name, content.parent)
+        self.__content = content
+        
+    def str(self, indent=0):
+        return self.__content.str(indent)
 
 
 class ElementAppender(Appender):
@@ -244,8 +280,8 @@ class ElementAppender(Appender):
     def append(self, parent, content):
         if content.tag.startswith('_'):
             raise Exception('raw XML not valid as attribute value')
-        child = deepcopy(content.value)
-        parent.append(child.detach())
+        child = ElementWrapper(content.value)
+        parent.append(child)
 
 
 class ListAppender(Appender):
@@ -261,3 +297,20 @@ class ListAppender(Appender):
                 cont = Content(tag=content.tag, value=item)
                 Appender.append(self, parent, cont)
             self.resume(content)
+
+
+class TextAppender(Appender):
+    """
+    An appender for I{Text} values.
+    """
+
+    def append(self, parent, content):
+        if content.tag.startswith('_'):
+            attr = content.tag[1:]
+            value = tostr(content.value)
+            if value:
+                parent.set(attr, value)
+        else:
+            child = self.node(content)
+            child.setText(content.value)
+            parent.append(child)

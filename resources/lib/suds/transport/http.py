@@ -15,7 +15,7 @@
 # written by: Jeff Ortel ( jortel@redhat.com )
 
 """
-Contains transport interface (classes) and reference implementation.
+Contains classes for basic HTTP transport implementations.
 """
 
 import urllib2 as u2
@@ -46,28 +46,20 @@ class HttpTransport(Transport):
             - B{timeout} - Set the url open timeout (seconds).
                     - type: I{float}
                     - default: 90
-            - B{cache} - The http I{transport} cache.  May be set (None) for no caching.
-                    - type: L{Cache}
-                    - default: L{NoCache}
         """
         Transport.__init__(self)
         Unskin(self.options).update(kwargs)
         self.cookiejar = CookieJar()
+        self.proxy = {}
         self.urlopener = None
         
     def open(self, request):
         try:
             url = request.url
-            cache = self.options.cache
-            fp = cache.get(url)
-            if fp is not None:
-                log.debug('opening (%s), cached', url)
-                return fp
             log.debug('opening (%s)', url)
             u2request = u2.Request(url)
-            self.__setproxy(url, u2request)
-            fp = self.__open(u2request)
-            return cache.put(url, fp)
+            self.proxy = self.options.proxy
+            return self.u2open(u2request)
         except u2.HTTPError, e:
             raise TransportError(str(e), e.code, e.fp)
 
@@ -78,12 +70,12 @@ class HttpTransport(Transport):
         headers = request.headers
         try:
             u2request = u2.Request(url, msg, headers)
-            self.__addcookies(u2request)
-            self.__setproxy(url, u2request)
+            self.addcookies(u2request)
+            self.proxy = self.options.proxy
             request.headers.update(u2request.headers)
             log.debug('sending:\n%s', request)
-            fp = self.__open(u2request)
-            self.__getcookies(fp, u2request)
+            fp = self.u2open(u2request)
+            self.getcookies(fp, u2request)
             result = Reply(200, fp.headers.dict, fp.read())
             log.debug('received:\n%s', result)
         except u2.HTTPError, e:
@@ -93,26 +85,72 @@ class HttpTransport(Transport):
                 raise TransportError(e.msg, e.code, e.fp)
         return result
 
-    def __addcookies(self, u2request):
+    def addcookies(self, u2request):
+        """
+        Add cookies in the cookiejar to the request.
+        @param u2request: A urllib2 request.
+        @rtype: u2request: urllib2.Requet.
+        """
         self.cookiejar.add_cookie_header(u2request)
         
-    def __getcookies(self, fp, u2request):
+    def getcookies(self, fp, u2request):
+        """
+        Add cookies in the request to the cookiejar.
+        @param u2request: A urllib2 request.
+        @rtype: u2request: urllib2.Requet.
+        """
         self.cookiejar.extract_cookies(fp, u2request)
         
-    def __open(self, u2request):
-        socket.setdefaulttimeout(self.options.timeout)
-        if self.urlopener is None:
-            return u2.urlopen(u2request)
+    def u2open(self, u2request):
+        """
+        Open a connection.
+        @param u2request: A urllib2 request.
+        @type u2request: urllib2.Requet.
+        @return: The opened file-like urllib2 object.
+        @rtype: fp
+        """
+        tm = self.options.timeout
+        url = self.u2opener()
+        if self.u2ver() < 2.6:
+            socket.setdefaulttimeout(tm)
+            return url.open(u2request)
         else:
-            return self.urlopener.open(u2request)
+            return url.open(u2request, timeout=tm)
+            
+    def u2opener(self):
+        """
+        Create a urllib opener.
+        @return: An opener.
+        @rtype: I{OpenerDirector}
+        """
+        if self.urlopener is None:
+            return u2.build_opener(*self.u2handlers())
+        else:
+            return self.urlopener
         
-    def __setproxy(self, url, u2request):
-        protocol = urlparse(url)[0]
-        proxy = self.options.proxy.get(protocol, None)
-        if proxy is None:
-            return
-        protocol = u2request.type
-        u2request.set_proxy(proxy, protocol)
+    def u2handlers(self):
+        """
+        Get a collection of urllib handlers.
+        @return: A list of handlers to be installed in the opener.
+        @rtype: [Handler,...]
+        """
+        handlers = []
+        handlers.append(u2.ProxyHandler(self.proxy))
+        return handlers
+            
+    def u2ver(self):
+        """
+        Get the major/minor version of the urllib2 lib.
+        @return: The urllib2 version.
+        @rtype: float
+        """
+        try:
+            part = u2.__version__.split('.', 1)
+            n = float('.'.join(part))
+            return n
+        except Exception, e:
+            log.exception(e)
+            return 0
         
     def __deepcopy__(self, memo={}):
         clone = self.__class__()
@@ -130,13 +168,20 @@ class HttpAuthenticated(HttpTransport):
     credentials on every http request.
     """
     
+    def open(self, request):
+        self.addcredentials(request)
+        return HttpTransport.open(self, request)
+    
     def send(self, request):
+        self.addcredentials(request)
+        return HttpTransport.send(self, request)
+    
+    def addcredentials(self, request):
         credentials = self.credentials()
         if not (None in credentials):
             encoded = base64.encodestring(':'.join(credentials))
             basic = 'Basic %s' % encoded[:-1]
             request.headers['Authorization'] = basic
-        return HttpTransport.send(self, request)
                  
     def credentials(self):
         return (self.options.username, self.options.password)

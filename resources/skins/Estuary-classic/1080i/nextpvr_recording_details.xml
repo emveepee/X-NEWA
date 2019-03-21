@@ -1,0 +1,360 @@
+<!-- This is the dialog box that shows the detail for an individual recording -->
+<!-- Recurring recording details are in nextpvr_details.xml -->
+<window>
+	<id>3000</id>
+	<defaultcontrol>253</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="group">
+<!-- ############ Begin Background ############ -->
+<!-- ############ Begin Background ############ -->
+			<visible>!Window.IsVisible(FileBrowser)</visible>
+			<animation effect="slide" start="1370,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="1370,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<control type="image">
+				<left>545</left>
+				<top>147</top>
+				<width>1500</width>
+				<height>760</height>
+				<texture>dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="image">
+				<left>545</left>
+				<top>147</top>
+				<width>1500</width>
+				<height>760</height>
+				<texture>dialogs/dialog-bg.png</texture>
+			</control>
+<!-- ############ End Background ############ -->
+<!-- ############ End Background ############ -->
+<!-- ############ Begin Content ############ -->
+			<control type="group">
+				<left>570</left>
+				<top>167</top>
+				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<control type="group">
+					<top>20</top>
+					<left>20</left>
+					<control type="label" id="303">
+						<description>Program Title</description>
+						<left>290</left>
+						<width>800</width>
+						<font>font24_title</font>
+						<label>-</label>
+						<scroll>true</scroll>
+					</control>
+					<control type="image">
+						<animation effect="fade" delay="400" start="0" end="100" time="100">WindowOpen</animation>
+						<description>No Artwork Fallback</description>
+						<width>270</width>
+						<height>380</height>
+						<texture>DefaultVideo.png</texture>
+						<aspectratio>stretch</aspectratio>
+						<colordiffuse>99FFFFFF</colordiffuse>
+					</control>
+					<control type="image" id="302">
+						<description>Current Fanart image</description>
+						<width>270</width>
+						<height>380</height>
+						<texture>-</texture>
+						<aspectratio>stretch</aspectratio>
+					</control>
+					<control type="image" id="305">
+						<description>Channel Image</description>
+						<left>1115</left>
+						<width>200</width>
+						<height>110</height>
+						<texture background="false">-</texture>
+						<aspectratio align="right">keep</aspectratio>
+					</control>
+<!-- ############ Begin Labels ############ -->
+					<control type="grouplist" id="3000">
+						<top>120</top>
+						<left>250</left>
+						<control type="label">
+							<description>Episode Title</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>button_focus</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30040]:</label>
+							<visible>!IsEmpty(Control.GetLabel(310))</visible>
+						</control>
+						<control type="label">
+							<description>Status</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>button_focus</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30013]:</label>
+							<visible>!IsEmpty(Control.GetLabel(309))</visible>
+						</control>
+						<control type="label">
+							<description>Channel</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>button_focus</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30012]:</label>
+						</control>
+						<control type="label">
+							<description>Air Date</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>button_focus</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30009]:</label>
+						</control>
+						<control type="label">
+							<description>Duration</description>
+							<align>right</align>
+							<aligny>center</aligny>
+							<width>160</width>
+							<height>30</height>
+							<font>font13</font>
+							<textcolor>button_focus</textcolor>
+							<label>$ADDON[script.xbmc.x-newa 30056]:</label>
+						</control>
+					</control>
+					<control type="grouplist" id="4000">
+						<top>120</top>
+						<left>425</left>
+						<control type="label" id="310">
+							<description>Episode title</description>
+							<width>800</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>-</label>
+							<visible>!IsEmpty(Control.GetLabel(310))</visible>
+						</control>
+						<control type="label">
+							<description>Status</description>
+							<width>800</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>$INFO[Control.GetLabel(309)]</label>
+							<visible>IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+						</control>
+						<control type="label">
+							<description>Status</description>
+							<width>800</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>[RED]$INFO[Control.GetLabel(309)][/RED]</label>
+							<visible>!IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+						</control>
+						<control type="label" id="304">
+							<description>Channel</description>
+							<width>800</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>-</label>
+						</control>
+						<control type="label">
+							<description>Air Date</description>
+							<width>800</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>$INFO[Control.GetLabel(317)], $INFO[Control.GetLabel(314)]</label>
+						</control>
+						<control type="label">
+							<description>Duration</description>
+							<width>800</width>
+							<height>30</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>white</textcolor>
+							<label>$INFO[Control.GetLabel(318)] $ADDON[script.xbmc.x-newa 30029]</label>
+						</control>
+					</control>
+<!-- ############ End Labels ############ -->
+<!-- ############ Begin Description ############ -->				
+					<control type="textbox" id="311">
+						<description>Description</description>
+						<top>425</top>
+						<width>1300</width>
+						<height>120</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<pagecontrol>61</pagecontrol>
+						<label>-</label>
+						<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					</control>
+<!-- ############ End Description ############ -->				
+<!-- ############ Begin Navigation Buttons ############ -->
+					<control type="grouplist" id="2000">
+						<top>600</top>
+						<width>1310</width>
+						<align>center</align>
+						<orientation>horizontal</orientation>
+						<itemgap>-20</itemgap>
+						<onleft>2000</onleft>
+						<onright>2000</onright>
+						<onup>9000</onup>
+						<ondown>9000</ondown>
+						<include content="DefaultDialogButton">
+							<description>Resume</description>
+							<param name="id" value="258" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30032]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Unwatch</description>
+							<param name="id" value="259" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30033]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Quick Record</description>
+							<param name="id" value="252" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30035] $ADDON[script.xbmc.x-newa 30034]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Record</description>
+							<param name="id" value="260" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30034]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Play</description>
+							<param name="id" value="254" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30036]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Delete</description>
+							<param name="id" value="251" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30038]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Archive (or Cancel)</description>
+							<param name="id" value="257" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30039]" />
+							<param name="onclick" value="SetFocus(300)" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Refresh</description>
+							<param name="id" value="255" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30024]" />
+						</include>
+						<include content="DefaultDialogButton">
+							<description>Close</description>
+							<param name="id" value="253" />
+							<param name="width" value="230" />
+							<param name="label" value="$ADDON[script.xbmc.x-newa 30031]" />
+						</include>
+					</control>
+<!-- ############ End Navigation Buttons ############ -->
+				</control>
+			</control>
+<!-- ############ End Content ############ -->
+		</control>
+<!-- ############ Begin Busy Indicator ############ -->
+		<control type="group">
+			<animation type="WindowOpen" reversible="false">
+				<effect type="zoom" start="80" end="100" center="960,540" tween="back" time="240" />
+				<effect type="fade" end="100" time="240" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="zoom" start="100" end="80" center="960,540" easing="in" tween="back" time="240" />
+				<effect type="fade" start="100" end="0" time="240" />
+			</animation>
+			<visible>substring(Window.Property(busy),true)</visible>
+			<control type="group">
+				<visible>String.IsEmpty(Window(Home).Property(script.cinemavision.running))</visible>
+				<animation type="Visible" reversible="false">
+					<effect type="zoom" start="80" end="100" center="960,540" tween="back" time="240" />
+					<effect type="fade" end="100" time="240" />
+				</animation>
+				<animation type="Hidden" reversible="false">
+					<effect type="zoom" start="100" end="80" center="960,540" easing="in" tween="back" time="240" />
+					<effect type="fade" start="100" end="0" time="240" />
+				</animation>
+				<visible>!Window.IsActive(startup)</visible>
+				<control type="image">
+					<texture>colors/black.png</texture>
+					<include>FullScreenDimensions</include>
+					<animation effect="fade" start="100" end="70" time="0" condition="true">Conditional</animation>
+					<animation effect="fade" start="100" end="0" time="240" condition="Window.IsVisible(fullscreenvideo)">Conditional</animation>
+					<animation effect="fade" end="100" time="560">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="240">WindowClose</animation>
+				</control>
+				<control type="image">
+					<depth>DepthMax</depth>
+					<left>920</left>
+					<top>513</top>
+					<width>80</width>
+					<height>80</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture colordiffuse="button_focus">spinner.png</texture>
+					<animation effect="fade" end="100" time="300" delay="200">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<depth>DepthMax</depth>
+					<left>935</left>
+					<top>528</top>
+					<width>50</width>
+					<height>50</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture flipx="true" colordiffuse="button_focus">spinner.png</texture>
+					<animation effect="fade" end="100" time="300" delay="200">WindowOpen</animation>
+				</control>
+				<control type="label">
+					<description>Busy label</description>
+					<left>1010</left>
+					<top>513</top>
+					<width>200</width>
+					<height>65</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<label>$LOCALIZE[31004]</label>
+				</control>
+			</control>
+		</control>
+<!-- ############ End Busy Indicator ############ -->
+<!-- ############ Begin Invisible but Required Controls ############ -->
+		<control type="group">
+			<visible>false</visible>
+			<control type="label" id="309"></control>
+			<control type="label" id="312"></control>
+			<control type="label" id="313"></control>
+			<control type="label" id="314"></control>
+			<control type="label" id="315"></control>
+			<control type="label" id="316"></control>
+			<control type="label" id="317"></control>
+			<control type="label" id="318"></control>
+		</control>
+<!-- ############ End Unused but Required Controls ############ -->
+	</controls>
+</window>

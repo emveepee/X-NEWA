@@ -1,0 +1,151 @@
+<window type="window">
+
+	<id>3015</id>
+	<allowoverlays>true</allowoverlays>
+	<type>window</type>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>        
+	<controls>
+		<control type="videowindow" id="200">
+            <depth>DepthBackground</depth>
+            <include>FullScreenDimensions</include>
+            <visible>Player.HasVideo</visible>            
+		</control>    
+		<control type="slider">
+			<top>1013</top>
+            <left>430</left>
+			<visible>Player.HasVideo + Player.SeekEnabled + substring(Window.Property(showosd), true)</visible>                        
+            <width>1050</width>
+            <height>60</height>
+            <texturesliderbar colordiffuse="FFFFFFFF"></texturesliderbar>
+            <info>Player.Progress</info>
+            <action>seek</action>
+		</control>        
+		<control type="image" id="100">
+            <include>FullScreenDimensions</include>
+            <backgroundcolor>0</backgroundcolor>
+			<visible>!substring(Window.Property(tuning), true) + substring(Window.Property(showosd), true)</visible>                        
+		</control>
+
+		<control type="label" id="110">
+            <left>860</left>
+            <top>440</top>
+            <width>400</width>
+            <height>200</height>
+            <label>Hit Back to return</label>
+            <font>font35</font>
+			<textcolor>white</textcolor>            
+			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                        
+		</control>
+		<control type="label" id="120">
+            <left>860</left>
+            <top>640</top>
+            <width>500</width>
+            <height>200</height>
+            <label></label>
+			<textcolor>yellow</textcolor>            
+			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                                    
+		</control>
+		<control type="group" id="1">
+			<visible>Player.Caching</visible>
+			<animation delay="300" effect="fade" time="200">Visible</animation>
+			<animation effect="fade" delay="200" time="150">Hidden</animation>
+			<control type="image" id="1">
+				<left>860</left>
+				<top>440</top>
+				<width>200</width>
+				<height>200</height>
+				<texture>dialogs/volume/progress/p100.png</texture>
+				<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
+			</control>
+ 			<control type="image" id="1">
+				<left>860</left>
+				<top>440</top>
+				<width>200</width>
+				<height>200</height>
+				<texture colordiffuse="button_focus">dialogs/volume/progress/p$INFO[Player.CacheLevel].png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>buffering value</description>
+				<label>$INFO[Player.CacheLevel]%</label>
+				<left>860</left>
+				<top>440</top>
+				<width>200</width>
+				<height>200</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font12_title</font>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label" id="2">
+				<description>buffering label</description>
+				<label>$LOCALIZE[15107]</label>
+				<left>860</left>
+				<top>620</top>
+				<width>200</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font12_title</font>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>        
+        <control type="grouplist">
+            <left>240</left>
+            <top>1020</top>
+            <width>910</width>
+            <height>32</height>
+            <itemgap>5</itemgap>                    
+            <orientation>horizontal</orientation>
+            <visible>Player.HasAudio</visible>                    
+            <control type="label">
+                <width min="10" max="700">auto</width>
+                <height>25</height>
+                <font>font20</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$INFO[MusicPlayer.Title]</label>
+                <textcolor>orange</textcolor>
+                <scroll>true</scroll>
+            </control>
+            <control type="image">
+                <description>Audio Codec Image</description>
+                <width>80</width>
+                <height>30</height>
+                <aspectratio align="right">keep</aspectratio>
+			    <texture colordiffuse="grey" fallback="empty.png">$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]</texture>               
+            </control>
+        </control>     
+        <control type="label">
+            <left>1640</left>
+            <top>1020</top>        
+            <width>200</width>
+            <height>25</height>
+            <font>font20</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <label>$INFO[Player.Time]/$INFO[MusicPlayer.Duration]</label>
+            <textcolor>orange</textcolor>
+            <visible>Player.HasAudio + !String.IsEmpty(MusicPlayer.Duration)</visible>
+            <scroll>true</scroll>
+        </control>           
+        <control type="label">
+            <left>1640</left>
+            <top>1020</top>        
+            <width>200</width>
+            <height>25</height>
+            <font>font20</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <label>$INFO[Player.Time]</label>
+            <textcolor>orange</textcolor>
+            <visible>Player.HasAudio + String.IsEmpty(MusicPlayer.Duration)</visible>
+            <scroll>true</scroll>
+        </control>                   
+	</controls>
+</window>

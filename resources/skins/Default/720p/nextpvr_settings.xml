@@ -56,8 +56,8 @@
         <control type="grouplist" id="9000">
             <description>Recording Options</description>
             <posx>45</posx>
-            <posy>-15</posy>
-            <height>630</height>
+            <posy>45</posy>
+            <height>580</height>
             <itemgap>4</itemgap>
             <onleft>2000</onleft>
             <onright>2000</onright>
@@ -70,11 +70,12 @@
                 <textoffsetx>10</textoffsetx>
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
-                <visible>true</visible>
+                <visible>false</visible>
             </control>
-
             <control type="button" id="298">
                 <label>NextPVR Settings</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                        
                 <width>650</width>
                 <height>35</height>
                 <font>font12</font>
@@ -86,6 +87,8 @@
 
             <control type="button" id="201">
                 <label>NextPVR IP Address:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>127.0.0.1</label2>
                 <width>650</width>
                 <height>35</height>
@@ -98,6 +101,8 @@
             
             <control type="button" id="202">
                 <label>NextPVR Port Number:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>8866</label2>
                 <width>650</width>
                 <height>35</height>
@@ -107,9 +112,10 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-            
             <control type="button" id="203">
                 <label>NextPVR Userid:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>admin</label2>
                 <width>650</width>
                 <height>35</height>
@@ -122,6 +128,8 @@
             
             <control type="button" id="204">
                 <label>NextPVR Password:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>password</label2>
                 <width>650</width>
                 <height>35</height>
@@ -131,9 +139,37 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-
+            
             <control type="button" id="205">
-                <label>Use Wake-On-Lan</label>
+                <label>PIN</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>            
+            
+            <control type="button" id="300">
+                <label>X-NEWA Settings</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>center</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            <control type="button" id="220">
+                <label>Interface</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>xxx</label2>
                 <width>650</width>
                 <height>35</height>
@@ -143,9 +179,10 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-
-            <control type="button" id="206">
-                <label>NextPVR MAC Address:</label>
+            <control type="button" id="221">
+                <label>Web Client Size</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>xxx</label2>
                 <width>650</width>
                 <height>35</height>
@@ -155,21 +192,10 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-
-            <control type="button" id="207">
-                <label>Wake-On-LAN Broadcast Address</label>
-                <label2>xxx</label2>
-                <width>650</width>
-                <height>35</height>
-                <align>left</align>
-                <font>font12</font>
-                <textoffsetx>10</textoffsetx>
-                <texturefocus>input-focus.png</texturefocus>
-                <texturenofocus>input-nofocus.png</texturenofocus>
-            </control>
-
-            <control type="button" id="215">
-                <label>Stream Format</label>
+            <control type="button" id="222">
+                <label>Web Client Quality</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>xxx</label2>
                 <width>650</width>
                 <height>35</height>
@@ -180,8 +206,23 @@
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
             
+            <control type="button" id="219">
+                <label>Update XBMC database</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>                                    
             <control type="button" id="216">
                 <label>Fetch Cover</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>xxx</label2>
                 <width>650</width>
                 <height>35</height>
@@ -191,9 +232,52 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>            
-                        
+            
+            <control type="button" id="305">
+                <label>Use Wake-On-Lan</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>            
+            <control type="button" id="306">
+                <label>NextPVR MAC Address:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+
+            <control type="button" id="307">
+                <label>Wake-On-LAN Broadcast Address</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
             <control type="button" id="299">
                 <label>EPG Settings</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <width>650</width>
                 <height>35</height>
                 <font>font12</font>
@@ -205,6 +289,8 @@
 
             <control type="button" id="214">
                 <label>Channel Group</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>75</label2>
                 <width>650</width>
                 <height>35</height>
@@ -213,10 +299,12 @@
                 <textoffsetx>10</textoffsetx>
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
-            </control>            
-
+            </control>
+			
             <control type="button" id="210">
-		<label>Scroll Interval (min.):</label>
+				<label>Scroll Interval (min.):</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                
                 <label2>15</label2>
                 <width>650</width>
                 <height>35</height>
@@ -229,6 +317,8 @@
 
             <control type="button" id="211">
                 <label>Display Interval (min.):</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>60</label2>
                 <width>650</width>
                 <height>35</height>
@@ -241,6 +331,8 @@
 
             <control type="button" id="212">
                 <label>Retrieve Interval (hrs.):</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>2</label2>
                 <width>650</width>
                 <height>35</height>
@@ -253,6 +345,8 @@
 
             <control type="button" id="213">
                 <label>Row Height (px):</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <label2>75</label2>
                 <width>650</width>
                 <height>35</height>
@@ -262,7 +356,103 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
+            <control type="button" id="400">
+                <label>Video Streaming Settings</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                        
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>center</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+				<visible>true</visible>								
+            </control>
+            <control type="button" id="215">
+                <label>Stream Format</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>
+            
+            <control type="button" id="217">
+                <label>Pre-buffer</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>                                    
+            <control type="button" id="218">
+                <label>Post-buffer</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>xxx</label2>
+                <width>650</width>
+                <height>35</height>
+                <align>left</align>
+                <font>font12</font>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+            </control>                        
+            
+            <control type="button" id="401">
+                <label>Video Size:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>"320"</label2>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+				<visible>Control.IsVisible(400)</visible>								
+            </control>
 
+            <control type="button" id="402">
+                <label>Video Bitrate:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>LAN</label2>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+				<visible>Control.IsVisible(400)</visible>								
+            </control>
+            <control type="button" id="403">
+                <label>Audio Bitrate:</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <label2>"32"</label2>
+                <width>650</width>
+                <height>35</height>
+                <font>font12</font>
+                <align>left</align>
+                <textoffsetx>10</textoffsetx>
+                <texturefocus>input-focus.png</texturefocus>
+                <texturenofocus>input-nofocus.png</texturenofocus>
+				<visible>Control.IsVisible(400)</visible>				
+            </control>
         </control>
         
         <control type="grouplist" id="2000">
@@ -276,6 +466,8 @@
             
             <control type="button" id="250">
                 <label>Save</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -285,13 +477,14 @@
 
             <control type="button" id="253">
                 <label>Cancel</label>
+                <textcolor name="white">FFFFFFFF</textcolor>                        
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
                 <texturenofocus>button2-nofocus.png</texturenofocus>
                 <texturefocus border="5">button-focus2.png</texturefocus>
             </control>
-
         </control>
         <control type="multiimage" id="237">
             <description>Busy throbber</description>

@@ -1,0 +1,421 @@
+<window>
+	<id>3004</id>
+	<defaultcontrol>999</defaultcontrol>
+	<type>window</type>
+	<coordinates>
+		<system>1</system>
+		<left>0</left>
+		<top>0</top>
+	</coordinates>
+	<controls>
+<!-- ############ Begin Background ############ -->
+		<include>DefaultBackground</include>
+		<include content="TopBar">
+			<param name="breadcrumbs_label" value="$ADDON[script.xbmc.x-newa 30000]" />
+			<param name="breadcrumbs_icon" value="icons/home/tv.png" />
+		</include>
+		<include content="BottomBar">
+			<param name="info_visible" value="true" />
+			<param name="PageLabel" value="$INFO[Container(600).CurrentItem,, / ]$INFO[Container(600).NumItems]" />
+		</include>
+<!-- ############ End Background ############ -->
+		<control type="group">
+			<description>Content Group</description>
+<!-- ############ Begin Upcoming Recordings Table ############ -->
+			<control type="group">
+				<left>90</left>
+				<top>167</top>
+<!-- ############ Begin Upcoming Recordings Header ############ -->
+				<control type="label">
+					<description>Upcoming Recordings</description>
+					<width>975</width>
+					<font>font24_title</font>
+					<align>left</align>
+					<valign>bottom</valign>
+					<label>$ADDON[script.xbmc.x-newa 30003] $ADDON[script.xbmc.x-newa 30002]</label>
+				</control>
+				<control type="group">
+					<description>Header for list of shows</description>
+					<top>42</top>
+					<control type="label">
+						<description>Air Date</description>
+						<left>3</left>
+						<width>250</width>
+						<font>font13_title</font>
+						<align>left</align>
+						<label>$ADDON[script.xbmc.x-newa 30009]</label>
+					</control>
+					<control type="label">
+						<description>Title</description>
+						<left>260</left>
+						<width>450</width>
+						<font>font13_title</font>
+						<align>left</align>
+						<label>$ADDON[script.xbmc.x-newa 30011]</label>
+					</control>
+					<control type="label">
+						<description>Start Time</description>
+						<left>720</left>
+						<width>250</width>
+						<font>font13_title</font>
+						<align>left</align>
+						<label>$ADDON[script.xbmc.x-newa 30028]</label>
+					</control>
+				</control>
+<!-- ############ End Recordings Header ############ -->
+<!-- ############ Begin Recordings Content ############ -->
+				<control type="image">
+					<left>-20</left>
+					<top>57</top>
+					<width>1015</width>
+					<height>678</height>
+					<texture>dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="list" id="600">
+					<top>78</top>
+					<width>975</width>
+					<height>636</height>
+					<onleft>9000</onleft>
+					<onright>6000</onright>
+					<onup>600</onup>
+					<ondown>600</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>6000</pagecontrol>
+					<scrolltime>0</scrolltime>
+					<preloaditems>10</preloaditems>
+					<itemlayout height="35">
+						<control type="label">
+							<left>3</left>
+							<width>250</width>
+							<font>font12_title</font>
+							<align>left</align>
+							<label>$INFO[ListItem.Property(airdate)]</label>
+							<scroll>true</scroll>
+							<scrollspeed>30</scrollspeed>
+						</control>
+						<control type="label">
+							<left>260</left>
+							<width>450</width>
+							<font>font12</font>
+							<align>left</align>
+							<label>$INFO[ListItem.Property(title)]</label>
+							<scroll>true</scroll>
+							<scrollspeed>30</scrollspeed>
+						</control>
+						<control type="label">
+							<left>720</left>
+							<width>250</width>
+							<font>font12</font>
+							<align>left</align>
+							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+							<scroll>true</scroll>
+							<scrollspeed>30</scrollspeed>
+						</control>
+					</itemlayout>
+					<focusedlayout height="35">
+						<control type="image">
+    	                    <left>0</left>
+        	                <top>2</top>
+	                        <height>35</height>
+							<width>975</width>
+            	            <visible>Control.HasFocus(600)</visible>
+                	        <texture colordiffuse="button_focus">lists/focus.png</texture>
+		                </control>
+						<control type="label">
+							<left>3</left>
+							<width>250</width>
+							<font>font12_title</font>
+							<align>left</align>
+							<label>$INFO[ListItem.Property(airdate)]</label>
+							<scroll>true</scroll>
+							<scrollspeed>30</scrollspeed>
+						</control>
+						<control type="label">
+							<left>260</left>
+							<width>450</width>
+							<font>font12</font>
+							<align>left</align>
+							<label>$INFO[ListItem.Property(title)]</label>
+							<scroll>true</scroll>
+							<scrollspeed>30</scrollspeed>
+						</control>
+						<control type="label">
+							<left>720</left>
+							<width>250</width>
+							<font>font12</font>
+							<align>left</align>
+							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+							<scroll>true</scroll>
+							<scrollspeed>30</scrollspeed>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="6000">
+					<left>975</left>
+					<top>80</top>
+					<width>12</width>
+					<height>631</height>
+					<onleft>600</onleft>
+					<onright>600</onright>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="group">
+					<visible>Control.HasFocus(600)</visible>
+					<left>1060</left>
+					<top>42</top>
+					<control type="label">
+						<description>Show Title</description>
+						<width>600</width>
+						<font>font13_title</font>
+						<align>left</align>
+						<label>$INFO[Container(600).ListItem.Property(title)]</label>
+						<scroll>true</scroll>
+						<scrollspeed>30</scrollspeed>
+					</control>
+					<control type="label">
+						<top>33</top>
+						<left>0</left>
+						<width>600</width>
+						<font>font12</font>
+						<align>left</align>
+						<label>$INFO[Container(600).ListItem.Property(episode)]</label>
+						<scroll>true</scroll>
+						<autoscroll time="2000" delay="10000" repeat="5000"></autoscroll>
+					</control>
+					<control type="group">
+						<animation effect="slide" start="0,0" end="0,30" time="0" condition="!IsEmpty(Container(600).ListItem.Property(episode))">Conditional</animation>
+						<control type="group">
+							<top>55</top>
+							<control type="label">
+								<description>Status</description>
+								<left>0</left>
+								<width>120</width>
+								<font>font12_title</font>
+								<align>left</align>
+								<label>$ADDON[script.xbmc.x-newa 30013]:</label>
+							</control>
+							<control type="label">
+								<left>125</left>
+								<width>475</width>
+								<font>font12</font>
+								<align>left</align>
+								<label>$INFO[Container(600).ListItem.Property(status)]</label>
+							</control>
+						</control>
+						<control type="group">
+							<top>80</top>
+							<control type="label">
+								<description>Channel</description>
+								<left>0</left>
+								<width>120</width>
+								<font>font12_title</font>
+								<align>left</align>
+								<label>$ADDON[script.xbmc.x-newa 30012]:</label>
+							</control>
+							<control type="label">
+								<left>125</left>
+								<width>475</width>
+								<font>font12</font>
+								<align>left</align>
+								<label>$INFO[Container(600).ListItem.Property(channel)]</label>
+							</control>
+						</control>
+						<control type="group">
+							<top>105</top>
+							<control type="label">
+								<description>Date</description>
+								<width>120</width>
+								<font>font12_title</font>
+								<align>left</align>
+								<label>$ADDON[script.xbmc.x-newa 30009]:</label>
+							</control>
+							<control type="label">
+								<left>125</left>
+								<width>475</width>
+								<height>25</height>
+								<font>font12</font>
+								<align>left</align>
+								<label>$INFO[Container(600).ListItem.Property(airdate_long)], $INFO[Container(600).ListItem.Property(start)]</label>
+							</control>
+						</control>
+						<control type="group">
+							<top>130</top>
+							<control type="label">
+								<description>Duration</description>
+								<width>120</width>
+								<font>font12_title</font>
+								<align>left</align>
+								<label>$ADDON[script.xbmc.x-newa 30056]:</label>
+							</control>
+							<control type="label">
+								<left>125</left>
+								<width>475</width>
+								<height>25</height>
+								<font>font12</font>
+								<align>left</align>
+								<label>$INFO[Container(600).ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029]</label>
+							</control>
+						</control>
+						<control type="group">
+							<top>175</top>
+							<control type="label">
+								<description>Description</description>
+								<width>600</width>
+								<font>font12_title</font>
+								<align>left</align>
+								<label>$ADDON[script.xbmc.x-newa 30041]</label>
+							</control>
+							<control type="textbox">
+								<visible>!IsEmpty(Container(600).ListItem.Property(description))</visible>
+								<top>28</top>
+								<width>600</width>
+								<height>430</height>
+								<font>font12</font>
+								<align>left</align>
+								<label>$INFO[Container(600).ListItem.Property(description)]</label>
+								<scroll>true</scroll>
+								<wrapmultiline>true</wrapmultiline>
+								<autoscroll time="2000" delay="10000" repeat="5000"></autoscroll>
+							</control>
+							<control type="textbox">
+								<visible>IsEmpty(Container(600).ListItem.Property(description))</visible>
+								<left>0</left>
+								<top>28</top>
+								<width>600</width>
+								<height>430</height>
+								<font>font12</font>
+								<align>left</align>
+								<label>$ADDON[script.xbmc.x-newa 30045].</label>
+								<scroll>true</scroll>
+								<wrapmultiline>true</wrapmultiline>
+								<autoscroll time="2000" delay="10000" repeat="5000"></autoscroll>
+							</control>
+						</control>
+					</control>
+				</control> 
+<!-- ############ End Recordings Content ############ -->
+			</control>
+<!-- ############ End Recordings Table ############ -->
+		</control>
+<!-- ############ Begin Navigation Buttons ############ -->
+		<include>MediaMenuMouseOverlay</include>
+		<control type="group">
+			<include>MediaMenuCommon</include>
+			<control type="grouplist" id="9000">
+				<top>90</top>
+				<onup>270</onup>
+				<ondown>250</ondown>
+				<onleft>-</onleft>
+				<onright>999</onright>
+				<control type="label" id="200">
+					<description>NextPVR Options</description>
+					<include>MediaMenuLabelCommon</include>
+					<label>$ADDON[script.xbmc.x-newa 30000] $ADDON[script.xbmc.x-newa 30018]</label>
+				</control>
+				<control type="button" id="250" >
+					<description>Conflicts</description>
+					<include>MediaMenuItemsCommon</include>
+					<label>$ADDON[script.xbmc.x-newa 30008]</label>
+					<enable>!substring(Window.Property(busy),true)</enable>
+				</control>			
+				<control type="button" id="251">
+					<description>Refresh</description>
+					<include>MediaMenuItemsCommon</include>
+					<label>$ADDON[script.xbmc.x-newa 30024]</label>
+					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
+				</control>
+				<control type="button" id="270">
+					<description>Fullscreen</description>
+					<include>MediaMenuItemsCommon</include>
+					<label>$ADDON[script.xbmc.x-newa 30044]</label>
+					<onclick>fullscreen</onclick>
+					<enable>!substring(Window.Property(busy),true)</enable>
+					<visible>Player.HasVideo</visible>
+				</control>
+			</control>			
+		</control>
+		<control type="button" id="999">
+			<description>Fake button for initial focus</description>
+			<left>1280</left>
+			<top>720</top>
+			<width>1</width>
+			<height>1</height>
+			<label>-</label>
+			<font>-</font>
+			<onleft>9000</onleft>
+			<onright>600</onright>
+			<onup>600</onup>
+			<ondown>600</ondown>                        
+            <texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<visible>true</visible>
+		</control>
+<!-- ############ End Navigation Buttons ############ -->
+<!-- ############ Begin Busy Indicator ############ -->
+		<control type="group">
+			<animation type="WindowOpen" reversible="false">
+				<effect type="zoom" start="80" end="100" center="960,540" tween="back" time="240" />
+				<effect type="fade" end="100" time="240" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="zoom" start="100" end="80" center="960,540" easing="in" tween="back" time="240" />
+				<effect type="fade" start="100" end="0" time="240" />
+			</animation>
+			<visible>substring(Window.Property(busy),true)</visible>
+			<control type="group">
+				<visible>String.IsEmpty(Window(Home).Property(script.cinemavision.running))</visible>
+				<animation type="Visible" reversible="false">
+					<effect type="zoom" start="80" end="100" center="960,540" tween="back" time="240" />
+					<effect type="fade" end="100" time="240" />
+				</animation>
+				<animation type="Hidden" reversible="false">
+					<effect type="zoom" start="100" end="80" center="960,540" easing="in" tween="back" time="240" />
+					<effect type="fade" start="100" end="0" time="240" />
+				</animation>
+				<visible>!Window.IsActive(startup)</visible>
+				<control type="image">
+					<texture>colors/black.png</texture>
+					<include>FullScreenDimensions</include>
+					<animation effect="fade" start="100" end="70" time="0" condition="true">Conditional</animation>
+					<animation effect="fade" start="100" end="0" time="240" condition="Window.IsVisible(fullscreenvideo)">Conditional</animation>
+					<animation effect="fade" end="100" time="560">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="240">WindowClose</animation>
+				</control>
+				<control type="image">
+					<depth>DepthMax</depth>
+					<left>920</left>
+					<top>513</top>
+					<width>80</width>
+					<height>80</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture colordiffuse="button_focus">spinner.png</texture>
+					<animation effect="fade" end="100" time="300" delay="200">WindowOpen</animation>
+				</control>
+				<control type="image">
+					<depth>DepthMax</depth>
+					<left>935</left>
+					<top>528</top>
+					<width>50</width>
+					<height>50</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture flipx="true" colordiffuse="button_focus">spinner.png</texture>
+					<animation effect="fade" end="100" time="300" delay="200">WindowOpen</animation>
+				</control>
+				<control type="label">
+					<description>Busy label</description>
+					<left>1010</left>
+					<top>513</top>
+					<width>200</width>
+					<height>65</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<label>$LOCALIZE[31004]</label>
+				</control>
+			</control>
+		</control>
+<!-- ############ End Busy Indicator ############ -->
+	</controls>
+</window>

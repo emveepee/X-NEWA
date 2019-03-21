@@ -13,8 +13,9 @@ import ConfigParser
 from XNEWAGlobals import *
 import traceback
 import sys
-from xbmcaddon import Addon
+import xbmcaddon
 import xbmcvfs
+import xbmc
 # Core defines
 
 class XNEWA_Settings:
@@ -23,117 +24,95 @@ class XNEWA_Settings:
 
     # Instantiation
     def __init__(self):
-        self.configpath = os.path.join(xbmc.translatePath('special://profile'), self.INI_PATH)
-        if xbmcvfs.exists(self.configpath) == False:
-            self.configpath = os.path.join(Addon('script.xbmc.x-newa').getAddonInfo('path'), self.INI_PATH)
-        
-        print self.configpath
 
-        self.config = config = ConfigParser.ConfigParser({'host':'127.0.0.1', 'port':'8866',
-                                                          'userid':'admin', 'pw':'password',
-                                                          'usewol':'No', 'mac':'00:00:00:00:00:00',
-                                                          'broadcast':'255.255.255.255','scroll_int':'15',
-                                                          'disp_int':'60', 'retr_int':'2',
-                                                          'row_h':'75', 'group':'',
-                                                          'stream':'Native', 'icon_dl':'No' })
-        self.Reload = False
-        try:
-            self.config.read(self.configpath)
-        except:
-            handleException()
-            pass
-        if (not config.has_section("NextPVR")):
-            config.add_section("NextPVR")
-        if (not config.has_section("EPG")):
-            config.add_section("EPG")
+        print "Reading Settings.xml"
 
-        try:
-            self.NextPVR_HOST = config.get("NextPVR", "host")
-            self.NextPVR_PORT = config.getint("NextPVR", "port")
-            self.NextPVR_USER = config.get("NextPVR", "userid")
-            self.NextPVR_PW = config.get("NextPVR", "pw")
-            self.NextPVR_USEWOL = config.get("NextPVR", "usewol")
-            self.NextPVR_MAC = config.get("NextPVR", "mac")
-            self.NextPVR_BROADCAST = config.get("NextPVR", "broadcast")
-            self.NextPVR_STREAM = config.get("NextPVR", "stream")
-            self.NextPVR_ICON_DL = config.get("NextPVR", "icon_dl")
-            
-            self.EPG_SCROLL_INT = config.getint("EPG", "scroll_int")
-            self.EPG_DISP_INT = config.getint("EPG", "disp_int")
-            self.EPG_RETR_INT = config.getint("EPG", "retr_int")
-            self.EPG_ROW_HEIGHT = config.getint("EPG", "row_h")
-            self.EPG_GROUP = config.get("EPG", "group")
-        except:
-            handleException()
+        from uuid import getnode as get_mac
 
-  ######################################################################################################
-  # Saving the configuration file...
-  ######################################################################################################
-    def save(self):
-        try:
-            self.config.set("NextPVR", "host", self.NextPVR_HOST)
-            self.config.set("NextPVR", "port", self.NextPVR_PORT)
-            self.config.set("NextPVR", "userid", self.NextPVR_USER)
-            self.config.set("NextPVR", "pw", self.NextPVR_PW)
-            self.config.set("NextPVR", "usewol", self.NextPVR_USEWOL)
-            self.config.set("NextPVR", "mac", self.NextPVR_MAC)
-            self.config.set("NextPVR", "broadcast", self.NextPVR_BROADCAST)
-            self.config.set("NextPVR", "stream", self.NextPVR_STREAM)
-            self.config.set("NextPVR", "icon_dl", self.NextPVR_ICON_DL)
+        if hasattr(os, 'uname'):
+            print os.uname()
+            system = os.uname()[4]
+        else:
+            import platform
+            system = platform.uname()[5]
+        if system == 'armv6l':
+            try:
+                mac = open('/sys/class/net/eth0/address').readline()
+                self.XNEWA_MAC = hex(int('0x'+ mac.replace(':',''),16))
+            except:
+                self.XNEWA_MAC = str(hex(get_mac()))
+        else:
+            self.XNEWA_MAC = str(hex(get_mac()))
 
-            self.config.set("EPG", "scroll_int", self.EPG_SCROLL_INT)
-            self.config.set("EPG", "disp_int", self.EPG_DISP_INT)
-            self.config.set("EPG", "retr_int", self.EPG_RETR_INT)
-            self.config.set("EPG", "row_h", self.EPG_ROW_HEIGHT)
-            self.config.set("EPG", "group", self.EPG_GROUP)
-            print "Trying to write to: " + self.configpath
-            configfile = open(self.configpath, 'w')
-            self.config.write(configfile)
-            configfile.close()
-            print "Written to: " + self.configpath
-        except:
-            handleException()
-        return 
+        self.loadFromSettingsXML()
+        print self.NextPVR_USEWOL
+        return
 
     def usewol(self):
-          return self.NextPVR_USEWOL.lower() == "yes"
+          return self.NextPVR_USEWOL
 
-  ######################################################################################################
-  # Setting one setting....
-  ######################################################################################################
-    def set(self, key, val):
-        print key 
-        print val
-        if key =="NextPVR_HOST":
-            self.NextPVR_HOST = val
-            self.Reload = True
-        elif key == "NextPVR_PORT":
-            self.NextPVR_PORT = int(val)
-            self.Reload = True
-        elif key == "NextPVR_USER":
-            self.Reload = True
-            self.NextPVR_USER = val
-        elif key == "NextPVR_PW":
-            self.Reload = True
-            self.NextPVR_PW = val
-        elif key == "NextPVR_USEWOL":
-            self.NextPVR_USEWOL = val
-        elif key == "NextPVR_MAC":
-            self.NextPVR_MAC = val
-        elif key == "NextPVR_BROADCAST":
-            self.NextPVR_BROADCAST = val
-        elif key == "EPG_SCROLL_INT":
-            self.EPG_SCROLL_INT = int(val)
-        elif key == "EPG_DISP_INT":
-            self.EPG_DISP_INT = int(val)
-        elif key == "EPG_RETR_INT":
-            self.EPG_RETR_INT = int(val)
-        elif key == "EPG_ROW_HEIGHT":
-            self.EPG_ROW_HEIGHT = int(val)
-        elif key == "EPG_GROUP":
-            self.EPG_GROUP = val
-        elif key == "NextPVR_STREAM":
-            self.NextPVR_STREAM = val
-        elif key == "NextPVR_ICON_DL":
-            self.NextPVR_ICON_DL = val
+
+    def loadFromSettingsXML(self):
+        addon = xbmcaddon.Addon()
+        self.NextPVR_HOST = addon.getSetting("host")
+        self.NextPVR_PORT = int(addon.getSetting("port"))
+        self.NextPVR_USER = addon.getSetting("userid")
+        self.NextPVR_PW = addon.getSetting("password")
+        self.NextPVR_PIN = addon.getSetting("pin")
+        self.NextPVR_USEWOL = addon.getSetting("usewol") == 'true'
+        self.LOCAL_NEWA = True
+        self.NextPVR_MAC = addon.getSetting("mac")
+        self.NextPVR_BROADCAST = addon.getSetting("broadcast")
+        self.NextPVR_CONTACTS = addon.getSetting("wol_attempts")
+        self.XNEWA_EPISODE = addon.getSetting("syncXBMC") == 'true'
+        self.NextPVR_ICON_DL = addon.getSetting("fetchFanart") == 'true'
+        self.XNEWA_CACHE_PERM = addon.getSetting("userdataCache") == 'true'
+        self.XNEWA_SORT_RECURRING = addon.getSetting("recurringSort")
+        self.XNEWA_SORT_RECORDING = int(addon.getSetting("recordingSort"))
+        self.XNEWA_SORT_EPISODE = int(addon.getSetting("episodeSort"))
+        self.NextPVR_STREAM = addon.getSetting("stream")
+
+        self.XNEWA_PREBUFFER = int(addon.getSetting("prebuffer")) / 4
+        self.XNEWA_POSTBUFFER = int(addon.getSetting("postbuffer")) / 4
+        self.EPG_SCROLL_INT = int(addon.getSetting("scrollInterval"))
+        self.EPG_DISP_INT = int(addon.getSetting("displayInterval"))
+        self.EPG_RETR_INT = int(addon.getSetting("epgCache"))
+        self.EPG_ROW_HEIGHT = int(addon.getSetting("epgRowHeight"))
+
+        self.EPG_GROUP = addon.getSetting("group")
+
+        self.XNEWA_INTERFACE = addon.getSetting('interface')
+        if addon.getSetting('skin') != 'Classic':
+            try:
+                if xbmc.getSkinDir() == 'skin.estuary':
+                    if addon.getSetting('skin') == 'Estuary-classic':
+                        self.XNEWA_SKIN = 'Estuary-classic'
+                    else:
+                        self.XNEWA_SKIN = 'Estuary'
+                elif xbmc.getSkinDir() == 'skin.confluence':
+                    self.XNEWA_SKIN = 'Confluence'
+                else:
+                    print xbmc.getSkinDir()
+                    self.XNEWA_SKIN = addon.getSetting('skin')
+            except:
+                print 'Could not auto-detect skin'
+                print xbmc.getSkinDir()
+        else:
+            self.XNEWA_SKIN = 'Default'
+        self.XNEWA_WEBCLIENT = addon.getSetting('webclient') == 'true'
+        self.XNEWA_CLIENT_SIZE = addon.getSetting('client_size')
+        self.XNEWA_CLIENT_QUALITY = addon.getSetting('client_quality') == 'true'
+        self.XNEWA_LIVE_SKIN = addon.getSetting('liveSkin') == 'true'
+        self.XNEWA_CONTEXT_STOP = addon.getSetting('stopContext') == 'true'
+        self.XNEWA_CONTEXT_POP = addon.getSetting('popContext') == 'true'
+
+        self.VLC_VIDEO_SIZE = int(addon.getSetting("strmVideoSize"))
+        self.VLC_VIDEO_BITRATE = addon.getSetting("strmBitRate")
+        self.VLC_AUDIO_BITRATE = int(addon.getSetting("strmAudioBitrate"))
+        self.TRANSCODE_PROFILE = addon.getSetting("resTranscode") + 'p-' + addon.getSetting("bitrateTranscode")+'kbps'
+        self.XNEWA_READONLY = False
+        self.XNEWA_COLOURS = None
+        print "config loaded from setting"
+        return
+
 

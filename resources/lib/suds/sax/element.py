@@ -194,7 +194,7 @@ class Element:
         @type value: basestring
         @see: __setitem__()
         """
-        attr = self.attrib(name)
+        attr = self.getAttribute(name)
         if attr is None:
             attr = Attribute(name, value)
             self.append(attr)
@@ -210,7 +210,7 @@ class Element:
         @rtype: L{Element}
         """
         try:
-            attr = self.attrib(name)
+            attr = self.getAttribute(name)
             self.attributes.remove(attr)
         except:
             pass
@@ -231,7 +231,7 @@ class Element:
         @rtype: basestring
         @see: __getitem__()
         """
-        attr = self.attrib(name, ns)
+        attr = self.getAttribute(name, ns)
         if attr is None or attr.value is None:
             return default
         else:
@@ -245,9 +245,10 @@ class Element:
         @return: self
         @rtype: I{Element}
         """
-        post = sax.encoder.encode(value)
-        encoded = ( post != value )
-        self.text = Text(post, encoded=encoded)
+        if isinstance(value, Text):
+            self.text = value
+        else:
+            self.text = Text(value)
         return self
         
     def getText(self, default=None):
@@ -259,13 +260,9 @@ class Element:
         @rtype: L{Text}
         """
         if self.hasText():
-            if self.text.encoded:
-                result = Text(sax.encoder.decode(self.text))
-            else:
-                result = self.text
+            return self.text
         else:
-            result = default
-        return result
+            return default
     
     def trim(self):
         """
@@ -285,31 +282,6 @@ class Element:
         @rtype: boolean
         """
         return ( self.text is not None and len(self.text) )
-    
-    def attrib(self, name, ns=None):
-        """
-        Get an attribute by name and (optional) namespace
-        @param name: The name of a contained attribute (may contain prefix).
-        @type name: basestring
-        @param ns: An optional namespace
-        @type ns: (I{prefix}, I{name})
-        @return: The requested attribute object.
-        @rtype: L{Attribute}
-        """
-        result = None
-        if len(self.attributes) == 0:
-            return result
-        if ns is None:
-            p, n = splitPrefix(name)
-            p = [p]
-        else:
-            prefixes = self.findPrefixes(ns[1])
-            p, n = (prefixes, name)
-        for a in self.attributes:
-            if a.prefix in p and a.name == n:
-                result = a
-                break
-        return result
         
     def namespace(self):
         """
@@ -415,6 +387,29 @@ class Element:
             self.children.insert(index, node.detach())
             node.parent = self
             index += 1
+            
+    def getAttribute(self, name, ns=None, default=None):
+        """
+        Get an attribute by name and (optional) namespace
+        @param name: The name of a contained attribute (may contain prefix).
+        @type name: basestring
+        @param ns: An optional namespace
+        @type ns: (I{prefix}, I{name})
+        @param default: Returned when attribute not-found.
+        @type default: L{Attribute}
+        @return: The requested attribute object.
+        @rtype: L{Attribute}
+        """
+        if ns is None:
+            prefix, name = splitPrefix(name)
+            if prefix is None:
+                ns = None
+            else:
+                ns = self.resolvePrefix(prefix)
+        for a in self.attributes:
+            if a.match(name, ns):
+                return a
+        return default
 
     def getChild(self, name, ns=None, default=None):
         """
@@ -703,7 +698,7 @@ class Element:
         @return: True if I{nil}, else False
         @rtype: boolean
         """
-        nilattr = self.attrib('nil', ns=Namespace.xsins)
+        nilattr = self.getAttribute('nil', ns=Namespace.xsins)
         if nilattr is None:
             return False
         else:
@@ -762,13 +757,36 @@ class Element:
             result.append('/>')
             return ''.join(result)
         result.append('>')
-        if self.text is not None:
-            result.append(self.text)
+        if self.hasText():
+            result.append(self.text.escape())
         for c in self.children:
             result.append('\n')
             result.append(c.str(indent+1))
         if len(self.children):
             result.append('\n%s' % tab)
+        result.append('</%s>' % self.qname())
+        result = ''.join(result)
+        return result
+    
+    def plain(self):
+        """
+        Get a string representation of this XML fragment.
+        @return: A I{plain} string.
+        @rtype: basestring
+        """
+        result = []
+        result.append('<%s' % self.qname())
+        result.append(self.nsdeclarations())
+        for a in [unicode(a) for a in self.attributes]:
+            result.append(' %s' % a)
+        if self.isempty():
+            result.append('/>')
+            return ''.join(result)
+        result.append('>')
+        if self.hasText():
+            result.append(self.text.escape())
+        for c in self.children:
+            result.append(c.plain())
         result.append('</%s>' % self.qname())
         result = ''.join(result)
         return result
@@ -825,11 +843,23 @@ class Element:
         @return: A flat list of nodes.
         @rtype: [L{Element},..]
         """
-        branch = []
+        branch = [self]
         for c in self.children:
-            branch.append(c)
             branch += c.branch()
         return branch
+    
+    def ancestors(self):
+        """
+        Get a list of ancestors.
+        @return: A list of ancestors.
+        @rtype: [L{Element},..]
+        """
+        ancestors = []
+        p = self.parent
+        while p is not None:
+            ancestors.append(p)
+            p = p.parent
+        return ancestors
     
     def walk(self, visitor):
         """
@@ -916,7 +946,41 @@ class Element:
     
     def __unicode__(self):
         return self.str()
+    
+    def __iter__(self):
+        return NodeIterator(self)
+    
 
+class NodeIterator:
+    """
+    The L{Element} child node iterator.
+    @ivar pos: The current position
+    @type pos: int
+    @ivar children: A list of a child nodes.
+    @type children: [L{Element},..] 
+    """
+    
+    def __init__(self, parent):
+        """
+        @param parent: An element to iterate.
+        @type parent: L{Element}
+        """
+        self.pos = 0
+        self.children = parent.children
+        
+    def next(self):
+        """
+        Get the next child.
+        @return: The next child.
+        @rtype: L{Element}
+        @raise StopIterator: At the end.
+        """
+        try:
+            child = self.children[self.pos]
+            self.pos += 1
+            return child
+        except:
+            raise StopIteration()
 
 
 class PrefixNormalizer:
@@ -961,7 +1025,7 @@ class PrefixNormalizer:
         @rtype: set
         """
         s = set()
-        for n in self.branch:
+        for n in self.branch + self.node.ancestors():
             if self.permit(n.expns):
                 s.add(n.expns)
             s = s.union(self.pset(n))

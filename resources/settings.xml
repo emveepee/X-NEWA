@@ -1,0 +1,58 @@
+<settings>
+
+  <category label="30200">
+    <setting default="127.0.0.1" id="host" label="30201" option="urlencoded" type="text" />
+    <setting default="8866" id="port" label="30202" type="number" />
+    <setting default="0000" id="pin" label="30203" option="hidden" type="text" />
+    <setting default="admin" id="userid" label="30204" type="text" />
+    <setting default="password" id="password" label="30205" option="hidden" type="text" />
+    <setting enable="false" id="blank1" label="" type="text" />
+    <setting type="sep" />
+    <setting default="false" id="webclient" label="30206" type="bool" />
+    <setting default="false" enabled="false" id="installed" label="" type="bool" visible="false" />
+    <setting default="priority" enabled="false" id="recurringSort" label="recurringSort" type="text" visible="false" />
+    <setting default="0" enabled="false" id="recordingSort" label="recordingSort" type="number" visible="false" />
+    <setting default="0" enabled="false" id="episodeSort" label="episodeSort" type="number" visible="false" />
+  </category>
+
+  <category label="30220">
+    <setting default="Confluence" id="skin" label="30226" type="labelenum" values="Confluence|Classic|Estuary|Estuary-classic" />
+    <setting default="JSON" id="interface" label="30221" type="labelenum" values="JSON|XML|SOAP" />
+    <setting default="false" id="syncXBMC" label="30222" type="bool" />
+    <setting default="false" id="fetchFanart" label="30223" type="bool" />
+    <setting default="false" id="userdataCache" label="30272" type="bool" />
+    <setting enable="false" id="blank2" label="" type="text" />
+    <setting label="30270" type="lsep" />
+    <setting default="1280x720" id="client_size" label="30224" type="labelenum" values="1920x1080|1600x900|1366x768|1280x720|1024x576|960x540|854x480|720x480|800x600" />
+    <setting default="false" id="client_quality" label="30225" type="bool" />
+    <setting default="true" id="liveSkin" label="30227" type="bool" />
+    <setting default="false" id="stopContext" label="30228" type="bool" />
+    <setting default="true" id="popContext" label="30229" type="bool" />		
+  </category>
+
+  <category label="30240">
+
+    <setting label="30241" type="lsep" />
+    <setting default="Native" id="stream" label="30242" type="labelenum" values="Native|Transcode|Timeshift|PVR|VLC|HDHR|Direct" />
+    <setting default="720" id="resTranscode" label="30243" subsetting="true" type="labelenum" values="360|480|720|1080" visible="eq(-1,1)" />
+    <setting default="1024" id="bitrateTranscode" label="30244" subsetting="true" type="labelenum" values="256|512|1024|2048|4096" visible="eq(-2,1))" />
+    <setting default="480" id="strmVideoSize" label="30243" subsetting="true" type="labelenum" values="320|480|720" visible="eq(-3,4)" />
+    <setting default="512" id="strmBitRate" label="30244" subsetting="true" type="labelenum" values="128|256|512|LAN|HD-2K|HD-4|HD-8K" visible="eq(-4,4))" />
+    <setting default="64" id="strmAudioBitrate" label="30245" subsetting="true" type="labelenum" values="8|16|32|64|96|128|256" visible="eq(-5,4))" />
+    <setting default="4000" id="prebuffer" label="30246" option="int" range="2000,200,10000" subsetting="true" type="slider" visible="eq(-6,2)" />
+    <setting default="4000" id="postbuffer" label="30247" option="int" range="2000,200,10000" subsetting="true" type="slider" visible="eq(-7,2)" />
+    <setting label="30271" type="lsep" />
+    <setting default="false" id="usewol" label="30248" type="bool" />
+    <setting default="00:00:00:00:00:00" id="mac" label="30249" subsetting="true" type="text" visible="eq(-1,true)" />
+    <setting default="255.255.255.255" id="broadcast" label="30250" subsetting="true" type="text" visible="eq(-2,true))" />
+    <setting default="5" id="wol_attempts" label="30251" subsetting="true" type="number" visible="eq(-3,true))" />
+    <setting label="EPG" type="lsep" />
+    <setting default="All Channels" id="group" label="30131" type="labelenum" values="All Channels" />
+    <setting default="15" id="scrollInterval" label="30252" option="int" range="5,5,30" type="slider" />
+    <setting default="60" id="displayInterval" label="30253" option="int" range="30,15,480" type="slider" />
+    <setting default="2" id="epgCache" label="30254" option="int" range="1,1,5" type="slider" />
+    <setting default="55" id="epgRowHeight" label="30255" option="int" range="55,5,90" type="slider" />
+
+  </category>
+
+</settings>

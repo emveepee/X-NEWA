@@ -21,6 +21,8 @@ import os
 import xbmcgui
 
 from XNEWAGlobals import *
+
+from XBMCJSON import *
 # =============================================================================            
 class settingsDialog(xbmcgui.WindowXMLDialog):
     """
@@ -34,35 +36,52 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         self.xnewa = kwargs['xnewa']
         self.win = None        
         self.shouldRefresh = False
+        self.update = False
         self.changeGroup = False
         
     def onInit(self):
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+        self.saveButton = self.getControl(250)
+        self.cancelButton = self.getControl(253)
+
         self.nextpvr_ip = self.getControl(201)
         self.nextpvr_port = self.getControl(202)
         self.nextpvr_user = self.getControl(203)
         self.nextpvr_pw = self.getControl(204)
-        self.nextpvr_usewol  = self.getControl(205)
-        self.nextpvr_mac = self.getControl(206)
-        self.nextpvr_broadcast = self.getControl(207)
+        self.nextpvr_pin = self.getControl(205)
+
+        self.xnewa_interface = self.getControl(220)
+        self.xnewa_client_size = self.getControl(221)
+        self.xnewa_client_quality = self.getControl(222)
+
         self.nextpvr_stream = self.getControl(215)
+        self.xnewa_prebuffer = self.getControl(217)
+        self.xnewa_postbuffer = self.getControl(218)
+        self.xnewa_update_episodes = self.getControl(219)
         self.nextpvr_icon_dl = self.getControl(216)
+        self.nextpvr_usewol  = self.getControl(305)
+        self.nextpvr_mac = self.getControl(306)
+        self.nextpvr_broadcast = self.getControl(307)
 
         self.epgscrollint = self.getControl(210)
         self.epgdispint = self.getControl(211)
         self.epgretrint = self.getControl(212)
         self.epgrowh = self.getControl(213)
         self.epgGroup = self.getControl(214)
-    
-        self.saveButton = self.getControl(250)
-        self.cancelButton = self.getControl(253)
+
+
+        self.vlc_video_size = self.getControl(401)
+        self.vlc_video_bitrate = self.getControl(402)
+        self.vlc_audio_bitrate = self.getControl(403)
+
         self._updateView()
+
 
     def onFocus(self, controlId):
         pass
         
     def onAction(self, action):
-        if action.getId() in (EXIT_SCRIPT):
+        if action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
             self.close() 
 
     def onClick(self, controlId):
@@ -71,9 +90,12 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         if self.cancelButton == source:
             self.close()
         elif self.saveButton == source:
+            self.settings.save()
             if self.changeGroup:
                 self.xnewa.cleanCache('guideListing-*.p')
-            self.settings.save()
+                import xbmcaddon
+                addon = xbmcaddon.Addon()
+                addon.setSetting("group",self.settings.EPG_GROUP)                
             self.close()
         elif self.nextpvr_ip == source:
             self._getText(self.nextpvr_ip, "NextPVR_HOST")    
@@ -83,21 +105,63 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self._getText(self.nextpvr_user, "NextPVR_USER")    
         elif self.nextpvr_pw == source:
             self._getText(self.nextpvr_pw, "NextPVR_PW")    
-        elif self.nextpvr_pw == source:
-            self._getText(self.nextpvr_pw, "NextPVR_PW")    
+        elif self.nextpvr_pin == source:
+            self._getText(self.nextpvr_pin, "NextPVR_PIN")    
         elif self.nextpvr_usewol == source:
             self._getYN(self.nextpvr_usewol, "NextPVR_USEWOL")    
         elif self.nextpvr_mac == source:
             self._getText(self.nextpvr_mac, "NextPVR_MAC")
         elif self.nextpvr_broadcast == source:
             self._getText(self.nextpvr_broadcast, "NextPVR_BROADCAST")
+        elif self.nextpvr_icon_dl == source:
+            self._getYN(self.nextpvr_icon_dl, "NextPVR_ICON_DL")  
+        elif self.xnewa_update_episodes == source:
+            self._getYN(self.xnewa_update_episodes, "XNEWA_EPISODE")  
         elif self.nextpvr_stream == source:
-            choices = ['Native', 'VLC', 'Direct']
+            choices = ['Native', 'Timeshift', 'PVR', 'VLC',  'Direct' ]
             setting =  xbmcgui.Dialog().select("Streaming Option", choices)
             self.settings.set("NextPVR_STREAM", choices[setting])
             self.nextpvr_stream.setLabel(self.nextpvr_stream.getLabel(), label2=choices[setting])
-        elif self.nextpvr_icon_dl == source:
-            self._getYN(self.nextpvr_icon_dl, "NextPVR_ICON_DL")    
+        elif self.xnewa_prebuffer == source:
+            self._getText(self.xnewa_prebuffer, "XNEWA_PREBUFFER")    
+        elif self.xnewa_postbuffer == source:
+            self._getText(self.xnewa_postbuffer, "XNEWA_POSTBUFFER")  
+        elif self.xnewa_interface == source:
+            choices = ['NextPVR','SOAP', 'XML', 'JSON',  'Short' ]
+            setting =  xbmcgui.Dialog().select("Interface Option", choices)
+            self.settings.set("XNEWA_INTERFACE", choices[setting])
+            self.xnewa_interface.setLabel(self.xnewa_interface.getLabel(), label2=choices[setting])
+            self.changeGroup = True
+        elif self.xnewa_client_size == source:
+            choices = ['1920x1080','1600x900','1366x768','1280x720','1024x576', '960x540','854x480','720x480', '800x600']
+            setting =  xbmcgui.Dialog().select("Size Option", choices)
+            if setting > -1:
+                self.settings.set("XNEWA_CLIENT_SIZE", choices[setting])
+                self.xnewa_client_size.setLabel(self.xnewa_client_size.getLabel(), label2=choices[setting])
+        elif self.xnewa_client_quality == source:
+            choices = ['Normal','High']
+            setting =  xbmcgui.Dialog().select("Quality Option", choices)
+            if setting > -1:
+                self.settings.set("XNEWA_CLIENT_QUALITY", choices[setting])
+                self.xnewa_client_quality.setLabel(self.xnewa_client_quality.getLabel(), label2=choices[setting])
+
+        elif self.vlc_video_size == source:
+            choices = ['320', '480', '720' ]
+            setting =  xbmcgui.Dialog().select("Video Size Option", choices)
+            if setting > -1:
+                self.settings.set("VLC_VIDEO_SIZE", choices[setting])
+                self.vlc_video_size.setLabel(self.vlc_video_size.getLabel(), label2=choices[setting])
+        elif self.vlc_video_bitrate == source:
+            choices = ['128', '256', '512', 'LAN', 'HD-2K', 'HD-4K', 'HD-8K' ]
+            setting =  xbmcgui.Dialog().select("Video Bitrate Option", choices)
+            self.settings.set("VLC_VIDEO_BITRATE", choices[setting])
+            self.vlc_video_bitrate.setLabel(self.vlc_video_bitrate.getLabel(), label2=choices[setting])
+        elif self.vlc_audio_bitrate == source:
+            choices = ['8', '16', '32', '64', '96', '128', '256' ]
+            setting =  xbmcgui.Dialog().select("Audio Bitrate Option", choices)
+            self.settings.set("VLC_AUDIO_BITRATE", choices[setting])
+            self.vlc_audio_bitrate.setLabel(self.vlc_audio_bitrate.getLabel(), label2=choices[setting])
+
         elif self.epgscrollint == source:
             self._getText(self.epgscrollint, "EPG_SCROLL_INT")    
         elif self.epgdispint == source:
@@ -143,17 +207,41 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self.nextpvr_port.setLabel( "NextPVR Port Number:", label2=str(self.settings.NextPVR_PORT) )
             self.nextpvr_user.setLabel( "NextPVR Userid:", label2=self.settings.NextPVR_USER )
             self.nextpvr_pw.setLabel( "NextPVR Password:", label2=self.settings.NextPVR_PW )
-            self.nextpvr_usewol.setLabel( "Use Wake-On-Lan:", label2=self.settings.NextPVR_USEWOL )
+            self.nextpvr_pin.setLabel( "NextPVR PIN:", label2=self.settings.NextPVR_PIN )
+            if self.settings.NextPVR_USEWOL == True:
+                self.nextpvr_usewol.setLabel( "Use Wake-On-Lan:", label2='Yes' )
+            else:
+                self.nextpvr_usewol.setLabel( "Use Wake-On-Lan:", label2='No' )
             self.nextpvr_mac.setLabel( "NextPVR MAC Address:", label2=self.settings.NextPVR_MAC )
             self.nextpvr_broadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.NextPVR_BROADCAST )
+            if self.settings.XNEWA_EPISODE == True:
+                self.xnewa_update_episodes.setLabel( "Update XBMC Episode:", label2='Yes' )
+            else:
+                self.xnewa_update_episodes.setLabel( "Update XBMC Episode:", label2='No' )
+            if self.settings.NextPVR_ICON_DL == True:
+                self.nextpvr_icon_dl.setLabel( "Fetch Covers:", label2='Yes' )
+            else:
+                self.nextpvr_icon_dl.setLabel( "Fetch Covers:", label2='No' )
             self.nextpvr_stream.setLabel( "Streaming Format:", label2=self.settings.NextPVR_STREAM )
-            self.nextpvr_icon_dl.setLabel( "Fetch Covers:", label2=self.settings.NextPVR_ICON_DL )
+            self.xnewa_prebuffer.setLabel( "Timeshift Pre-buffer:", label2=str(self.settings.XNEWA_PREBUFFER*4) )
+            self.xnewa_postbuffer.setLabel( "Timeshift Post-buffer:", label2=str(self.settings.XNEWA_POSTBUFFER*4) )
+            self.xnewa_interface.setLabel( "Interface", label2=str(self.settings.XNEWA_INTERFACE) )
+            self.xnewa_client_size.setLabel( "Web Client Size:", label2=str(self.settings.XNEWA_CLIENT_SIZE) )
+
+            if self.settings.XNEWA_CLIENT_QUALITY == True:
+                self.xnewa_client_quality.setLabel( "Web Client Quality:", label2='High' )
+            else:
+                self.xnewa_client_quality.setLabel( "Web Client Quality:", label2='Normal')
 
             self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
             self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )
             self.epgretrint.setLabel( "Retrieve Interval (hrs.):", label2=str(self.settings.EPG_RETR_INT) )
             self.epgrowh.setLabel( "Row Height (px):", label2=str(self.settings.EPG_ROW_HEIGHT) )
             self.epgGroup.setLabel( "Channel Group", label2=str(self.settings.EPG_GROUP) )
+
+            self.vlc_video_size.setLabel( "VLC Video Size;", label2=str(self.settings.VLC_VIDEO_SIZE) )
+            self.vlc_video_bitrate.setLabel( "VLC Video Bitrate;", label2=str(self.settings.VLC_VIDEO_BITRATE) )
+            self.vlc_audio_bitrate.setLabel( "VLC Audio Bitrate;", label2=str(self.settings.VLC_AUDIO_BITRATE) )
         except:
             handleException()
         try:
@@ -164,8 +252,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         self.win.setProperty('busy', 'false')
 
     def _chooseFromList(self, translations, title, property, setter):
-        """
-        Boiler plate code that presents the user with a dialog box to select a value from a list.
+        """                                 user with a dialog box to select a value from a list.
         Once selected, the setter method on the Schedule is called to reflect the selection.
         
         """

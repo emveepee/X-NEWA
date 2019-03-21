@@ -15,13 +15,14 @@
 # written by: Jeff Ortel ( jortel@redhat.com )
 
 """
-Suds base pptions classes.
+Suds basic options classes.
 """
 
 from suds.properties import *
 from suds.wsse import Security
 from suds.xsd.doctor import Doctor
 from suds.transport import Transport
+from suds.cache import Cache, NoCache
 
 
 class TpLinker(AutoLinker):
@@ -42,6 +43,9 @@ class TpLinker(AutoLinker):
 class Options(Skin):
     """
     Options:
+        - B{cache} - The XML document cache.  May be set (None) for no caching.
+                - type: L{Cache}
+                - default: L{NoCache}
         - B{faults} - Raise faults raised by server,
             else return tuple from service method invocation as (httpcode, object).
                 - type: I{bool}
@@ -80,9 +84,26 @@ class Options(Skin):
             of the python object graph.
                 - type: I{bool}
                 - default: False
+        - B{prettyxml} - Flag that causes I{pretty} xml to be rendered when generating
+            the outbound soap envelope.
+                - type: I{bool}
+                - default: False
+        - B{autoblend} - Flag that ensures that the schema(s) defined within the
+            WSDL import each other.
+                - type: I{bool}
+                - default: False
+        - B{cachingpolicy} - The caching policy.
+                - type: I{int}
+                  - 0 = Cache XML documents.
+                  - 1 = Cache WSDL (pickled) object.
+                - default: 0
+        - B{plugins} - A plugin container.
+                - type: I{list}
     """    
     def __init__(self, **kwargs):
+        domain = __name__
         definitions = [
+            Definition('cache', Cache, NoCache()),
             Definition('faults', bool, True),
             Definition('transport', Transport, None, TpLinker()),
             Definition('service', (int, basestring), None),
@@ -93,6 +114,10 @@ class Options(Skin):
             Definition('doctor', Doctor, None),
             Definition('xstq', bool, True),
             Definition('prefixes', bool, True),
-            Definition('retxml', bool, False)
+            Definition('retxml', bool, False),
+            Definition('prettyxml', bool, False),
+            Definition('autoblend', bool, False),
+            Definition('cachingpolicy', int, 0),
+            Definition('plugins', (list, tuple), []),
         ]
-        Skin.__init__(self, definitions, kwargs)
+        Skin.__init__(self, domain, definitions, kwargs)

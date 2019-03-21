@@ -25,22 +25,30 @@ from xbmcaddon import Addon
 from XNEWAGlobals import *
 from XNEWA_Connect import XNEWA_Connect
 from XNEWA_Settings import XNEWA_Settings
+from fix_utf8 import smartUTF8
+
+__language__ = Addon('script.xbmc.x-newa').getLocalizedString
 
 # =============================================================================
 class HomeWindow(xbmcgui.WindowXML):
-    
+
     def __init__(self, *args, **kwargs):
         self.win = None
         self.busy = False
-        self.progressDialog = None
-        self.settings = XNEWA_Settings()
-        self.offline = False
-        self.xnewa = XNEWA_Connect(self.settings.NextPVR_HOST, self.settings.NextPVR_PORT)
+        #self.progressDialog = None
+        #self.settings = XNEWA_Settings()
+        #self.xnewa = XNEWA_Connect(settings=self.settings)
+        self.settings = kwargs['settings']
+        self.xnewa = kwargs['xnewa']
+        self.offline = self.xnewa.offline
+        self.getChannels = True
+        self.returnvalue = None
 
     def onFocus(self, controlId):
         pass
-    
+
     def onInit(self):
+
         if not self.win:
             self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             self.recentListBox = self.getControl(249)
@@ -55,6 +63,15 @@ class HomeWindow(xbmcgui.WindowXML):
             self.countFailed = self.getControl(240)
             self.countConflict = self.getControl(239)
             self.countSeason = self.getControl(238)
+            try:
+                self.spacePercent = self.getControl(237)
+                self.includePercentages = True
+            except RuntimeError:
+                self.includePercentages = False
+            if self.settings.XNEWA_READONLY == True:
+                self.win.setProperty('readonly', 'true')
+                print 'invisible'
+
             # button ids -> funtion ptr
             self.dispatcher = {
                 248 : self.goUpcomingDetails,
@@ -64,21 +81,25 @@ class HomeWindow(xbmcgui.WindowXML):
                 252 : self.goRecordingSchedules,
                 253 : self.goUpcomingRecordings,
                 254 : self.goSearch,
-                255 : self.goSettings,
                 256 : self.refreshButton,
                 257 : self.goExit,
                 258 : self.goRecentRecordings,
-                259 : self.goOnline
+                259 : self.goOnline,
+                260 : self.goNextPVR
             }
             self.winOnline()
-            self.refreshOnInit()
+            if self.offline == True:
+                self.win.setProperty('offline', 'true')
+            else:
+                self.goOnline()
+
         else:
             self.refresh()
             if self.offline == True:
                 self.win.setProperty('offline', 'true')
 
     def onAction(self, action):
-        if action.getId() in (EXIT_SCRIPT):
+        if action.getId() in (EXIT_SCRIPT) or action.getButtonCode() in EXIT_SCRIPT:
             self.closed = True
             self.close()
 
@@ -88,75 +109,103 @@ class HomeWindow(xbmcgui.WindowXML):
             if self.xnewa.changedRecordings:
                 self.xnewa.cleanOldCache('guideListing-*.p')
                 self.xnewa.cleanCache('*.p')
-                self.xnewa.changedRecordings = False;
+                self.xnewa.changedRecordings = False
                 self.refreshOnInit()
 
         except KeyError:
             debug('onClick')
-               
+
     def goSearch(self):
         import search
-        mywin = search.SearchWindow('nextpvr_search.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
+        mywin = search.SearchWindow('nextpvr_search.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
 
     def goExit(self):
         self.xnewa.cleanCoverCache()
         self.closed = True
         self.close()
+        return
 
     def goOnline(self):
-        self.offline = False
-        self.win.setProperty('recent', 'true')
-        self.win.setProperty('scheduled', 'true')
-        self.win.setProperty('upcoming', 'true')
-        self.win.setProperty('offline', 'false')
+        self.refreshOnInit()
+        if self.offline == False:
+            self.win.setProperty('recent', 'true')
+            self.win.setProperty('scheduled', 'true')
+            self.win.setProperty('upcoming', 'true')
+            self.win.setProperty('offline', 'false')
+            xbmc.sleep(100)
+            return
+            try:
+                self.getControl(999)
+                self.win.setFocusId(999)
+            except RuntimeError:
+                self.win.setFocusId(251)
 
     def goRecentDetails(self):
         import details
         oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R" )
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R" )
         detailDialog.doModal()
+        print detailDialog.returnvalue
         if detailDialog.shouldRefresh:
-            self.render()
+            #self.xnewa.changedRecordings = False
+            #self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
+            self.xnewa.cleanCache('*.p')
+            self.refresh()
 
     def goUpcomingDetails(self):
         import details
         oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R")
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R")
         detailDialog.doModal()
         if detailDialog.shouldRefresh:
-            self.render()
+            self.xnewa.cleanCache('*.p')
+            self.refresh()
+
+    def goTvGuide(self):
+        import epg
+        mywin = epg.EpgWindow('nextpvr_epg.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings)
+        mywin.doModal()
+        if self.xnewa.changedRecordings:
+            self.xnewa.cleanOldCache('guideListing-*.p')
+            self.xnewa.cleanCache('*.p')
+            self.xnewa.changedRecordings = False
+            self.refreshOnInit()
+
 
     def goWatchRecordings(self):
         xbmc.executebuiltin('XBMC.ActivateWindow(videos,tvshowtitles)')
-        
-    def goTvGuide(self):
-        import epg
-        mywin = epg.EpgWindow('nextpvr_epg.xml', WHERE_AM_I, xnewa=self.xnewa, settings=self.settings)
-        mywin.doModal()
+
+    def goNextPVR(self):
+        import emulate
+        emulateWindow = emulate.EmulateWindow("nextpvr_emulate.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
+        emulateWindow.doModal()
+
 
     def goRecordingSchedules(self):
         import schedules
-        mywin = schedules.SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
+        mywin = schedules.SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
-            
+
     def goUpcomingRecordings(self):
         import upcoming
-        mywin = upcoming.UpcomingRecordingsWindow('nextpvr_upcoming.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
+        mywin = upcoming.UpcomingRecordingsWindow('nextpvr_upcoming.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
-        
+
     def goRecentRecordings(self):
         import recent
-        mywin = recent.RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I, settings=self.settings, xnewa=self.xnewa)
+        mywin = recent.RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
-                            
+        #if mywin.shouldRefresh:
+        #    self.renderRecent()
+
     def goSettings(self):
         import settings
         mywin = settings.settingsDialog('nextpvr_settings.xml', WHERE_AM_I, settings=self.settings,xnewa=self.xnewa)
         mywin.doModal()
         if self.settings.Reload:
             print "Reloading"
-            self.xnewa = XNEWA_Connect(self.settings.NextPVR_HOST, self.settings.NextPVR_PORT)
+            self.xnewa = XNEWA_Connect(settings=self.settings)
             if self.xnewa.offline == False:
                 self.win.setProperty('recent', 'true')
                 self.win.setProperty('scheduled', 'true')
@@ -164,81 +213,125 @@ class HomeWindow(xbmcgui.WindowXML):
             self.refreshButton()
 
     def refresh(self):
+        self.renderStats()
         self.renderUpComing()
         self.renderRecent()
-        self.renderStats()
+
 
     def refreshButton(self):
-        self.xnewa.cleanOldCache('guideListing-*.p')
+        self.getChannels = True
+        self.xnewa.cleanCache('channel.List')
+        self.xnewa.cleanCache('summary.List')
+        self.xnewa.cleanCache('guideListing-*.p')
         self.xnewa.cleanCache('*.p')
         self.refreshOnInit()
 
     def refreshOnInit(self):
         self.win.setProperty('busy', 'true')
-        if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):  
-            self.goOnline()
+        if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
             try:
-                self.statusData = self.xnewa.GetNextPVRInfo(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
-                self.upcomingData = self.xnewa.getUpcomingRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
-                self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
-                self.renderUpComing()
-                self.renderRecent()
-                self.renderStats()
-                self.win.setProperty('busy', 'false')
+                self.statusData = self.xnewa.GetNextPVRInfo(self.settings.NextPVR_USER, self.settings.NextPVR_PW,self.getChannels)
+                self.getChannels = False
+                if self.settings.XNEWA_INTERFACE != 'NextPVR':
+                    self.upcomingData = self.xnewa.getUpcomingRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
+                    self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
+                    self.renderUpComing()
+                    self.renderRecent()
+                    self.renderStats()
+                self.offline = False
             except:
                 handleException()
                 self.win.setProperty('busy', 'false')
-                xbmcgui.Dialog().ok('Error', 'Unable load NEWA data')
+                xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), smartUTF8(__language__(30120)))
+                self.offline = True
         else:
+            self.offline = False
             self.win.setProperty('busy', 'false')
             self.winOnline();
-            xbmcgui.Dialog().ok('Error', 'Unable to contact NextPVR Server!')
+            xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
+            self.offline = True
+            self.win.setFocusId(257)
+        self.win.setProperty('busy', 'false')
 
     def renderUpComing(self):
         listItems = []
-        for i, t in enumerate(self.upcomingData):
-            listItem = xbmcgui.ListItem('Row %d' % i)
-            listItem.setProperty('title', t['title'])
-            listItem.setProperty('date', t['start'].strftime("%a, %b %d %H:%M"))
-            listItem.setProperty('end', t['end'].strftime("%H:%M"))
-            listItem.setProperty('description', t['desc'])
-            listItem.setProperty('channel', t['channel'][0])
-            listItem.setProperty('oid', str(t['program_oid']))
-            listItems.append(listItem)
-        self.comingListBox.addItems(listItems)
+        if self.upcomingData != None:
+            self.comingListBox.reset()
+            for i, t in enumerate(self.upcomingData):
+                listItem = xbmcgui.ListItem('Row %d' % i)
+                if t['season'] == 0:
+                    listItem.setProperty('title', t['title'])
+                elif ( t['significance'] == ''):
+                    listItem.setProperty('title','{0} ({1}x{2})'.format(t['title'],t['season'],t['episode']))
+                else:
+                    listItem.setProperty('title', '{0} : {1}'.format(t['title'],t['significance']))
+                listItem.setProperty('channel', t['channel'][0])
+                listItem.setProperty('date', self.xnewa.formatDate(t['start']))
+                listItem.setProperty('date_long', self.xnewa.formatDate(t['start'], withyear=True))
+                listItem.setProperty('start', self.xnewa.formatTime(t['start']))
+                listItem.setProperty('end', self.xnewa.formatTime(t['end']))
+                listItem.setProperty('description', t['desc'])
+                listItem.setProperty('status', t['status'])
+                listItem.setProperty('oid', str(t['program_oid']))
+                listItems.append(listItem)
+            if len(listItems) > 0:
+                self.comingListBox.addItems(listItems)
+                self.win.setFocus(self.comingListBox)
+            else:
+                self.win.setFocusId(999)
+
 
     def renderRecent(self):
         listItems = []
-        for i, t in enumerate(self.recentData):
-            listItem = xbmcgui.ListItem('Row %d' % i)
-            listItem.setProperty('title', t['title'])
-            listItem.setProperty('date', t['start'].strftime("%a, %b %d %H:%M"))
-            listItem.setProperty('end', t['end'].strftime("%H:%M"))
-            listItem.setProperty('description', t['desc'])
-            listItem.setProperty('status', t['status'])
-            listItem.setProperty('oid', str(t['program_oid']))
-            listItems.append(listItem)
-        self.recentListBox.addItems(listItems)
-               
+        self.recentListBox.reset()
+        if self.recentData != None:
+            for i, t in enumerate(self.recentData):
+                listItem = xbmcgui.ListItem('Row %d' % i)
+                if t['season'] == 0:
+                    listItem.setProperty('title', t['title'])
+                elif ( t['significance'] == ''):
+                    listItem.setProperty('title','{0} ({1}x{2})'.format(t['title'],t['season'],t['episode']))
+                else:
+                    listItem.setProperty('title', '{0} : {1}'.format(t['title'],t['significance']))
+                listItem.setProperty('channel', t['channel'][0])
+                listItem.setProperty('date', self.xnewa.formatDate(t['start']))
+                listItem.setProperty('date_long', self.xnewa.formatDate(t['start'], withyear=True))
+                listItem.setProperty('start', self.xnewa.formatTime(t['start']))
+                listItem.setProperty('end', self.xnewa.formatTime(t['end']))
+                listItem.setProperty('description', t['desc'])
+                listItem.setProperty('status', t['status'])
+                listItem.setProperty('oid', str(t['program_oid']))
+                listItems.append(listItem)
+            if len(listItems) > 0:
+                self.recentListBox.addItems(listItems)
+                if self.comingListBox.size() == 0:
+                    self.win.setFocus(self.recentListBox)
+
+
     def renderStats(self):
         # Set up free-space indication
         # First, the text part
         # Todo: Make safe for other languages / sizes (GB/MB, etc.)
-        tmp = self.statusData['directory'][0]['Total'].split(' ')
-        lTotal = float(tmp[0].replace(',','.'))
-        tmp = self.statusData['directory'][0]['Free'].split(' ')
-        lFree = float(tmp[0].replace(',','.'))
-        lUsed = lTotal - lFree
-        self.spaceFree.setLabel(str(lFree) + " Gb")
-        self.spaceUsed.setLabel(str(lUsed) + " Gb")
-        # Then, the images part
-        x, y = self.spaceGreen.getPosition()
-        redWidth = int((250 / (lTotal) ) * lUsed)
-        greenWidth = 250 - redWidth
-        self.spaceGreen.setWidth(greenWidth)
-        self.spaceRed.setWidth(redWidth)
-        self.spaceRed.setPosition(x+greenWidth, y)
-    
+        if self.statusData['directory'] != None:
+            tmp = self.statusData['directory'][0]['Total'].split(' ')
+            uom = tmp[1]
+            lTotal = float(tmp[0].replace(',','.'))
+            tmp = self.statusData['directory'][0]['Free'].split(' ')
+            if uom != tmp[1]:
+                lTotal = lTotal * 1000
+            lFree = float(tmp[0].replace(',','.'))
+            self.spaceFree.setLabel(str(lFree) + tmp[1])
+            lUsed = lTotal - lFree
+            self.spaceUsed.setLabel(str(lUsed) + tmp[1])
+            # Then, the images part
+            x, y = self.spaceGreen.getPosition()
+            redWidth = int((250 / (lTotal) ) * lUsed)
+            greenWidth = 250 - redWidth
+            self.spaceGreen.setWidth(greenWidth)
+            self.spaceRed.setWidth(redWidth)
+            self.spaceRed.setPosition(x+greenWidth, y)
+            if self.includePercentages:
+                self.spacePercent.setPercent(100*lUsed/lTotal)
         # Set up display of counters
         self.countPending.setLabel(self.statusData['schedule']['Pending'])
         self.countProgress.setLabel(self.statusData['schedule']['InProgress'])
@@ -255,10 +348,12 @@ class HomeWindow(xbmcgui.WindowXML):
                 self.win.setProperty('scheduled', 'false')
             if self.xnewa.checkCache('upcomingRecordings-0.p') == False:
                 self.win.setProperty('upcoming', 'false')
+            self.win.setFocusId(257)
         if self.offline != self.xnewa.offline:
             self.offline = self.xnewa.offline
             if self.offline == True:
                 self.win.setProperty('offline', 'true')
+                self.win.setFocusId(257)
             else:
                 self.win.setProperty('offline', 'false')
 

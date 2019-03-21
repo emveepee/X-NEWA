@@ -77,7 +77,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Title[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -90,7 +90,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Priority[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30042][/B]</label>
         </control>
 
         <control type="label">
@@ -103,7 +103,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Type[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30043][/B]</label>
         </control>
        
         <control type="label">
@@ -116,7 +116,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]Channel[/B]</label>
+            <label>[B]$ADDON[script.xbmc.x-newa 30012][/B]</label>
         </control>
 
 
@@ -325,7 +325,7 @@
         <align>left</align>
         <aligny>center</aligny>
         <textcolor>ffffffff</textcolor>
-        <label>Recurring Recordings</label>
+        <label>$ADDON[script.xbmc.x-newa 30007] $ADDON[script.xbmc.x-newa 30002]</label>
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
         <visible>false</visible>
@@ -340,7 +340,7 @@
         <align>right</align>
         <aligny>center</aligny>
         <textcolor>ffddddff</textcolor>
-        <label>[B]Recurring Recordings[/B]</label>
+        <label>[B]$ADDON[script.xbmc.x-newa 30007] $ADDON[script.xbmc.x-newa 30002][/B]</label>
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -381,15 +381,31 @@
         
         <control type="button" id="250">
             <description>Refresh button</description>
-            <label>Refresh</label>
+            <label>$ADDON[script.xbmc.x-newa 30024]</label>
             <width>285</width>
             <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
             <pulseonselect>true</pulseonselect>
             <enable>!substring(Window.Property(busy),true)</enable>
         </control>
+        <control type="button" id="253">
+            <description>Refresh button</description>
+            <label>$ADDON[script.xbmc.x-newa 30122]</label>
+            <width>285</width>
+            <align>left</align>
+            <textcolor name="white">FFFFFFFF</textcolor>                        
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+            <enable>!substring(Window.Property(busy),true)</enable>
+        </control>
+        
     </control>
     
     <control type="image">

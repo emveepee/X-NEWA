@@ -15,7 +15,7 @@
 # written by: Jeff Ortel ( jortel@redhat.com )
 
 """
-Contains transport interface (classes) and reference implementation.
+Contains classes for basic HTTP (authenticated) transport implementations.
 """
 
 import urllib2 as u2
@@ -45,9 +45,6 @@ class HttpAuthenticated(HttpTransport):
             - B{timeout} - Set the url open timeout (seconds).
                     - type: I{float}
                     - default: 90
-            - B{cache} - The http I{transport} cache.  May be set (None) for no caching.
-                    - type: L{Cache}
-                    - default: L{NoCache}
             - B{username} - The username used for http authentication.
                     - type: I{str}
                     - default: None
@@ -57,16 +54,45 @@ class HttpAuthenticated(HttpTransport):
         """
         HttpTransport.__init__(self, **kwargs)
         self.pm = u2.HTTPPasswordMgrWithDefaultRealm()
-        self.handler = u2.HTTPBasicAuthHandler(self.pm)
-        self.urlopener = u2.build_opener(self.handler)
         
     def open(self, request):
+        self.addcredentials(request)
+        return  HttpTransport.open(self, request)
+    
+    def send(self, request):
+        self.addcredentials(request)
+        return  HttpTransport.send(self, request)
+    
+    def addcredentials(self, request):
         credentials = self.credentials()
         if not (None in credentials):
             u = credentials[0]
             p = credentials[1]
             self.pm.add_password(None, request.url, u, p)
-        return  HttpTransport.open(self, request)
     
     def credentials(self):
         return (self.options.username, self.options.password)
+    
+    def u2handlers(self):
+            handlers = HttpTransport.u2handlers(self)
+            handlers.append(u2.HTTPBasicAuthHandler(self.pm))
+            return handlers
+    
+    
+class WindowsHttpAuthenticated(HttpAuthenticated):
+    """
+    Provides Windows (NTLM) http authentication.
+    @ivar pm: The password manager.
+    @ivar handler: The authentication handler.
+    @author: Christopher Bess
+    """
+        
+    def u2handlers(self):
+        # try to import ntlm support  
+        try:
+            from ntlm import HTTPNtlmAuthHandler
+        except ImportError:
+            raise Exception("Cannot import python-ntlm module")
+        handlers = HttpTransport.u2handlers(self)
+        handlers.append(HTTPNtlmAuthHandler.HTTPNtlmAuthHandler(self.pm))
+        return handlers

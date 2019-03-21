@@ -1,0 +1,110 @@
+<window type="window">
+
+	<id>3015</id>
+	<allowoverlays>true</allowoverlays>
+	<type>window</type>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>        
+	<controls>
+		<control type="videowindow" id="200">
+            <depth>DepthBackground</depth>        
+			<top>0</top>
+			<left>0</left>
+			<width>100%</width>
+			<height>100%</height>
+			<visible>Player.HasVideo</visible>            
+		</control>    
+		<control type="image" id="100">
+			<top>0</top>
+			<left>0</left>
+			<width>1280</width>
+			<height>720</height>
+			<visible>!substring(Window.Property(tuning), true) + substring(Window.Property(showosd), true)</visible>                        
+        </control>        
+		<control type="slider">
+			<top>670</top>
+            <left>287</left>
+			<visible>Player.HasVideo + Player.SeekEnabled + substring(Window.Property(showosd), true)</visible> 
+            <width>707</width>
+            <height>40</height>
+            <texturesliderbar colordiffuse="FFFFFFFF"></texturesliderbar>
+            <info>Player.Progress</info>
+            <action>seek</action>
+		</control>     
+        <control type="label" id="110">
+            <left>460</left>
+            <top>240</top>
+            <width>500</width>
+            <height>200</height>
+            <label>Hit Back to return</label>
+            <font>font35</font>
+			<textcolor>white</textcolor>            
+			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                        
+		</control>
+		<control type="label" id="120">
+            <left>460</left>
+            <top>340</top>
+            <width>500</width>
+            <height>200</height>
+            <label></label>
+			<textcolor>yellow</textcolor>            
+			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                                    
+		</control>
+
+        <control type="grouplist">
+            <left>140</left>
+            <top>680</top>
+            <width>810</width>
+            <height>32</height>
+            <itemgap>5</itemgap>                    
+            <orientation>horizontal</orientation>
+            <visible>Player.HasAudio</visible>                    
+            <control type="label">
+                <width min="10" max="700">auto</width>
+                <height>25</height>
+                <font>font20</font>
+                <align>left</align>
+                <aligny>center</aligny>
+                <label>$INFO[MusicPlayer.Title]</label>
+                <textcolor>orange</textcolor>
+                <scroll>true</scroll>
+            </control>
+            <control type="image">
+                <description>Audio Codec Image</description>
+                <width>80</width>
+                <height>30</height>
+                <aspectratio align="right">keep</aspectratio>
+				<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>                
+            </control>
+        </control>    
+        <control type="label">
+                <left>1000</left>
+                <top>680</top>        
+                <width>200</width>
+                <height>25</height>
+                <font>font20</font>
+                <align>right</align>
+                <aligny>center</aligny>
+                <label>$INFO[Player.Time]/$INFO[MusicPlayer.Duration]</label>
+                <textcolor>orange</textcolor>
+                <visible>Player.HasAudio + !String.IsEmpty(MusicPlayer.Duration)</visible>
+                <scroll>true</scroll>
+            </control>           
+            <control type="label">
+                <left>1000</left>
+                <top>680</top>        
+                <width>200</width>
+                <height>25</height>
+                <font>font20</font>
+                <align>right</align>
+                <aligny>center</aligny>
+                <label>$INFO[Player.Time]</label>
+                <textcolor>orange</textcolor>
+                <visible>Player.HasAudio + String.IsEmpty(MusicPlayer.Duration)</visible>
+                <scroll>true</scroll>
+            </control>              
+    </controls>        
+</window>
