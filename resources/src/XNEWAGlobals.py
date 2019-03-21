@@ -213,10 +213,13 @@ WHERE_AM_I = __addonpath__
 
 # Script doc constants
 __scriptname__ = "X-NEWA"
-__version__ = '2.5.3'
+__version__ = '2.5.4'
 __author__ = 'emveepee'
 __original_author__ = 'Ton van der Poel'
-__date__ = '2017-11-17'
+__date__ = '2019-01-29'
+
+XBMC_DIALOG_BUSY_OPEN = "ActivateWindow(busydialognocancel)"
+XBMC_DIALOG_BUSY_CLOSE = "Dialog.Close(busydialognocancel)"
 
 xbmc.log(__scriptname__ + " Version: " + __version__ + " Date: " + __date__)
 

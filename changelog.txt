@@ -1,0 +1,302 @@
+[B]2.5.4[/B]
+- Error logging certain characters in web client
+- Updated web client skins for Classic and Confluence skins
+- Minor error in text colour for status in native details popup
+- Fixed Busy notification after v18 dialog change
+
+[B]2.5.3[/B]
+- Fix for misnamed VLC function
+
+[B]2.5.3rc1[/B]
+- Cosmetic change Classic skin
+- auto discovery of NextPVR
+- fix for millseconds in NPVR.db3
+
+[B]2.5.3b1[/B]
+- Fixed recording list for NextPVR 4.04
+- Fixes for IPv6 hostname
+- Fixes for remote timeout recovery
+
+Web Client
+
+- Configure context menu key
+  - context stop in Video Playback
+  - context popup or exit web client
+- F12 exit
+- toggle subtitles key
+- more MCE keys
+- support plugin URLs passed from NextPVR
+
+
+[B]2.5.2[/B]
+- change to web client busy dialog (for Isengard)
+- changed startup logic from 2.5.1
+
+[B]2.5.1[/B]
+Release
+
+[B]2.5.1 RC3[/B]
+- Change to startup logic to pass higher res default to NextPVR
+
+[B]2.5.1 RC2[/B]
+- Changes to Estuary skin for Leia comnpatibility
+
+[B]2.5.1 RC1[/B]
+- Web client conext menu on DVD button MCE remote
+- Web client OK/Select should not change OSD behaviour
+- Tweaks
+- Allow hostname instead of IP
+
+[B]2.5.1 B3[/B]
+- Web client new context menu
+- Web client progress spinner on open
+- Estuary skin dialog background change
+
+[B]2.5.1 B2[/B]
+- Updated to Estuary Next Gen
+- Estuary WideList look & feel.
+- Old skin renamed to Estuary-classic for earlier versions of Kodi
+- Modified padding value ranges
+
+[B]2.5.1 B1[/B]
+- Web client Possible fix for black screens while navigating.
+- Web client & Player add support for rtmp files
+
+
+[B]2.5.1 A5[/B]
+- Web client Up/Down = NextPVR sort skip in recordings
+- Web client Don't refresh OSD skin value every second
+- Web client Context Menu = Stop in video playback
+- Turning of OSD skin turns of sdl string in client
+
+
+[B]2.5.1 A4[/B]
+- Web client enable more Kodi player keys in sdl mode
+- Fix web client classic mode skin
+- Update version number in Kodi settings
+
+[B]2.5.1 A3[/B]
+- Web client debug mode
+
+[B]2.5.1 A2[/B]
+- Web client seek changes
+- Web client detects if sdl mode is working based on build version
+- Detect Estuary or Confluence skins
+- Use PVR mode only when pvr addons are enabled.
+
+[B]2.5.1 A1[/B]
+- Web client enhancement for NextPVR OSD requires 3.9.2 161102 or greater
+- Web client Rewrite of state machine
+- Web client improved support for remotes and keys
+- Web client skip with mouse in OSD mode on NextPVR timeline
+- Web client internal alt y, alt g and ctrl-i in OSD mode
+- Web client F7 zoom and NextPVR options (Kodi 17)
+- Support for IPv6
+
+[B]2.5.0 A9[/B]
+- Web client enhancement for NextPVR OSD requires 160922 or greater
+
+[B]2.5.0 A8[/B]
+- Fixed display problem when runnnng on versions pre 8.3.4.160929
+- Estuary code cleanup by pkscout
+
+[B]2.5.0 A7[/B]
+- Web client sid login update
+- Web cliemt tweaks for low latency networks
+- Estuary skin updates
+
+[B]2.5.0 A6[/B]
+- Web client re-order to allow Record Key as Ctrl-K
+
+[B]2.5.0 A5[/B]
+- Web client fix freeze on unmapped characters
+- Web client ignore long-presses except for Context Menu
+
+[B]2.5.0 A4[/B]
+- Web client tweaks for dynamic rendering
+
+[B]2.5.0 A3[/B]
+- Web Client: more dynamic web client screen update using new activiy monitor to check rendering status api
+  (thanks sub) requires 3.8+
+- X-NEWA added significance field (Series Premiere etc) needs a web server update not available yet
+  I can provide updatess if needed
+- X-NEWA previous search results are saved
+
+
+[B]2.5.0 A2[/B]
+- updated Estuary skin
+- timeshift mode now records and delete
+- hdhr mode - play live tv directly from hdhr
+- support's sub's m3u8 streaming functions for recordings
+- optimize dashboard and epg
+
+[B]2.5.0 A1[/B]
+- initial Estuary skin
+- got PVR streaming option working again
+- more info on OSD
+- support's sub's m3u8 streaming functions for live tv
+- fixed dashboard reload problem
+- some bug fixes
+
+
+[B]2.4.9[/B]
+- increase timeout for refresh after play
+
+[B]2.4.8[/B]
+- web client send refresh to NextPVR after play
+- web client keystroke refresh
+- changes to retrieving fanart
+- stop using Kodi WOL
+
+
+[B]2.4.7[/B]
+- clean some temp files on refresh
+- prepare for minor release
+- some more colours
+- fix some listboxes that weren't reset
+- first try with colour keys
+
+[B]2.4.6[[/B]
+- added a few gestures for web client
+- problem scrolling EPG - bad debug message in Standard Time.
+- emulation mode optimizations
+- filter recording
+- search criteria (cast needs newer version of NEWA)
+- added series/episode and subtitle to player info
+- fixed pvr://mode
+- try hdhdr direct
+- try to limit keystrokes in emulation mode
+- refresh cache by server change not time.
+- misc fixes
+
+[B]2.4.5[/B]
+- problem saving channel icons with filename characters
+- another utf-8 change
+- removed some debug lines
+[B]2.4.4[/B]
+- save primary and secondary sort
+- didn't show advanced recurring rules
+- start displaying Season/Episode
+- parse filename for Season/Episode
+- add Season - Episode sort
+- a few utf-8 changes
+- genre colouring fixes
+- pending recordings still used SOAP calls
+- web client exits when server not available
+- Confluence changes on the Dashboard
+- changes for upcoming NEWA
+- other fixes
+
+[B]2.4.3[/B]
+- Watch button temp fix
+
+[B]2.4.2[/B]
+- Bug fix for Android/OSX python
+- Play key not working properly
+
+[B]2.4.1[/B]
+- dates/times shown based on XBMC region settings
+- updated Confluence and Default skins to accommodate longer regional dates/times
+- granularized labels to allow more flexibility for skins
+- updated Confluence and Default skins to use new skin labels
+- fix for xnewa.getRecordingsSummary returning the recording date offset by one day
+- made icon and channel caching consistent
+- now use addon_data dir instead of addon dir for override fanart
+- moved date/time format functions into XNEWA_Connect
+- moved fanart functions into XNEWA_Connect
+- configure cache permanent or with plugin (default)
+- default sort order for recordings and recurring recordings
+- added dateutil.parser for improved date handling
+- tag in All Recording for Archive, Delete, Watch, Unwatch
+- Confluence skin support for tagging
+- store recording groups, choose in setting
+- several bug fixes, some I rememember
+  - EPG was always downloaded,
+  - problem with perm. cache.
+  - EPG scrolling
+- initial support for upcoming NEWA
+- use padding values from server
+
+[B]2.4.0[/B]
+- new Confluence skin from pkscout
+- added option to switch skings in Setting Classic is the original
+- added option to sort recurring recordings by title, channel, or priority
+- fixed some cache issues for Cover art with non-Windows filename characters
+- language localization
+- added control to provide percentage of space used (home, control 237)
+- added control to provide alternative focus on dashboard (home, control 999)
+
+- added setting recurring priority support for NEWA 2.13
+- added new JSON call for recordings summary for NEWA 2.13
+
+- fix in conflicts.py so BACK action is properly recognized
+- fix for error after scheduling recordings
+- additional logic in search.py so that passing an empty search string aborts search
+- fix in confluence skin so that right clicking consistently initiates BACK action
+- fix in details.py that caused a crash when trying to cancel a recording
+
+[B]2.3.0[/B]
+- change in utf-8 handling
+- handle empty epg events in json
+- new script options
+- few remote changes
+
+[B]2.2.9[/B]
+- configure WOL attempts
+- OSD for WOL
+- shift + alpha keys send alpha key avoid XBMC defined key
+- Space/Backspace send as is in emulation mode
+- use xbmc WOL
+
+[B]2.2.8[/B]
+- many changes in remote keys
+- fix Play from EPG guide
+- added Info as Home key with remote
+- Guide opens a mini-guide on Hauppauge/MCE remotes
+- use xbmc WOL
+
+[B]2.2.7[/B]
+- use XBMC json if simplejson not found
+- fix EPG debug messages
+
+[B]2.2.6[/B]
+- Bug fixes
+- remote key changes
+- minimal mouse support (scroll up/down left click is enter, back)
+- fix past conflicts
+
+[B]2.2.5[/B]
+- Bug fixes
+- http music playback
+- Playlist support
+- Music OSD
+
+[B]2.2.4[/B]
+- Lots of JSON changes
+- Web client improvements
+- JSON changes to NEWA 0309
+- Exit
+- Music Playback
+
+[B]2.1.5[/B]
+- Change for Recording names with *
+- Changes for recurring recordings
+- Change ini file init to avoid potential errors
+
+[B]2.1.4[/B]
+- NEWA uses different terms for BitRate
+- displaylinterval typed with an l
+
+[B]2.1.3[/B]
+- Bad configuration when X-NEWA.INI is not found
+
+[B]2.1.1[/B]
+- Added external configuration following XBMC standards
+
+[B]2.1.0[/B]
+- Added full JSON option (thanks UJB)
+- X-NEWA add confict replace to EPG
+- minor tweaks
+
+[B]2.0.19[/B]
+- PVR playbck mode would give error and not load channels

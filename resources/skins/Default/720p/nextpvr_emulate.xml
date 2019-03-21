@@ -15,14 +15,15 @@
 			<left>0</left>
 			<width>100%</width>
 			<height>100%</height>
+            <backgroundcolor>0</backgroundcolor>
 			<visible>Player.HasVideo</visible>            
 		</control>    
 		<control type="image" id="100">
 			<top>0</top>
 			<left>0</left>
-			<width>1280</width>
-			<height>720</height>
-			<visible>!substring(Window.Property(tuning), true) + substring(Window.Property(showosd), true)</visible>                        
+			<width>100%</width>
+			<height>100%</height>
+			<visible>String.contains(Window.Property(showosd), true)</visible>
 		</control>
         <control type="label" id="110">
             <left>460</left>
@@ -32,7 +33,7 @@
             <label>Hit Back to return</label>
             <font>font35</font>
 			<textcolor>white</textcolor>            
-			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                        
+			<visible>Player.HasVideo + String.contains(Window.Property(sdlmode),false)</visible>
 		</control>
 		<control type="label" id="120">
             <left>460</left>
@@ -41,7 +42,7 @@
             <height>200</height>
             <label></label>
 			<textcolor>yellow</textcolor>            
-			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                                    
+			<visible>Player.HasVideo + String.contains(Window.Property(sdlmode),false)</visible>
 		</control>
         <control type="label">
                 <left>1000</left>

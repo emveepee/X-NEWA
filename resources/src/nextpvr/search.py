@@ -93,7 +93,7 @@ class SearchWindow(xbmcgui.WindowXML):
             if myText is None or myText == '':
                 self.close()
                 return
-            xbmc.executebuiltin("ActivateWindow(busydialog)")
+            xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
             self.xnewa.cleanCache('search.List')
         else:
             myText = None
@@ -142,7 +142,7 @@ class SearchWindow(xbmcgui.WindowXML):
                 self.win.setProperty('busy', 'false')
                 xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
             if reload:
-                xbmc.executebuiltin("Dialog.Close(busydialog)")
+                xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
             self.win.setProperty('busy', 'false')
         else:
             self.win.setProperty('busy', 'false')

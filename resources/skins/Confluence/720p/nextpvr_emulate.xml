@@ -22,12 +22,12 @@
 			<left>0</left>
 			<width>1280</width>
 			<height>720</height>
-			<visible>!substring(Window.Property(tuning), true) + substring(Window.Property(showosd), true)</visible>                        
+			<visible>!String.Contains(Window.Property(tuning), true) + String.Contains(Window.Property(showosd), true)</visible>
         </control>        
 		<control type="slider">
 			<top>670</top>
             <left>287</left>
-			<visible>Player.HasVideo + Player.SeekEnabled + substring(Window.Property(showosd), true)</visible> 
+			<visible>Player.HasVideo + Player.SeekEnabled + String.Contains(Window.Property(showosd), true)</visible>
             <width>707</width>
             <height>40</height>
             <texturesliderbar colordiffuse="FFFFFFFF"></texturesliderbar>
@@ -42,7 +42,7 @@
             <label>Hit Back to return</label>
             <font>font35</font>
 			<textcolor>white</textcolor>            
-			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                        
+			<visible>Player.HasVideo + String.Contains(Window.Property(sdlmode),false)</visible>
 		</control>
 		<control type="label" id="120">
             <left>460</left>
@@ -51,7 +51,7 @@
             <height>200</height>
             <label></label>
 			<textcolor>yellow</textcolor>            
-			<visible>Player.HasVideo + substring(Window.Property(sdlmode),false)</visible>                                    
+			<visible>Player.HasVideo + String.Contains(Window.Property(sdlmode),false)</visible>
 		</control>
 
         <control type="grouplist">

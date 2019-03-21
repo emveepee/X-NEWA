@@ -465,7 +465,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     if self.detailData['recording_oid'] == 0:
                         responseCode = self.xnewa.scheduleRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData)
 
-                xbmc.executebuiltin("ActivateWindow(busydialog)")
+                xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
                 xbmc.sleep(1200)
 
                 print 'Timeshift: buffered'
@@ -498,7 +498,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData)
                     except:
                         print 'cancel'
-                    xbmc.executebuiltin("Dialog.Close(busydialog)")
+                    xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
                 else:
                     isTimeShifted = True
                     self.cancelOID =  self.detailData['recording_oid']
@@ -550,7 +550,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     url = 'pvr://channels/tv/All channels/pvr.nextpvr_' + chnum + '.pvr'
                     print url
             elif self.settings.NextPVR_STREAM == 'Transcode':
-                xbmc.executebuiltin("ActivateWindow(busydialog)")
+                xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
                 self.xnewa.startTranscodeLiveStreamByChannelNumber( self.detailData['channel'][1])
                 url = self.urly + '/services/service?method=channel.transcode.m3u8' + self.xnewa.client
                 isTimeShifted = True
@@ -560,7 +560,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     xbmc.sleep(500)
                     if self.xnewa.getTranscodeStatus()==100:
                         break
-                xbmc.executebuiltin("Dialog.Close(busydialog)")
+                xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
 
         else:
             try:
@@ -638,7 +638,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         url = self.xnewa.getVlcURL()
                         isVlc = True
             if self.settings.NextPVR_STREAM == 'Transcode' and self.detailData['recording_oid'] != 0:
-                xbmc.executebuiltin("ActivateWindow(busydialog)")
+                xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
                 self.xnewa.startTranscodeRecording( str(self.detailData['recording_oid']))
                 url = self.urly + '/services/service?method=recording.transcode.m3u8' + self.xnewa.client
                 isTimeShifted = True
@@ -649,7 +649,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         xbmc.sleep(500)
                         break
                     xbmc.sleep(500)
-                xbmc.executebuiltin("Dialog.Close(busydialog)")
+                xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
 
         self.close()
         if self.detailData['movie'] == True and self.xbmcId > 0:
@@ -705,7 +705,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                             self.player.seekTime(0)
                             xbmc.sleep(200)
                             self.player.pause()
-                            xbmc.executebuiltin("Dialog.Close(busydialog)")
+                            xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
                             print self.player.getTotalTime()
                     self._duration = -1
 
@@ -1066,10 +1066,6 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.durationLabel.setLabel(str(int((self.detailData['end'] - self.detailData['start']).seconds / 60)))
             self.descLabel.setVisible(True)
             self.descLabel.setText(self.detailData['desc'])
-            if self.detailData['status'] == "Failed":
-                self.win.setProperty('recordingfailed', 'true')
-            else:
-                self.win.setProperty('recordingfailed', '')
 
             if self.oid_type!="R"  and self.oid_type !="E":
                 x, y = self.showSeperator.getPosition()

@@ -73,7 +73,7 @@ class EmulateWindow(xbmcgui.WindowXML):
 
     def onInit(self):
         if not self.win:
-            xbmc.executebuiltin("ActivateWindow(busydialog)")
+            xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
             self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             self.sidUpdate()
 
@@ -91,7 +91,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             #self.status.setImage('NextPVR.png')
             self.getScreen(True)
             self.ready = True
-            xbmc.executebuiltin("Dialog.Close(busydialog)")
+            xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
             t = Thread(target=self.render)
             t.start()
 
@@ -719,7 +719,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                             else:
                                 jsonActivity['recording_resume'] = seek
                     #self.nextUrl = urllib2.unquote(self.nextUrl).encode('utf-8')
-                    print self.nextUrl
+                    #print self.nextUrl
                     if self.state == videoState.playing:
                         self.skipStop = True
                     self.quickPlayer(jsonActivity)

@@ -141,7 +141,7 @@
 							<font>font13</font>
 							<textcolor>white</textcolor>
 							<label>$INFO[Control.GetLabel(309)]</label>
-							<visible>IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+							<visible>!String.IsEqual(Control.GetLabel(309),"Failed")</visible>
 						</control>
 						<control type="label">
 							<description>Status</description>
@@ -151,8 +151,8 @@
 							<aligny>center</aligny>
 							<font>font13</font>
 							<textcolor>white</textcolor>
-							<label>[RED]$INFO[Control.GetLabel(309)][/RED]</label>
-							<visible>!IsEmpty(Window.Property(recordingfailed)) + !IsEmpty(Control.GetLabel(309))</visible>
+							<label>[COLOR red]$INFO[Control.GetLabel(309)][/COLOR]</label>
+							<visible>String.IsEqual(Control.GetLabel(309),"Failed")</visible>
 						</control>
 						<control type="label" id="304">
 							<description>Channel</description>

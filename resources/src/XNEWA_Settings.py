@@ -27,6 +27,10 @@ class XNEWA_Settings:
 
         print "Reading Settings.xml"
 
+        if  int(xbmc.getInfoLabel('System.BuildVersion')[:2]) < 18:
+            XBMC_DIALOG_BUSY_OPEN = "ActivateWindow(busydialog)"
+            XBMC_DIALOG_BUSY_CLOSE = "Dialog.Close(busydialog)"
+
         from uuid import getnode as get_mac
 
         if hasattr(os, 'uname'):
@@ -114,5 +118,3 @@ class XNEWA_Settings:
         self.XNEWA_COLOURS = None
         print "config loaded from setting"
         return
-
-

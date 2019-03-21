@@ -57,7 +57,7 @@ class EpgWindow(xbmcgui.WindowXML):
     def __init__(self, *args, **kwargs):
         debug("--> xnewa()__init__")
 #            xbmcgui.WindowXML.__init__(self, *args, **kwargs)
-        xbmc.executebuiltin("ActivateWindow(busydialog)")
+        xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
         # Need to get: oid and xnewa....
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
@@ -90,13 +90,12 @@ class EpgWindow(xbmcgui.WindowXML):
         ret = self.loadNextPVR()
 
         #ret = True
+        xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
         if not ret:
             self.cleanup()
             self.close()
-            xbmc.executebuiltin("Dialog.Close(busydialog)")
         else:
             self.ready = True
-
         debug("<-- xnewa()__init__")
 
     #################################################################################################################
@@ -131,7 +130,6 @@ class EpgWindow(xbmcgui.WindowXML):
 
             self.isStartup = False
             self.ready = True
-            xbmc.executebuiltin("Dialog.Close(busydialog)")
         debug("< onInit()")
 
     #################################################################################################################
