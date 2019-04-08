@@ -20,7 +20,6 @@ from __future__ import absolute_import
 #
 
 from builtins import str
-from past.utils import old_div
 import datetime, time, sys
 import xbmcgui
 import os
@@ -115,7 +114,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
                     listItem.setProperty('airdate', airdate)
                     listItem.setProperty('title', t['title'])
                     listItem.setProperty('start', self.xnewa.formatTime(t['start']))
-                    duration = int(old_div((t['end'] - t['start']).seconds, 60))
+                    duration = ((t['end'] - t['start']).seconds) // 60
                     listItem.setProperty('duration', str(duration) )
                     listItem.setProperty('channel', t['channel'][0])
                     if len(t['subtitle']) > 0:

@@ -22,7 +22,6 @@ from __future__ import absolute_import
 
 from builtins import str
 from builtins import range
-from past.utils import old_div
 import datetime, time
 import xbmcgui
 import os
@@ -247,7 +246,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                                 listItem.setProperty('status', t['status'])
                                 listItem.setProperty('start', self.xnewa.formatTime(t['start']))
                                 listItem.setProperty('end', self.xnewa.formatTime(t['end']))
-                                duration = int(old_div((t['end'] - t['start']).seconds, 60))
+                                duration = ((t['end'] - t['start']).seconds) // 60
                                 listItem.setProperty('duration', str(duration) )
                                 listItem.setProperty('channel', t['channel'][0])
                                 listItem.setProperty('description', t['desc'])

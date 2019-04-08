@@ -1,3 +1,6 @@
+[B]2.6.1[/B]
+- remove past old_div function from futurize
+
 [B]2.6.0[/B]
 - New name knew4v5
 - support python3 for Kodi v19 and python2

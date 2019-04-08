@@ -20,7 +20,6 @@ from __future__ import absolute_import
 
 from builtins import str
 from builtins import range
-from past.utils import old_div
 import xbmc, xbmcgui
 import sys, re, time, os
 from os import path, listdir
@@ -261,12 +260,12 @@ class EpgWindow(xbmcgui.WindowXML):
         self.addControl(self.nowTimeCI)
 
         # Calculate Time Intervals
-        self.TimeIntervals = int(old_div(self.settings.EPG_DISP_INT, self.settings.EPG_SCROLL_INT)) + 1
+        self.TimeIntervals = self.settings.EPG_DISP_INT // self.settings.EPG_SCROLL_INT) + 1
 
         sst = "Time Ints: " + str(self.TimeIntervals)
         sst = "TIME DIS: " + str(self.settings.EPG_DISP_INT)
         sst = "TIME SCR: " + str(self.settings.EPG_SCROLL_INT)
-        self.epgTimeIntervalW = int(old_div(self.epgProgsW, (self.TimeIntervals)))
+        self.epgTimeIntervalW = self.epgProgsW // self.TimeIntervals
         # Add one for date
         self.TimeIntervals = self.TimeIntervals + 1
         self.epgPixelsPerMin = float(self.epgTimeIntervalW) / float(self.settings.EPG_SCROLL_INT)
@@ -718,7 +717,7 @@ class EpgWindow(xbmcgui.WindowXML):
         if self.moveBar < datetime.now() and  datetime.now() > self.epgStartTime:
             self.moveBar = datetime.now() + timedelta(seconds = 30)
             delta = datetime.now() - self.epgStartTime
-            posx = self.epgProgsX + int( (old_div(delta.seconds,60)) * self.epgPixelsPerMin)
+            posx = self.epgProgsX + (delta.seconds // 60) * self.epgPixelsPerMin
             self.removeControl(self.nowTimeCI)
             self.nowTimeCI.setPosition(posx, self.epgY)
             self.nowTimeCI.setVisible(True)
@@ -978,7 +977,7 @@ class EpgWindow(xbmcgui.WindowXML):
         if date.strftime("%Y-%m-%dT%H:%M:00") == tNew.strftime("%Y-%m-%dT%H:%M:00"):
             return self.epgProgsX + self.epgProgsW
         delta = date - self.epgStartTime
-        retpos = self.epgProgsX + int( (old_div(delta.seconds,60)) * self.epgPixelsPerMin)
+        retpos = self.epgProgsX +  (delta.seconds // 60) * self.epgPixelsPerMin
         return retpos
 
     ###################################################################################################################
@@ -986,7 +985,7 @@ class EpgWindow(xbmcgui.WindowXML):
     def getStartTime(self):
         nowdate = datetime.now()
         self.isdst = time.localtime(time.time()).tm_isdst
-        diff = int( old_div((nowdate.minute -1), self.settings.EPG_SCROLL_INT))
+        diff =  (nowdate.minute -1) // self.settings.EPG_SCROLL_INT
         diffmin = diff * self.settings.EPG_SCROLL_INT
 
         nowdate = nowdate - timedelta(minutes=nowdate.minute, seconds=nowdate.second)
@@ -1110,7 +1109,7 @@ class EpgWindow(xbmcgui.WindowXML):
     ###################################################################################################################
     # divide rows + gap into space available
     def getMaxDisplayChannels(self):
-        count = int(old_div(self.epgProgsH, self.epgRowFullH))
+        count = self.epgProgsH // self.epgRowFullH
         if count > self.channelCount:
                 count = self.channelCount
         #debug("getMaxDisplayChannels() (%s / %s) = count=%s" % (self.epgProgsH, self.epgRowFullH, count))

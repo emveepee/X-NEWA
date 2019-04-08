@@ -19,7 +19,6 @@ from __future__ import absolute_import
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 from builtins import str
-from past.utils import old_div
 import os
 import sys
 
@@ -331,13 +330,13 @@ class HomeWindow(xbmcgui.WindowXML):
             self.spaceUsed.setLabel(str(lUsed) + tmp[1])
             # Then, the images part
             x, y = self.spaceGreen.getPosition()
-            redWidth = int((old_div(250, (lTotal)) ) * lUsed)
+            redWidth = (250 // lTotal ) * lUsed
             greenWidth = 250 - redWidth
             self.spaceGreen.setWidth(greenWidth)
             self.spaceRed.setWidth(redWidth)
             self.spaceRed.setPosition(x+greenWidth, y)
             if self.includePercentages:
-                self.spacePercent.setPercent(old_div(100*lUsed,lTotal))
+                self.spacePercent.setPercent((100*lUsed)//lTotal)
         # Set up display of counters
         self.countPending.setLabel(self.statusData['schedule']['Pending'])
         self.countProgress.setLabel(self.statusData['schedule']['InProgress'])

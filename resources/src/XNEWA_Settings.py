@@ -14,7 +14,6 @@ standard_library.install_aliases()
 from builtins import str
 from builtins import hex
 from builtins import object
-from past.utils import old_div
 import os
 from XNEWAGlobals import *
 import traceback
@@ -79,8 +78,8 @@ class XNEWA_Settings(object):
         self.XNEWA_SORT_EPISODE = int(addon.getSetting("episodeSort"))
         self.NextPVR_STREAM = addon.getSetting("stream")
 
-        self.XNEWA_PREBUFFER = old_div(int(addon.getSetting("prebuffer")), 4)
-        self.XNEWA_POSTBUFFER = old_div(int(addon.getSetting("postbuffer")), 4)
+        self.XNEWA_PREBUFFER = addon.getSetting("prebuffer") // 4
+        self.XNEWA_POSTBUFFER = addon.getSetting("postbuffer") // 4
         self.EPG_SCROLL_INT = int(addon.getSetting("scrollInterval"))
         self.EPG_DISP_INT = int(addon.getSetting("displayInterval"))
         self.EPG_RETR_INT = int(addon.getSetting("epgCache"))

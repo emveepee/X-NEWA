@@ -23,7 +23,6 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import str
 from builtins import range
-from past.utils import old_div
 from builtins import object
 import os
 import xbmc, xbmcaddon, xbmcplugin, xbmcgui, xbmcvfs
@@ -837,7 +836,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.timeEndLabel.setLabel(self.xnewa.formatTime(self.detailData['end']))
             self.dateLabel.setLabel(self.xnewa.formatDate(self.detailData['start']))
             self.dateLongLabel.setLabel(self.xnewa.formatDate(self.detailData['start'], withyear=True))
-            self.durationLabel.setLabel(str(int(old_div((self.detailData['end'] - self.detailData['start']).seconds, 60))))
+            self.durationLabel.setLabel(str(((self.detailData['end'] - self.detailData['start']).seconds) // 60))
             self.descLabel.setVisible(True)
             import re
             xbmc.log(self.detailData['desc'])
@@ -918,7 +917,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.timeEndLabel.setLabel(self.xnewa.formatTime(self.detailData['end']))
             self.dateLabel.setLabel(self.xnewa.formatDate(self.detailData['start']))
             self.dateLongLabel.setLabel(self.xnewa.formatDate(self.detailData['start'], withyear=True))
-            self.durationLabel.setLabel(str(int(old_div((self.detailData['end'] - self.detailData['start']).seconds, 60))))
+            self.durationLabel.setLabel(str(((self.detailData['end'] - self.detailData['start']).seconds) // 60))
             self.descLabel.setVisible(True)
             self.descLabel.setText(self.detailData['desc'])
 
@@ -1049,7 +1048,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.timeEndLabel.setLabel(self.xnewa.formatTime(self.detailData['end']))
             self.dateLabel.setLabel(self.xnewa.formatDate(self.detailData['start']))
             self.dateLongLabel.setLabel(self.xnewa.formatDate(self.detailData['start'], withyear=True))
-            self.durationLabel.setLabel(str(int(old_div((self.detailData['end'] - self.detailData['start']).seconds, 60))))
+            self.durationLabel.setLabel(str(((self.detailData['end'] - self.detailData['start']).seconds) // 60))
             self.descLabel.setVisible(True)
             self.descLabel.setText(self.detailData['desc'])
 
