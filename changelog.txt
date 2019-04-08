@@ -1,3 +1,6 @@
+[B]2.6.4[/B]
+- fix utf encoded filename in web client
+
 [B]2.6.3[/B]
 - fix some int conversions lost on old_div
 

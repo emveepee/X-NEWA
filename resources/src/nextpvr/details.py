@@ -618,7 +618,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             if url[0:2]=='\\\\':
                 url = 'smb:'+self.detailData['filename'].replace('\\','/')
             elif os.name != 'nt':
-                url = url.replace('\\','/')
+                url = py2_encode(url).replace('\\','/')
             try:
                 url = py2_encode(url)
             except:

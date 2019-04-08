@@ -30,15 +30,18 @@ from builtins import object
 
 import os
 from kodi_six import xbmc, xbmcaddon, xbmcplugin, xbmcgui, xbmcvfs
+from kodi_six.utils import py2_encode, py2_decode
 import operator
 import datetime
 import time
 from threading import Thread
 try:
+    from urllib.parse import urlparse, quote, unquote
     from urllib.request import urlopen, Request
     from urllib.error import HTTPError, URLError
 except ImportError:
     from urllib2 import urlopen, Request, HTTPError, URLError
+    from urllib import quote, unquote, urlretrieve
 
 from fix_utf8 import smartUTF8
 from xbmcaddon import Addon
@@ -734,8 +737,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                                 return
                             else:
                                 jsonActivity['recording_resume'] = seek
-                    #self.nextUrl = unquote(self.nextUrl).encode('utf-8')
-                    #print self.nextUrl
+                    #self.nextUrl = unquote(self.nextUrl)
                     if self.state == videoState.playing:
                         self.skipStop = True
                     self.quickPlayer(jsonActivity)
@@ -838,7 +840,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             dd = {}
             dd['title'] = 'title'
             dd['movie'] = False
-            dd['filename'] = self.nextUrl.split('=',1)[1].encode('utf-8').replace('http://plugin','plugin')
+            dd['filename'] = py2_decode(self.nextUrl.split('=',1)[1]).replace('http://plugin','plugin')
             dd['season'] = 0
             if 'duration' in activity:
                 dd['library_duration'] = activity['duration']
