@@ -14,8 +14,8 @@
 			<param name="width" value="730" />
 		</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.xbmc.x-newa 30000]" />
-            <param name="sublabel" value="$ADDON[script.xbmc.x-newa 30007] $ADDON[script.xbmc.x-newa 30002] $INFO[Container(600).CurrentItem,, / ]$INFO[Container(600).NumItems]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
+            <param name="sublabel" value="$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002] $INFO[Container(600).CurrentItem,, / ]$INFO[Container(600).NumItems]" />
 		</include>
 		<include content="BottomBar">
 			<param name="info_visible" value="true" />
@@ -38,7 +38,7 @@
 						<width>500</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.xbmc.x-newa 30011]</label>
+						<label>$ADDON[script.kodi.knew4v5 30011]</label>
 					</control>
 					<control type="label">
 						<description>Priority</description>
@@ -46,7 +46,7 @@
 						<width>150</width>
 						<font>font13_title</font>
 						<align>center</align>
-						<label>$ADDON[script.xbmc.x-newa 30042]</label>
+						<label>$ADDON[script.kodi.knew4v5 30042]</label>
 					</control>
 					<control type="label">
 						<description>Type</description>
@@ -54,7 +54,7 @@
 						<width>150</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.xbmc.x-newa 30043]</label>
+						<label>$ADDON[script.kodi.knew4v5 30043]</label>
 					</control>
 					<control type="label">
 						<description>Channel</description>
@@ -62,7 +62,7 @@
 						<width>230</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.xbmc.x-newa 30012]</label>
+						<label>$ADDON[script.kodi.knew4v5 30012]</label>
 					</control>
 				</control>
 <!-- ############ End Recordings Header ############ -->
@@ -103,7 +103,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Property(rectype)]</label>
-						</control>				
+						</control>
 						<control type="label">
 							<left>870</left>
 							<width>227</width>
@@ -142,7 +142,7 @@
 							<aligny>center</aligny>
 							<align>left</align>
 							<label>$INFO[ListItem.Property(rectype)]</label>
-						</control>				
+						</control>
 						<control type="label">
 							<left>870</left>
 							<width>227</width>
@@ -172,7 +172,7 @@
 						<aspectratio>stretch</aspectratio>
 						<colordiffuse>99FFFFFF</colordiffuse>
 					</control>
-					<control type="image">					
+					<control type="image">
 						<description>Current Fanart image</description>
 						<width>400</width>
 						<height>600</height>
@@ -198,29 +198,29 @@
 				<control type="label" id="200">
 					<description>NextPVR Options</description>
 					<include>MediaMenuLabelCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30000] $ADDON[script.xbmc.x-newa 30018]</label>
+					<label>$ADDON[script.kodi.knew4v5 30000] $ADDON[script.kodi.knew4v5 30018]</label>
 				</control>
 				<control type="button" id="250">
 					<description>Refresh</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30024]</label>
+					<label>$ADDON[script.kodi.knew4v5 30024]</label>
 					<enable>!string.contains(Window.Property(busy),true)+!string.contains(Window.Property(offline),true)</enable>
 				</control>
 				<control type="button" id="253">
 					<description>Sort Order</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30122]</label>
+					<label>$ADDON[script.kodi.knew4v5 30122]</label>
 					<enable>!string.contains(Window.Property(busy),true)</enable>
 				</control>
 				<control type="button" id="270">
 					<description>Fullscreen</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30044]</label>
+					<label>$ADDON[script.kodi.knew4v5 30044]</label>
 					<onclick>fullscreen</onclick>
 					<enable>!string.contains(Window.Property(busy),true)</enable>
 					<visible>Player.HasVideo</visible>
 				</control>
-			</control>			
+			</control>
 		</control>
 		<control type="button" id="999">
 			<description>Fake button for initial focus</description>

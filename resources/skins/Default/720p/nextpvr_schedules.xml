@@ -21,9 +21,9 @@
   <controls>
 
     <!-- ============================================= -->
-    <!--   S C R E E N       B A C K G R O U N D       -->          
-    <!-- ============================================= -->              
-  
+    <!--   S C R E E N       B A C K G R O U N D       -->
+    <!-- ============================================= -->
+
     <!-- Copy of CommonBackground -->
     <control type="image">
       <description>background image</description>
@@ -43,9 +43,9 @@
         <animation effect="slide" end="1030,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 
         <!-- ============================================= -->
-        <!--   C O N T E N T     B A C K G R O U N D       -->          
-        <!-- ============================================= -->              
-      
+        <!--   C O N T E N T     B A C K G R O U N D       -->
+        <!-- ============================================= -->
+
         <!-- Copy of ContentPanel -->
         <control type="image">
             <posx>265</posx>
@@ -54,10 +54,10 @@
             <height>580</height>
             <texture border="50,0,0,45">vpanel1.png</texture>
         </control>
-        
+
         <!-- ============================================= -->
-        <!-- Recording Schedules Table Header              -->          
-        <!-- ============================================= -->              
+        <!-- Recording Schedules Table Header              -->
+        <!-- ============================================= -->
         <control type="image">
             <description>table header</description>
             <posx>315</posx>
@@ -77,7 +77,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -90,7 +90,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30042][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30042][/B]</label>
         </control>
 
         <control type="label">
@@ -103,9 +103,9 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30043][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30043][/B]</label>
         </control>
-       
+
         <control type="label">
             <posx>965</posx>
             <posy>140</posy>
@@ -116,7 +116,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30012][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30012][/B]</label>
         </control>
 
 
@@ -177,7 +177,7 @@
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(rectype)]</label>
                 </control>
-                
+
                 <control type="label">
                     <posx>650</posx>
                     <posy>0</posy>
@@ -191,7 +191,7 @@
                     <label>$INFO[ListItem.Property(channel)]</label>
                 </control>
             </itemlayout>
-            
+
             <focusedlayout height="30">
                 <control type="image">
                     <posx>0</posx>
@@ -265,24 +265,24 @@
 
             </focusedlayout>
         </control>
-        
+
         <control type="scrollbar" id="6000">
             <description>Scroll Bar</description>
             <posx>1225</posx>
             <posy>140</posy>
             <width>16</width>
             <height>468</height>
-            <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground> 
-            <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar> 
-            <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus> 
-            <textureslidernib>scrollbar_nib.png</textureslidernib> 
-            <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus> 
+            <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+            <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+            <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+            <textureslidernib>scrollbar_nib.png</textureslidernib>
+            <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
             <onleft>600</onleft>
             <onright>250</onright>
             <showonepage>false</showonepage>
             <orientation>vertical</orientation>
         </control>
-                       
+
         <control type="videowindow" id="4011">
             <posx>30</posx>
             <posy>60</posy>
@@ -290,12 +290,12 @@
             <height>386</height>
             <visible>Player.HasVideo</visible>
         </control>
-        
+
     </control>
 
     <!-- ============================================= -->
-    <!--        H E A D E R                            -->          
-    <!-- ============================================= -->              
+    <!--        H E A D E R                            -->
+    <!-- ============================================= -->
     <control type="image">
         <description>Header Panel</description>
         <posx>0</posx>
@@ -325,7 +325,7 @@
         <align>left</align>
         <aligny>center</aligny>
         <textcolor>ffffffff</textcolor>
-        <label>$ADDON[script.xbmc.x-newa 30007] $ADDON[script.xbmc.x-newa 30002]</label>
+        <label>$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002]</label>
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
         <visible>false</visible>
@@ -340,7 +340,7 @@
         <align>right</align>
         <aligny>center</aligny>
         <textcolor>ffddddff</textcolor>
-        <label>[B]$ADDON[script.xbmc.x-newa 30007] $ADDON[script.xbmc.x-newa 30002][/B]</label>
+        <label>[B]$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002][/B]</label>
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -359,10 +359,10 @@
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
     </control>
-        
+
     <!-- ============================================= -->
-    <!--  N A V     B U T T O N S                      -->          
-    <!-- ============================================= -->              
+    <!--  N A V     B U T T O N S                      -->
+    <!-- ============================================= -->
     <control type="grouplist" id="2000">
         <description>Buttons</description>
         <posx>0</posx>
@@ -372,20 +372,20 @@
         <ondown>2000</ondown>
         <onleft>600</onleft>
         <onright>600</onright>
-        
+
         <!-- Copy of include Window_OpenClose_Left_Panel_Animation -->
         <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
         <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
         <animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
         <animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-        
+
         <control type="button" id="250">
             <description>Refresh button</description>
-            <label>$ADDON[script.xbmc.x-newa 30024]</label>
+            <label>$ADDON[script.kodi.knew4v5 30024]</label>
             <width>285</width>
             <align>left</align>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
@@ -394,20 +394,20 @@
         </control>
         <control type="button" id="253">
             <description>Refresh button</description>
-            <label>$ADDON[script.xbmc.x-newa 30122]</label>
+            <label>$ADDON[script.kodi.knew4v5 30122]</label>
             <width>285</width>
             <align>left</align>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
             <pulseonselect>true</pulseonselect>
             <enable>!substring(Window.Property(busy),true)</enable>
         </control>
-        
+
     </control>
-    
+
     <control type="image">
         <posx>30</posx>
         <posy>190</posy>
@@ -443,8 +443,8 @@
         <timeperimage>50</timeperimage>
         <fadetime>0</fadetime>
         <visible>substring(Window.Property(busy),true)</visible>
-        <animation effect="fade" time="250">VisibleChange</animation>    
+        <animation effect="fade" time="250">VisibleChange</animation>
     </control>
-        
+
   </controls>
 </window>

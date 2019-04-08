@@ -98,7 +98,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30040]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30040]:</label>
 							<visible>!IsEmpty(Control.GetLabel(310))</visible>
 						</control>
 						<control type="label">
@@ -109,7 +109,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30013]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30013]:</label>
 							<visible>!IsEmpty(Control.GetLabel(309))</visible>
 						</control>
 						<control type="label">
@@ -120,7 +120,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30012]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30012]:</label>
 						</control>
 						<control type="label">
 							<description>Air Date</description>
@@ -130,7 +130,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30009]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30009]:</label>
 						</control>
 						<control type="label">
 							<description>Duration</description>
@@ -140,7 +140,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30056]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30056]:</label>
 						</control>
 					</control>
 					<control type="grouplist" id="4000">
@@ -206,12 +206,12 @@
 							<aligny>center</aligny>
 							<font>font13</font>
 							<textcolor>white</textcolor>
-							<label>$INFO[Control.GetLabel(318)] $ADDON[script.xbmc.x-newa 30029]</label>
+							<label>$INFO[Control.GetLabel(318)] $ADDON[script.kodi.knew4v5 30029]</label>
 						</control>
 					</control>
 				</control>
 <!-- ############ End Labels ############ -->
-<!-- ############ Begin Description ############ -->				
+<!-- ############ Begin Description ############ -->
 				<control type="textbox" id="311">
 					<description>Description</description>
 					<left>210</left>
@@ -225,7 +225,7 @@
 					<label>-</label>
 					<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
-<!-- ############ End Description ############ -->				
+<!-- ############ End Description ############ -->
 <!-- ############ Begin Navigation Buttons ############ -->
 				<control type="grouplist" id="2000">
 					<left>210</left>
@@ -241,48 +241,48 @@
 					<onup>9000</onup>
 					<control type="button" id="258">
 						<description>Resume</description>
-						<label>$ADDON[script.xbmc.x-newa 30032]</label>
+						<label>$ADDON[script.kodi.knew4v5 30032]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="259">
 						<description>Unwatch</description>
-						<label>$ADDON[script.xbmc.x-newa 30033]</label>
+						<label>$ADDON[script.kodi.knew4v5 30033]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="252">
 						<description>Quick Record</description>
-						<label>$ADDON[script.xbmc.x-newa 30035] $ADDON[script.xbmc.x-newa 30034]</label>
+						<label>$ADDON[script.kodi.knew4v5 30035] $ADDON[script.kodi.knew4v5 30034]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="260">
 						<description>Record</description>
-						<label>$ADDON[script.xbmc.x-newa 30034]</label>
+						<label>$ADDON[script.kodi.knew4v5 30034]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="254">
 						<description>Play</description>
-						<label>$ADDON[script.xbmc.x-newa 30036]</label>
+						<label>$ADDON[script.kodi.knew4v5 30036]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="251">
 						<description>Delete</description>
-						<label>$ADDON[script.xbmc.x-newa 30038]</label>
+						<label>$ADDON[script.kodi.knew4v5 30038]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="257">
 						<description>Archive (or Cancel)</description>
-						<label>$ADDON[script.xbmc.x-newa 30039]</label>
+						<label>$ADDON[script.kodi.knew4v5 30039]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<onclick>SetFocus(300)</onclick>
 					</control>
 					<control type="button" id="255">
 						<description>Refresh</description>
-						<label>$ADDON[script.xbmc.x-newa 30024]</label>
+						<label>$ADDON[script.kodi.knew4v5 30024]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="253">
 						<description>Close</description>
-						<label>$ADDON[script.xbmc.x-newa 30031]</label>
+						<label>$ADDON[script.kodi.knew4v5 30031]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 				</control>

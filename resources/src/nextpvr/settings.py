@@ -17,28 +17,28 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from builtins import str
 import os
 import xbmcgui
 
 from XNEWAGlobals import *
 
-from XBMCJSON import *
-# =============================================================================            
+# =============================================================================
 class settingsDialog(xbmcgui.WindowXMLDialog):
     """
     Show details of show, recording and recurring recording
     """
-        
+
     def __init__(self, *args, **kwargs):
         xbmcgui.WindowXMLDialog.__init__(self, *args, **kwargs)
         # Get settings from arguments...
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
-        self.win = None        
+        self.win = None
         self.shouldRefresh = False
         self.update = False
         self.changeGroup = False
-        
+
     def onInit(self):
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         self.saveButton = self.getControl(250)
@@ -79,14 +79,14 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
 
     def onFocus(self, controlId):
         pass
-        
+
     def onAction(self, action):
         if action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
-            self.close() 
+            self.close()
 
     def onClick(self, controlId):
         source = self.getControl(controlId)
-            
+
         if self.cancelButton == source:
             self.close()
         elif self.saveButton == source:
@@ -95,39 +95,39 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
                 self.xnewa.cleanCache('guideListing-*.p')
                 import xbmcaddon
                 addon = xbmcaddon.Addon()
-                addon.setSetting("group",self.settings.EPG_GROUP)                
+                addon.setSetting("group",self.settings.EPG_GROUP)
             self.close()
         elif self.nextpvr_ip == source:
-            self._getText(self.nextpvr_ip, "NextPVR_HOST")    
+            self._getText(self.nextpvr_ip, "NextPVR_HOST")
         elif self.nextpvr_port == source:
-           self._getText(self.nextpvr_port, "NextPVR_PORT")    
+           self._getText(self.nextpvr_port, "NextPVR_PORT")
         elif self.nextpvr_user == source:
-            self._getText(self.nextpvr_user, "NextPVR_USER")    
+            self._getText(self.nextpvr_user, "NextPVR_USER")
         elif self.nextpvr_pw == source:
-            self._getText(self.nextpvr_pw, "NextPVR_PW")    
+            self._getText(self.nextpvr_pw, "NextPVR_PW")
         elif self.nextpvr_pin == source:
-            self._getText(self.nextpvr_pin, "NextPVR_PIN")    
+            self._getText(self.nextpvr_pin, "NextPVR_PIN")
         elif self.nextpvr_usewol == source:
-            self._getYN(self.nextpvr_usewol, "NextPVR_USEWOL")    
+            self._getYN(self.nextpvr_usewol, "NextPVR_USEWOL")
         elif self.nextpvr_mac == source:
             self._getText(self.nextpvr_mac, "NextPVR_MAC")
         elif self.nextpvr_broadcast == source:
             self._getText(self.nextpvr_broadcast, "NextPVR_BROADCAST")
         elif self.nextpvr_icon_dl == source:
-            self._getYN(self.nextpvr_icon_dl, "NextPVR_ICON_DL")  
+            self._getYN(self.nextpvr_icon_dl, "NextPVR_ICON_DL")
         elif self.xnewa_update_episodes == source:
-            self._getYN(self.xnewa_update_episodes, "XNEWA_EPISODE")  
+            self._getYN(self.xnewa_update_episodes, "XNEWA_EPISODE")
         elif self.nextpvr_stream == source:
             choices = ['Native', 'Timeshift', 'PVR', 'VLC',  'Direct' ]
             setting =  xbmcgui.Dialog().select("Streaming Option", choices)
             self.settings.set("NextPVR_STREAM", choices[setting])
             self.nextpvr_stream.setLabel(self.nextpvr_stream.getLabel(), label2=choices[setting])
         elif self.xnewa_prebuffer == source:
-            self._getText(self.xnewa_prebuffer, "XNEWA_PREBUFFER")    
+            self._getText(self.xnewa_prebuffer, "XNEWA_PREBUFFER")
         elif self.xnewa_postbuffer == source:
-            self._getText(self.xnewa_postbuffer, "XNEWA_POSTBUFFER")  
+            self._getText(self.xnewa_postbuffer, "XNEWA_POSTBUFFER")
         elif self.xnewa_interface == source:
-            choices = ['NextPVR','SOAP', 'XML', 'JSON',  'Short' ]
+            choices = ['NextPVR', 'XML', 'JSON',  'Short' ]
             setting =  xbmcgui.Dialog().select("Interface Option", choices)
             self.settings.set("XNEWA_INTERFACE", choices[setting])
             self.xnewa_interface.setLabel(self.xnewa_interface.getLabel(), label2=choices[setting])
@@ -163,13 +163,13 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self.vlc_audio_bitrate.setLabel(self.vlc_audio_bitrate.getLabel(), label2=choices[setting])
 
         elif self.epgscrollint == source:
-            self._getText(self.epgscrollint, "EPG_SCROLL_INT")    
+            self._getText(self.epgscrollint, "EPG_SCROLL_INT")
         elif self.epgdispint == source:
-            self._getText(self.epgdispint, "EPG_DISP_INT")    
+            self._getText(self.epgdispint, "EPG_DISP_INT")
         elif self.epgretrint == source:
-            self._getText(self.epgretrint, "EPG_RETR_INT")    
+            self._getText(self.epgretrint, "EPG_RETR_INT")
         elif self.epgrowh == source:
-            self._getText(self.epgrowh, "EPG_ROW_HEIGHT")    
+            self._getText(self.epgrowh, "EPG_ROW_HEIGHT")
         elif self.epgGroup == source:
             choices = self.xnewa.channelGroups
             setting =  xbmcgui.Dialog().select("Channel Group", choices)
@@ -189,7 +189,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             txt = kbd.getText()
             self.settings.set(key, txt)
             ctrl.setLabel(cTitle, label2=txt)
-    
+
     def _getYN(self, ctrl, key):
         cTitle = ctrl.getLabel()
         theList = ["No", "Yes"]
@@ -198,9 +198,9 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
                 return
         self.settings.set(key, theList[selected])
         ctrl.setLabel(cTitle, label2=theList[selected])
-        
+
     def _updateView(self):
-        
+
         self.win.setProperty('busy', 'true')
         try:
             self.nextpvr_ip.setLabel( "NextPVR IP Address:", label2=self.settings.NextPVR_HOST )
@@ -215,9 +215,9 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self.nextpvr_mac.setLabel( "NextPVR MAC Address:", label2=self.settings.NextPVR_MAC )
             self.nextpvr_broadcast.setLabel( "Wake-On-Lan Broadcast Address:", label2=self.settings.NextPVR_BROADCAST )
             if self.settings.XNEWA_EPISODE == True:
-                self.xnewa_update_episodes.setLabel( "Update XBMC Episode:", label2='Yes' )
+                self.xnewa_update_episodes.setLabel( "Update Kodi Episode:", label2='Yes' )
             else:
-                self.xnewa_update_episodes.setLabel( "Update XBMC Episode:", label2='No' )
+                self.xnewa_update_episodes.setLabel( "Update Kodi Episode:", label2='No' )
             if self.settings.NextPVR_ICON_DL == True:
                 self.nextpvr_icon_dl.setLabel( "Fetch Covers:", label2='Yes' )
             else:
@@ -254,31 +254,31 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
     def _chooseFromList(self, translations, title, property, setter):
         """                                 user with a dialog box to select a value from a list.
         Once selected, the setter method on the Schedule is called to reflect the selection.
-        
+
         """
         pickList = self.translator.toList(translations)
         selected = xbmcgui.Dialog().select(title, pickList)
         if selected >= 0:
             self.setWindowProperty(property, pickList[selected])
-            setter(translations.keys()[selected])
-            
+            setter(list(translations.keys())[selected])
+
     def _enterNumber(self, heading, current, min=None, max=None):
         """
         Prompt user to enter a valid number with optional min/max bounds.
-        
+
         """
         value = xbmcgui.Dialog().numeric(0, heading, str(current))
         if value == str(current):
             return current
-        
+
         result = int(value)
-        
+
         if min is not None and result < min:
             xbmcgui.Dialog().ok('Error', 'Value must be between %d and %d' % (min, max))
             result = current
-            
+
         if max is not None and result > max:
             xbmcgui.Dialog().ok('Error', 'Value must be between %d and %d' % (min, max))
             result = current
-            
-        return result             
+
+        return result

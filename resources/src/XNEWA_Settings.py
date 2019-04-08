@@ -1,3 +1,4 @@
+from __future__ import division
 ######################################################################################################
 # Class for storing specific settings
 #
@@ -8,8 +9,13 @@
 #               print mysettings.NextPVR_PORT
 ######################################################################################################
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import hex
+from builtins import object
+from past.utils import old_div
 import os
-import ConfigParser
 from XNEWAGlobals import *
 import traceback
 import sys
@@ -18,14 +24,12 @@ import xbmcvfs
 import xbmc
 # Core defines
 
-class XNEWA_Settings:
-
-    INI_PATH = 'x-newa.ini'
+class XNEWA_Settings(object):
 
     # Instantiation
     def __init__(self):
 
-        print "Reading Settings.xml"
+        xbmc.log("Reading Settings.xml")
 
         if  int(xbmc.getInfoLabel('System.BuildVersion')[:2]) < 18:
             XBMC_DIALOG_BUSY_OPEN = "ActivateWindow(busydialog)"
@@ -34,7 +38,7 @@ class XNEWA_Settings:
         from uuid import getnode as get_mac
 
         if hasattr(os, 'uname'):
-            print os.uname()
+            xbmc.log(os.uname())
             system = os.uname()[4]
         else:
             import platform
@@ -49,7 +53,6 @@ class XNEWA_Settings:
             self.XNEWA_MAC = str(hex(get_mac()))
 
         self.loadFromSettingsXML()
-        print self.NextPVR_USEWOL
         return
 
     def usewol(self):
@@ -76,8 +79,8 @@ class XNEWA_Settings:
         self.XNEWA_SORT_EPISODE = int(addon.getSetting("episodeSort"))
         self.NextPVR_STREAM = addon.getSetting("stream")
 
-        self.XNEWA_PREBUFFER = int(addon.getSetting("prebuffer")) / 4
-        self.XNEWA_POSTBUFFER = int(addon.getSetting("postbuffer")) / 4
+        self.XNEWA_PREBUFFER = old_div(int(addon.getSetting("prebuffer")), 4)
+        self.XNEWA_POSTBUFFER = old_div(int(addon.getSetting("postbuffer")), 4)
         self.EPG_SCROLL_INT = int(addon.getSetting("scrollInterval"))
         self.EPG_DISP_INT = int(addon.getSetting("displayInterval"))
         self.EPG_RETR_INT = int(addon.getSetting("epgCache"))
@@ -96,11 +99,11 @@ class XNEWA_Settings:
                 elif xbmc.getSkinDir() == 'skin.confluence':
                     self.XNEWA_SKIN = 'Confluence'
                 else:
-                    print xbmc.getSkinDir()
+                    xbmc.log(xbmc.getSkinDir())
                     self.XNEWA_SKIN = addon.getSetting('skin')
             except:
-                print 'Could not auto-detect skin'
-                print xbmc.getSkinDir()
+                xbmc.log('Could not auto-detect skin')
+                xbmc.log(xbmc.getSkinDir())
         else:
             self.XNEWA_SKIN = 'Default'
         self.XNEWA_WEBCLIENT = addon.getSetting('webclient') == 'true'
@@ -116,5 +119,5 @@ class XNEWA_Settings:
         self.TRANSCODE_PROFILE = addon.getSetting("resTranscode") + 'p-' + addon.getSetting("bitrateTranscode")+'kbps'
         self.XNEWA_READONLY = False
         self.XNEWA_COLOURS = None
-        print "config loaded from setting"
+        xbmc.log("config loaded from setting")
         return

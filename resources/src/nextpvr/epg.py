@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 """
-    X-NEWA
+    knew4v5
 
     Controlling NextPVR from within XBMC.
 
@@ -12,13 +12,19 @@
     THANKS:
     To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
 
-    Additional support may be found on xboxmediacenter forum.    
+    Additional support may be found on xboxmediacenter forum.
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import xbmc, xbmcgui
 import sys, re, time, os
 from os import path, listdir
-from string import replace, split, upper, lower, capwords, join,zfill
+#from string import replace, split, upper, lower, capwords, join,zfill
 from datetime import date, datetime, timedelta
 import traceback
 import threading
@@ -28,12 +34,10 @@ from fix_utf8 import smartUTF8
 # Shared resources
 from XNEWAGlobals import *
 #todo what is DIR_HOME?
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
 DIR_HOME =  WHERE_AM_I.replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
-DIR_USERDATA = xbmc.translatePath("/".join( ["T:", "script_data", 'X-NEWA'] ))
-DIR_CACHE = os.path.join( DIR_USERDATA, "cache" )
 DIR_PIC = os.path.join( DIR_RESOURCES, "src", "images" )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
@@ -53,7 +57,7 @@ class EpgWindow(xbmcgui.WindowXML):
     CLST_HOUR = 1130
     CGRP_EPG = 1300
     CLBL_CH_NAME = 1310
-    
+
     def __init__(self, *args, **kwargs):
         debug("--> xnewa()__init__")
 #            xbmcgui.WindowXML.__init__(self, *args, **kwargs)
@@ -112,7 +116,7 @@ class EpgWindow(xbmcgui.WindowXML):
             self.rez = self.getResolution()
             # debug("onInit() resolution=%s" % self.rez)
 
-            self.epgSetup()        
+            self.epgSetup()
 
             self.updateTimeBars(0)
             self.updateChannels(0)
@@ -139,7 +143,7 @@ class EpgWindow(xbmcgui.WindowXML):
         success = True
         if theDate is None:
             theDate = self.initDate
-                        
+
         #myDlg = xbmcgui.DialogProgress()
         #myDlg.create("%s..." % smartUTF8(__language__(30138)), "%s..." % smartUTF8(__language__(30139)))
 
@@ -147,17 +151,17 @@ class EpgWindow(xbmcgui.WindowXML):
 
         # Todo: Get correct times....
         tdate = theDate
-        print 'start date ' + str(tdate)
+        print('start date ' + str(tdate))
         if self.isdst == 1:
-            print 'atz ' + str(time.altzone)
+            print('atz ' + str(time.altzone))
             tdate1 = tdate + timedelta(seconds=time.altzone)
         else:
-            print 'tz ' + str(time.timezone)
+            print('tz ' + str(time.timezone))
             tdate1 = tdate + timedelta(seconds=time.timezone)
         #cstart = tdate1.strftime("%Y-%m-%dT%H:%M:00")
         cstart = tdate1
         tdate = tdate1 + timedelta(hours=self.settings.EPG_RETR_INT)
-        
+
         self.EPGEndTime = tdate
         '''
         if self.isdst == 1:
@@ -166,7 +170,7 @@ class EpgWindow(xbmcgui.WindowXML):
             tdate = tdate + timedelta(seconds=time.timezone)
         '''
         #cend = tdate.strftime("%Y-%m-%dT%H:%M:00")
-        
+
         cend = tdate
 
 
@@ -186,62 +190,19 @@ class EpgWindow(xbmcgui.WindowXML):
 
         if success:
             self.channelCount = chCount
-            # load genres
-            self.initGenre()
-            self.initChannelIcons()
 
         self.ChLogos = []
         for a in self.epgData:
             cfile = self.xnewa.getChannelIcon(a['name'])
             if cfile is not None:
                 self.ChLogos.append(cfile)
-            else:           
+            else:
                 self.ChLogos.append('noimage.png')
 
         #myDlg.update(100, smartUTF8(__language__(30141)))
         #myDlg.close()
         debug("<-- loadNextPVR() success=%s" % success)
         return True
-
-    ###############################################################################################################
-    # load genre icons/colours
-    def initGenre(self):
-        debug("--> initGenre()")
-        self.genreIcons={}
-
-        try:
-            # GENRES ICONS - (not all datasources use this)
-            path = os.path.join( DIR_HOME , "icons" )
-            path = os.path.join( path , "genre" )
-            debug("Genre path: " + path)
-
-            self.genreIcons = getFilesInpath(path)
-        except:
-            debug("Error in Genres!")
-            handleException()
-
-        # debug("Genres found: %s" %(len(self.genreIcons)) )
-
-        debug("<-- initGenre()")
-
-    ###############################################################################################################
-    # load channel icons
-    def initChannelIcons(self):
-        debug("--> initChannelIcons()")
-        self.channelIcons={}
-
-        try:
-            path = os.path.join( DIR_HOME , "icons" )
-            path = os.path.join( path , "channels" )
-            debug("Channel-Icon path: " + path)
-
-            self.channelIcons = getFilesInpath(path)
-        except:
-            handleException()
-
-        # debug("Channal-icons found: %s" %(len(self.channelIcons)) )
-
-        debug("<-- initChannelIcons()")
 
     ###############################################################################################################
     def epgSetup(self):
@@ -300,15 +261,15 @@ class EpgWindow(xbmcgui.WindowXML):
         self.addControl(self.nowTimeCI)
 
         # Calculate Time Intervals
-        self.TimeIntervals = int(self.settings.EPG_DISP_INT / self.settings.EPG_SCROLL_INT) + 1
-        
+        self.TimeIntervals = int(old_div(self.settings.EPG_DISP_INT, self.settings.EPG_SCROLL_INT)) + 1
+
         sst = "Time Ints: " + str(self.TimeIntervals)
         sst = "TIME DIS: " + str(self.settings.EPG_DISP_INT)
         sst = "TIME SCR: " + str(self.settings.EPG_SCROLL_INT)
-        self.epgTimeIntervalW = int(self.epgProgsW / (self.TimeIntervals))
+        self.epgTimeIntervalW = int(old_div(self.epgProgsW, (self.TimeIntervals)))
         # Add one for date
         self.TimeIntervals = self.TimeIntervals + 1
-        self.epgPixelsPerMin = float(self.epgTimeIntervalW) / float(self.settings.EPG_SCROLL_INT) 
+        self.epgPixelsPerMin = float(self.epgTimeIntervalW) / float(self.settings.EPG_SCROLL_INT)
         # debug("epgTimeIntervalW=%s epgPixelsPerMin=%s" % (self.epgTimeIntervalW, self.epgPixelsPerMin))
 
         # remove old timebar ctrls
@@ -401,7 +362,7 @@ class EpgWindow(xbmcgui.WindowXML):
         try:
             del self.epgTagData[ctrl.getId()]
         except:
-            handleException()
+            #handleException()
             debug("Cannot remove control!")
             pass
         xbmcgui.WindowXML.removeControl(self, ctrl)
@@ -433,7 +394,7 @@ class EpgWindow(xbmcgui.WindowXML):
                         while True:
                             ctrl1 = self.epgButtons[nRow][nButton]
                             next_cid = ctrl1.getId()
-                            lst = self.epgTagData[next_cid]    
+                            lst = self.epgTagData[next_cid]
                             if lst[7] < datetime.now():
                                 nButton = nButton + 1
                             elif lst[6] > datetime.now() and nButton > 0:
@@ -445,7 +406,7 @@ class EpgWindow(xbmcgui.WindowXML):
                             ctrl1 = self.epgButtons[nRow][nButton]
                             next_cid = ctrl1.getId()
                             next_epg = self.epgTagData[next_cid]
-            
+
                             if lst[7] > next_epg[6] and lst[6] > next_epg[7]:
                                 nButton = nButton + 1
                             elif lst[7] <= next_epg[6] and nButton > 0:
@@ -516,7 +477,7 @@ class EpgWindow(xbmcgui.WindowXML):
             newRow = self.idxRow + 1
             newIDX = self.idxButt
 
-            if self.channelTop+newRow >= self.channelCount:            
+            if self.channelTop+newRow >= self.channelCount:
                 self.updateChannels(0)
                 self.idxRow = 0
                 self.idxCol = 0
@@ -671,7 +632,7 @@ class EpgWindow(xbmcgui.WindowXML):
                     butt.setPosition(oldX, posY)
             self.createChannel(0, posY+4, newTop, self.epgData[newTop]['progs'])
             self.channelTop = newTop
-        elif (newTop <> self.channelTop) and (newTop >= 0) and (newTop + self.MaxDisplayChannels <= self.channelCount):
+        elif (newTop != self.channelTop) and (newTop >= 0) and (newTop + self.MaxDisplayChannels <= self.channelCount):
             for i in range(0, self.MaxDisplayChannels):
                 ctrl = self.epgChNums[i]
                 ctrl.setLabel(str(self.epgData[i+newTop]['num']))
@@ -683,7 +644,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 ctrl.setLabel(self.epgData[i+newTop]['name'])
                 posX, posY = ctrl.getPosition()
                 self.createChannel(i, posY+4, i+newTop, self.epgData[i+newTop]['progs'])
-            self.channelTop = newTop        
+            self.channelTop = newTop
         else:
             debug("Unable to move....")
 
@@ -695,14 +656,14 @@ class EpgWindow(xbmcgui.WindowXML):
             return
 
         try:
-            
+
             lst = self.epgTagData[ctrlId]
 
             # title
             if lst[1] != 'None':
                 self.getControl(self.CLBL_PROG_TITLE).setLabel(lst[3] + ':'+ lst[1])
             else:
-                self.getControl(self.CLBL_PROG_TITLE).setLabel(lst[3])        
+                self.getControl(self.CLBL_PROG_TITLE).setLabel(lst[3])
             if lst[1] == "None":
                 lst[1] = ""
             if lst[2] == "None":
@@ -712,9 +673,9 @@ class EpgWindow(xbmcgui.WindowXML):
                 txt = lst[2]
             else:
                 txt = lst[2]
-            
+
             self.getControl(self.CLBL_PROG_DESC).setLabel(txt)
-            
+
             self.getControl(self.CLBL_PROG_TIME).setLabel(self.xnewa.formatTime(lst[6]) +' - ' + self.xnewa.formatTime(lst[7]))
         except:
             pass
@@ -727,13 +688,13 @@ class EpgWindow(xbmcgui.WindowXML):
             self.quickPlayer()
             return
 
-        import details
+        from . import details
 
         oid = self.epgTagData[controlID][0]
         detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="E")
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
-            print detailDialog.returnvalue
+            print(detailDialog.returnvalue)
             if detailDialog.returnvalue == "PICK":
                 detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
                 detailDialog.doModal()
@@ -757,7 +718,7 @@ class EpgWindow(xbmcgui.WindowXML):
         if self.moveBar < datetime.now() and  datetime.now() > self.epgStartTime:
             self.moveBar = datetime.now() + timedelta(seconds = 30)
             delta = datetime.now() - self.epgStartTime
-            posx = self.epgProgsX + int( (delta.seconds/60) * self.epgPixelsPerMin) 
+            posx = self.epgProgsX + int( (old_div(delta.seconds,60)) * self.epgPixelsPerMin)
             self.removeControl(self.nowTimeCI)
             self.nowTimeCI.setPosition(posx, self.epgY)
             self.nowTimeCI.setVisible(True)
@@ -785,7 +746,7 @@ class EpgWindow(xbmcgui.WindowXML):
         pos = pos - 1
         theDate = theDate + timedelta(days=pos)
         nowdate = nowdate.replace(hour=19, minute=0)
-        theHours = []                
+        theHours = []
         for i in range(12):
             theHours.append(self.xnewa.formatTime(nowdate))
             nowdate = nowdate + timedelta(hours=2)
@@ -811,7 +772,7 @@ class EpgWindow(xbmcgui.WindowXML):
         try:
             actionID = action.getId()
             buttonID = action.getButtonCode()
-        except: return                
+        except: return
 
         if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
             self.ready = False
@@ -825,11 +786,11 @@ class EpgWindow(xbmcgui.WindowXML):
         if actionID in MOVEMENT_LEFT:
             self.moveFocus(2)
             #self.updateTimeBars(-1)
-            #self.updateChannels(0)            
+            #self.updateChannels(0)
         elif actionID in MOVEMENT_RIGHT:
             self.moveFocus(1)
             #self.updateTimeBars(+1)
-            #self.updateChannels(0)            
+            #self.updateChannels(0)
         elif actionID in MOVEMENT_DOWN:
             #self.updateChannels(self.channelTop+1)
             self.moveFocus(3)
@@ -857,9 +818,9 @@ class EpgWindow(xbmcgui.WindowXML):
             if self._goToDate() == -1:
                 self.ready = False
                 self.close()
-        elif (actionID >= 58 and actionID <=69) or actionID == ACTION_INFO or (buttonID >= 0xf030 and buttonID <= 0xf039):  
+        elif (actionID >= 58 and actionID <=69) or actionID == ACTION_INFO or (buttonID >= 0xf030 and buttonID <= 0xf039):
             dialog = xbmcgui.Dialog()
-            if buttonID >= 0xf030 and buttonID <= 0xf039:  
+            if buttonID >= 0xf030 and buttonID <= 0xf039:
                 value = dialog.numeric( 0, smartUTF8(__language__(30012)), str(buttonID-0xf030) )
             elif actionID >= 58 and actionID <= 69:
                 value = dialog.numeric( 0, smartUTF8(__language__(30012)), str(actionID-58) )
@@ -874,8 +835,8 @@ class EpgWindow(xbmcgui.WindowXML):
                             self.setFocus(0, 0,True)
                             break
                     except:
-                        print value
-                        print a['num']
+                        print(value)
+                        print(a['num'])
 
                     i = i + 1
 
@@ -884,19 +845,19 @@ class EpgWindow(xbmcgui.WindowXML):
 
 ###################################################################################################################
     def quickPlayer (self):
-        import details
+        from . import details
         row = self.idxRow
         button = 0
         while True:
             ctrl = self.epgButtons[row][button]
             cid = ctrl.getId()
-            lst = self.epgTagData[cid]    
+            lst = self.epgTagData[cid]
             if lst[7] < datetime.now():
                 button = button + 1
             else:
-                print self.epgTagData[cid][3]
+                print(self.epgTagData[cid][3])
                 break
-        print self.epgTagData
+        print(self.epgTagData)
         oid = self.epgTagData[cid][0]
         epgChannel = self.epgTagData[cid][4]
         dd = {}
@@ -932,12 +893,12 @@ class EpgWindow(xbmcgui.WindowXML):
                 myDlg.update(33, "%s..." % smartUTF8(__language__(30140)))
 
                 # Todo: Get correct times....
-                print 'start date ' + str(tNew)
+                print('start date ' + str(tNew))
                 if  self.isdst == 1:
-                    print 'atz ' + str(time.altzone )
+                    print('atz ' + str(time.altzone ))
                     tdate1 = tNew + timedelta(seconds=time.altzone)
                 else:
-                    print 'tz ' + str(time.timezone)
+                    print('tz ' + str(time.timezone))
                     tdate1 = tNew + timedelta(seconds=time.timezone)
                 #cstart = tdate1.strftime("%Y-%m-%dT%H:%M:00")
                 cstart = tdate1
@@ -947,12 +908,12 @@ class EpgWindow(xbmcgui.WindowXML):
                     tNew = tNew + timedelta(seconds=time.altzone)
                 else:
                     tNew = tNew + timedelta(seconds=time.timezone)
-                #cend = tNew.strftime("%Y-%m-%dT%H:%M:00")                
+                #cend = tNew.strftime("%Y-%m-%dT%H:%M:00")
                 cend = tNew
 #               cstart = tNew.strftime("%Y-%m-%dT%H:%M:00")
 #               tNew = tNew + timedelta(hours=self.settings.EPG_RETR_INT)
-                
-                
+
+
 #               self.EPGEndTime = tNew
 #               cend = tNew.strftime("%Y-%m-%dT%H:%M:00")
                 if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
@@ -992,12 +953,12 @@ class EpgWindow(xbmcgui.WindowXML):
             tempdate = tempdate + timedelta(minutes=self.settings.EPG_SCROLL_INT)
         posx = self.getPosFromTime(datetime.now())
         if posx > self.epgProgsX:
-            self.removeControl(self.nowTimeCI)                
+            self.removeControl(self.nowTimeCI)
             self.nowTimeCI.setPosition(posx, self.epgY)
             self.moveBar = datetime.now() + timedelta(seconds = 30)
             self.nowTimeCI.setVisible(True)
             self.addControl(self.nowTimeCI)
-        else:    
+        else:
             self.nowTimeCI.setVisible(False)
             #self.nowTimeCI.setPosition(-5, self.epgY)
 
@@ -1017,21 +978,21 @@ class EpgWindow(xbmcgui.WindowXML):
         if date.strftime("%Y-%m-%dT%H:%M:00") == tNew.strftime("%Y-%m-%dT%H:%M:00"):
             return self.epgProgsX + self.epgProgsW
         delta = date - self.epgStartTime
-        retpos = self.epgProgsX + int( (delta.seconds/60) * self.epgPixelsPerMin)
+        retpos = self.epgProgsX + int( (old_div(delta.seconds,60)) * self.epgPixelsPerMin)
         return retpos
 
     ###################################################################################################################
     # Get initial time of epg. Depends on current time and interval
-    def getStartTime(self):        
-        nowdate = datetime.now() 
+    def getStartTime(self):
+        nowdate = datetime.now()
         self.isdst = time.localtime(time.time()).tm_isdst
-        diff = int( (nowdate.minute -1) / self.settings.EPG_SCROLL_INT)
+        diff = int( old_div((nowdate.minute -1), self.settings.EPG_SCROLL_INT))
         diffmin = diff * self.settings.EPG_SCROLL_INT
 
         nowdate = nowdate - timedelta(minutes=nowdate.minute, seconds=nowdate.second)
         retdate = nowdate + timedelta(minutes=diffmin)
 
-        return retdate            
+        return retdate
 
     ###################################################################################################################
     # Create a row of programs (for one channel)
@@ -1140,7 +1101,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 nInsPos = 0
             del self.epgButtons[nRow]
             self.epgButtons.insert(nInsPos, [])
-        except: 
+        except:
             handleException()
             debug("Error in deleting channel")
             pass
@@ -1149,13 +1110,13 @@ class EpgWindow(xbmcgui.WindowXML):
     ###################################################################################################################
     # divide rows + gap into space available
     def getMaxDisplayChannels(self):
-        count = int(self.epgProgsH / self.epgRowFullH)
+        count = int(old_div(self.epgProgsH, self.epgRowFullH))
         if count > self.channelCount:
                 count = self.channelCount
         #debug("getMaxDisplayChannels() (%s / %s) = count=%s" % (self.epgProgsH, self.epgRowFullH, count))
         return count
 
-        
+
 def truncate(maxWidth, text, font, indicator, rez = 6 ):
     rezAdjust = {0 : 2.65, 1 : 1.77}
     fonts = {'font10': 9, 'font11':9, 'font12':10, 'font13':11, 'font14':12, 'font16':13, 'font18': 13, \
@@ -1201,59 +1162,5 @@ def handleException(txt=''):
         text = ''
         for l in list:
             text += l
-        messageOK(title, text)
+        xbmcgui.Dialog().ok(title, text)
     except: pass
-
-#########################
-def getFilesInpath(path):
-    debug("--> getFilesInPath")
-    try:
-        files = {}
-        fileList = os.listdir(path)
-        for fname in fileList:
-            name = os.path.splitext(fname)[0]
-            files[name] = os.path.join( path , fname )
-    except:
-        handleException("Error getting files!")
-
-    return files    
-    debug("<-- getFilesInPath")
-
-######################################################################################    
-# BEGIN !
-######################################################################################
-def info(object, spacing=10, collapse=1):
-    """Print methods and doc strings.
-    
-    Takes module, class, list, dictionary, or string."""
-    methodList = [method for method in dir(object) if callable(getattr(object, method))]
-    processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
-    print "\n".join(["%s %s" %
-                      (method.ljust(spacing),
-                       processFunc(str(getattr(object, method).__doc__)))
-                     for method in methodList])
-
-try:
-    # start script main
-    #todo figure out what this is
-    debug("--> Home Directory is: " + DIR_HOME)
-    myEPG = xnewa("script-xnewa-main.xml", DIR_HOME, "Default")
-    if myEPG.ready:
-        myEPG.doModal()
-    del myEPG
-except:
-    handleException()
-debug("exiting script: " + 'X-NEWA')
-moduleList = ['mytvLib', 'bbbLib', 'bbbGUILib','smbLib', 'IMDbWin', 'IMDbLib','AlarmClock','FavShows','XNEWAGlobals.saveProgramme','XNEWAGlobals.datasource','tv.com','XNEWAGlobals.mytvFavShows','wol']
-for m in moduleList:
-    try:
-        del sys.modules[m]
-        xbmc.output('X-NEWA' + " del module=%s" % m)
-    except: pass
-
-# remove other globals
-try:
-    del dialogProgress
-except: pass
-
-

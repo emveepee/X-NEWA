@@ -10,7 +10,7 @@
         <posy>45</posy>
     </coordinates>
     <controls>
-        
+
         <control type="image">
             <description>dialog background image</description>
             <posx>0</posx>
@@ -20,7 +20,7 @@
             <texture border="40">DialogBack.png</texture>
             <aspectratio>stretch</aspectratio>
         </control>
-        
+
         <control type="image">
             <description>dialog border image</description>
             <posx>0</posx>
@@ -30,7 +30,7 @@
             <texture border="40">DialogFront.png</texture>
             <aspectratio>stretch</aspectratio>
         </control>
-        
+
         <control type="label" id="301">
             <description>Dialog Heading</description>
             <posx>40</posx>
@@ -40,10 +40,10 @@
             <font>font20</font>
             <info>Window.Property(heading)</info>
             <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
         </control>
-        
+
         <control type="image">
             <description>separator image</description>
             <posx>40</posx>
@@ -65,11 +65,11 @@
         </control>
 
         <!-- SECTION 2 ROW 1-->
-                
+
         <control type="label" id="303">
             <description>Title Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>220</posx>
             <posy>95</posy>
             <width>400</width>
@@ -78,14 +78,14 @@
             <texturefocus>-</texturefocus>
             <texturenofocus>-</texturenofocus>
             <label>$INFO[Window.Property(title)]</label>
-        
+
             <scroll>auto</scroll>
         </control>
-        
+
         <control type="label" id="304">
             <description>Channel Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>695</posx>
             <posy>135</posy>
             <width>400</width>
@@ -98,8 +98,8 @@
 
         <control type="label">
             <description>Status Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>695</posx>
             <posy>185</posy>
             <width>400</width>
@@ -110,8 +110,8 @@
         </control>
         <control type="label">
             <description>Status Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>695</posx>
             <posy>185</posy>
             <width>400</width>
@@ -170,8 +170,8 @@
 
         <control type="label" id="309">
             <description>Genre Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>220</posx>
             <posy>185</posy>
             <width>400</width>
@@ -183,7 +183,7 @@
         </control>
 
         <!-- SECTION 2 ROW 2 -->
-        
+
         <control type="image" id="3">
             <description>separator image</description>
             <posx>40</posx>
@@ -193,11 +193,11 @@
             <height>2</height>
             <texture>separator.png</texture>
         </control>
-        
+
         <control type="label" id="310">
             <description>Subtitle Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>55</posx>
             <posy>220</posy>
             <width>300</width>
@@ -211,8 +211,8 @@
 
         <control type="label">
             <description>Time Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>695</posx>
             <posy>220</posy>
             <width>400</width>
@@ -223,8 +223,8 @@
 
         <control type="textbox" id="311">
             <description>Desc Label</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>55</posx>
             <posy>245</posy>
             <width>640</width>
@@ -238,8 +238,8 @@
         </control>
         <control type="textbox" id="313">
             <description>Recording Status</description>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <posx>55</posx>
             <posy>220</posy>
             <width>640</width>
@@ -263,7 +263,7 @@
         </control>
 
         <!--  SECTION 3 -->
-        
+
         <control type="grouplist" id="9000">
             <description>Recording Options</description>
             <posx>45</posx>
@@ -274,7 +274,7 @@
             <onright>2000</onright>
             <ondown>9000</ondown>
             <onup>9000</onup>
-            
+
             <control type="image" id="7777">
                 <height>100</height>
                 <align>left</align>
@@ -283,11 +283,11 @@
                 <texturenofocus>input-nofocus.png</texturenofocus>
                 <visible>true</visible>
             </control>
-            
+
             <control type="button" id="201">
                 <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                        
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -297,10 +297,10 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-            
+
             <control type="button" id="202">
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label></label>
                 <label2></label2>
                 <width>650</width>
@@ -311,11 +311,11 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-            
+
             <control type="button" id="203">
                 <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -325,11 +325,11 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-            
+
             <control type="button" id="204">
                 <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -339,11 +339,11 @@
                 <texturefocus>input-focus.png</texturefocus>
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
-            
+
             <control type="button" id="205">
                 <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -356,8 +356,8 @@
 
             <control type="button" id="206">
                 <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -370,8 +370,8 @@
 
             <control type="button" id="207">
                 <label></label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2></label2>
                 <width>650</width>
                 <height>35</height>
@@ -383,10 +383,10 @@
             </control>
 
             <control type="button" id="208">
-                <label>$ADDON[script.xbmc.x-newa 30042]</label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
-                <label2>$ADDON[script.xbmc.x-newa 30049]</label2>
+                <label>$ADDON[script.kodi.knew4v5 30042]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                <label2>$ADDON[script.kodi.knew4v5 30049]</label2>
                 <width>650</width>
                 <height>35</height>
                 <align>left</align>
@@ -397,7 +397,7 @@
             </control>
 
         </control>
-        
+
         <control type="grouplist" id="2000">
             <description>Save Close Delete Buttons</description>
             <posx>710</posx>
@@ -406,11 +406,11 @@
             <onright>9000</onright>
             <ondown>2000</ondown>
             <onup>2000</onup>
-            
+
             <control type="button" id="250">
-                <label>$ADDON[script.xbmc.x-newa 30053]</label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <label>$ADDON[script.kodi.knew4v5 30053]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -419,31 +419,31 @@
             </control>
 
             <control type="button" id="251">
-                <label>$ADDON[script.xbmc.x-newa 30054]</label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <label>$ADDON[script.kodi.knew4v5 30054]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
                 <texturenofocus>button2-nofocus.png</texturenofocus>
                 <texturefocus border="5">button-focus2.png</texturefocus>
             </control>
-            
+
             <control type="button" id="252">
-                <label>$ADDON[script.xbmc.x-newa 30034]</label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <label>$ADDON[script.kodi.knew4v5 30034]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
                 <texturenofocus>button2-nofocus.png</texturenofocus>
                 <texturefocus border="5">button-focus2.png</texturefocus>
             </control>
-            
+
             <control type="button" id="253">
-                <label>$ADDON[script.xbmc.x-newa 30031]</label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <label>$ADDON[script.kodi.knew4v5 30031]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
@@ -452,15 +452,15 @@
             </control>
 
             <control type="button" id="254">
-                <label>$ADDON[script.xbmc.x-newa 30036]</label>
-                <textcolor name="white">FFFFFFFF</textcolor>                        
-                <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                        
+                <label>$ADDON[script.kodi.knew4v5 30036]</label>
+                <textcolor name="white">FFFFFFFF</textcolor>
+                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
                 <height>35</height>
                 <align>center</align>
                 <texturenofocus>button2-nofocus.png</texturenofocus>
                 <texturefocus border="5">button-focus2.png</texturefocus>
-            </control>            
+            </control>
 
         </control>
         <control type="multiimage" id="237">

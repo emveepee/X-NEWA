@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 #
 #  xnewa for XBMC
 #
@@ -15,6 +18,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
+from builtins import str
+from past.utils import old_div
 import os
 import sys
 
@@ -27,7 +32,7 @@ from XNEWA_Connect import XNEWA_Connect
 from XNEWA_Settings import XNEWA_Settings
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
 
 # =============================================================================
 class HomeWindow(xbmcgui.WindowXML):
@@ -70,7 +75,7 @@ class HomeWindow(xbmcgui.WindowXML):
                 self.includePercentages = False
             if self.settings.XNEWA_READONLY == True:
                 self.win.setProperty('readonly', 'true')
-                print 'invisible'
+                print('invisible')
 
             # button ids -> funtion ptr
             self.dispatcher = {
@@ -116,7 +121,7 @@ class HomeWindow(xbmcgui.WindowXML):
             debug('onClick')
 
     def goSearch(self):
-        import search
+        from . import search
         mywin = search.SearchWindow('nextpvr_search.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
 
@@ -142,11 +147,11 @@ class HomeWindow(xbmcgui.WindowXML):
                 self.win.setFocusId(251)
 
     def goRecentDetails(self):
-        import details
+        from . import details
         oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
         detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R" )
         detailDialog.doModal()
-        print detailDialog.returnvalue
+        print(detailDialog.returnvalue)
         if detailDialog.shouldRefresh:
             #self.xnewa.changedRecordings = False
             #self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
@@ -154,7 +159,7 @@ class HomeWindow(xbmcgui.WindowXML):
             self.refresh()
 
     def goUpcomingDetails(self):
-        import details
+        from . import details
         oid = self.upcomingData[self.comingListBox.getSelectedPosition()]['recording_oid']
         detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R")
         detailDialog.doModal()
@@ -163,7 +168,7 @@ class HomeWindow(xbmcgui.WindowXML):
             self.refresh()
 
     def goTvGuide(self):
-        import epg
+        from . import epg
         mywin = epg.EpgWindow('nextpvr_epg.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings)
         mywin.doModal()
         if self.xnewa.changedRecordings:
@@ -177,34 +182,34 @@ class HomeWindow(xbmcgui.WindowXML):
         xbmc.executebuiltin('XBMC.ActivateWindow(videos,tvshowtitles)')
 
     def goNextPVR(self):
-        import emulate
+        from . import emulate
         emulateWindow = emulate.EmulateWindow("nextpvr_emulate.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         emulateWindow.doModal()
 
 
     def goRecordingSchedules(self):
-        import schedules
+        from . import schedules
         mywin = schedules.SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
 
     def goUpcomingRecordings(self):
-        import upcoming
+        from . import upcoming
         mywin = upcoming.UpcomingRecordingsWindow('nextpvr_upcoming.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
 
     def goRecentRecordings(self):
-        import recent
+        from . import recent
         mywin = recent.RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
         #if mywin.shouldRefresh:
         #    self.renderRecent()
 
     def goSettings(self):
-        import settings
+        from . import settings
         mywin = settings.settingsDialog('nextpvr_settings.xml', WHERE_AM_I, settings=self.settings,xnewa=self.xnewa)
         mywin.doModal()
         if self.settings.Reload:
-            print "Reloading"
+            print("Reloading")
             self.xnewa = XNEWA_Connect(settings=self.settings)
             if self.xnewa.offline == False:
                 self.win.setProperty('recent', 'true')
@@ -315,7 +320,8 @@ class HomeWindow(xbmcgui.WindowXML):
         if self.statusData['directory'] != None:
             tmp = self.statusData['directory'][0]['Total'].split(' ')
             uom = tmp[1]
-            lTotal = float(tmp[0].replace(',','.'))
+            print(type(tmp[0].replace(',','.')))
+            lTotal = float(str(tmp[0].replace(',','.')))
             tmp = self.statusData['directory'][0]['Free'].split(' ')
             if uom != tmp[1]:
                 lTotal = lTotal * 1000
@@ -325,13 +331,13 @@ class HomeWindow(xbmcgui.WindowXML):
             self.spaceUsed.setLabel(str(lUsed) + tmp[1])
             # Then, the images part
             x, y = self.spaceGreen.getPosition()
-            redWidth = int((250 / (lTotal) ) * lUsed)
+            redWidth = int((old_div(250, (lTotal)) ) * lUsed)
             greenWidth = 250 - redWidth
             self.spaceGreen.setWidth(greenWidth)
             self.spaceRed.setWidth(redWidth)
             self.spaceRed.setPosition(x+greenWidth, y)
             if self.includePercentages:
-                self.spacePercent.setPercent(100*lUsed/lTotal)
+                self.spacePercent.setPercent(old_div(100*lUsed,lTotal))
         # Set up display of counters
         self.countPending.setLabel(self.statusData['schedule']['Pending'])
         self.countProgress.setLabel(self.statusData['schedule']['InProgress'])
@@ -356,5 +362,3 @@ class HomeWindow(xbmcgui.WindowXML):
                 self.win.setFocusId(257)
             else:
                 self.win.setProperty('offline', 'false')
-
-

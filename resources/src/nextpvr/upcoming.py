@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 #
 #  MythBox for XBMC - http://mythbox.googlecode.com
 #  Copyright (C) 2009 analogue@yahoo.com
@@ -17,6 +19,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from builtins import str
+from past.utils import old_div
 import datetime, time
 import xbmcgui
 import os
@@ -25,7 +29,11 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+
+programsListBoxId = 600
+conflictButtonId = 250
+refreshButtonId = 251
 
 # ==============================================================================
 class UpcomingRecordingsWindow(xbmcgui.WindowXML):
@@ -48,13 +56,12 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
             self.render()
 
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.programsListBox:
+        if controlId == programsListBoxId:
             self.goEditSchedule()
-        elif source == self.refreshButton:
+        elif controlId == refreshButtonId:
             self.xnewa.cleanCache('upComing*.p')
             self.render()
-        elif source == self.conflictButton:
+        elif controlId == conflictButtonId:
             self.goConflicts()
 
     def onFocus(self, controlId):
@@ -67,13 +74,13 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
             self.close()
 
     def goConflicts(self):
-        import conflicts
+        from . import conflicts
         mywin = conflicts.ConflictedRecordingsWindow('nextpvr_conflicts.xml', WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa)
         mywin.doModal()
 
     def goEditSchedule(self):
 
-        import details
+        from . import details
 
         oid = self.upcomingData[self.programsListBox.getSelectedPosition()]['recording_oid']
         detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, type="R")
@@ -102,7 +109,7 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
                         listItem.setProperty('status', t['status'])
                         listItem.setProperty('start', self.xnewa.formatTime(t['start']))
                         listItem.setProperty('end', self.xnewa.formatTime(t['end']))
-                        duration = int((t['end'] - t['start']).seconds / 60)
+                        duration = int(old_div((t['end'] - t['start']).seconds, 60))
                         listItem.setProperty('duration', str(duration) )
                         listItem.setProperty('channel', t['channel'][0])
                         listItem.setProperty('description', t['desc'])
@@ -130,7 +137,7 @@ class UpcomingRecordingsWindow(xbmcgui.WindowXML):
 
     def formattedAirDate(self, previous, current):
         result = ''
-        if not previous or previous <> current:
+        if not previous or previous != current:
             today = self.xnewa.formatDate(datetime.date.today())
             if current == today:
                 result = smartUTF8(__language__(30133))

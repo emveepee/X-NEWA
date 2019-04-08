@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 #  MythBox for XBMC - http://mythbox.googlecode.com
 #  Copyright (C) 2009 analogue@yahoo.com
 #
@@ -16,20 +19,63 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import os
-import xbmcgui
-import xbmcvfs
-import xbmcplugin
+import xbmc, xbmcaddon, xbmcplugin, xbmcgui, xbmcvfs
+from kodi_six.utils import py2_encode, py2_decode
+
 from datetime import datetime
 from datetime import timedelta
 from time import sleep
 import math
 from XNEWAGlobals import *
-from XBMCJSON import *
+from .XBMCJSON import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
+import urllib.request, urllib.parse, urllib.error
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+
+closeButtonId = 253
+recordButtonId =  260
+saveButtonId = 250
+archiveButtonId = 257
+quickrecordButtonId = 252
+deleteButtonId = 251
+scheduleTypeId = 201
+qualityControlId = 2000
+prePaddingId = 202
+postPaddingId = 203
+recDirIdId = 204
+extendTimeId = 205
+keepRecsId = 207
+priorityId = 208
+resumeButtonId = 258
+playButtonId = 254
+unwatchButtonId = 259
+
+class PVRChannel(object):
+
+	def __init__(self,
+	             uniqueId,
+	             isRadio,
+	             channelNumber = 0,
+	             subChannelNumber = 0,
+	             channelName = '',
+	             inputFormat = '',
+	             streamURL = '',
+	             encryptionSystem = 0,
+	             iconPath = '',
+	             isHidden = False,
+	             _data = {} # Internal data
+	):
+            for k, v in list(locals().items()):
+                setattr(self, k, v)
 
 # =============================================================================
 class DetailDialog(xbmcgui.WindowXMLDialog):
@@ -44,7 +90,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 
         self.oid = kwargs['oid']
         self.oid_type = kwargs['type']
-        if kwargs.has_key('epg') == True:
+        if ('epg' in kwargs) == True:
             self.epg = True
         else:
             self.epg = False
@@ -58,12 +104,11 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         self.movie = False
         self.cancelOID = 0
         self.playlist = None
-        print repr(self)
 
     def onInit(self):
         self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
 
-        print self.oid_type
+        xbmc.log(self.oid_type)
         if self.oid_type !="R" and self.oid_type !="E":
             self.genre1Image = self.getControl(306)
             self.genre2Image = self.getControl(307)
@@ -156,7 +201,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         while self.player == None:
             pass
         while self.player.is_active == False:
-            print 'still waiting'
+            xbmc.log('still waiting')
         while True:
             if self.player.is_started and self.player.isPlayingVideo():
                 break;
@@ -193,14 +238,13 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         dialog.ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30105)))
 
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if self.closeButton == source:
+        if closeButtonId == controlId:
             self.close()
-        elif self.recordButton == source:
+        elif recordButtonId == controlId:
             self.goRecord()
             self.close()
-        elif self.saveButton == source or self.quickrecordButton == source:
-            if self.quickrecordButton == source:
+        elif saveButtonId == controlId or quickrecordButtonId == controlId:
+            if quickrecordButtonId == controlId:
                 if self.xnewa.defaultSchedule == None:
                     self.xnewa.getDefaultSchedule()
                 self.detailData['status'] = "Pending"
@@ -220,7 +264,6 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                             self.returnvalue = "REC"
                             self.close("REC")
                         elif responseCode == 500:
-                            print self.xnewa.Last_Error
                             dialog = xbmcgui.Dialog()
                             ok = dialog.ok(smartUTF8(__language__(30110)), self.xnewa.Last_Error)
                         else:
@@ -235,7 +278,6 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                                 if t['recording_oid'] == self.detailData['recording_oid']:
                                     found = i
                                     break
-                            #print scheduleData[found]
                             if self.detailData['priority'] == __language__(32001):
                                 if found == len(scheduleData) -1:
                                     found = -1
@@ -260,9 +302,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 
                 except:
                     xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30105)))
-        elif self.deleteButton == source:
-            #print self.detailData
-            if self.detailData['status'] != "In-Progress" and self.detailData.has_key('filename'):
+        elif deleteButtonId == controlId:
+            if self.detailData['status'] != "In-Progress" and 'filename' in self.detailData:
                 ret = xbmcgui.Dialog().yesno('%s %s' % (smartUTF8(__language__(30054)), self.detailData['title']), '%s\n%s?' % (smartUTF8(__language__(30111)), self.detailData['filename']))
                 self.returnvalue = "DEL"
             elif self.detailData['status'] == "Failed":
@@ -285,11 +326,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                                     param['tvshowid'] = self.xbmcId
                                     response = myJSON.VideoLibrary.RemoveTVShow(param)
 
-                                print type(response)
-                                try:
-                                    print response['result']
-                                except:
-                                    print response['error']
+                                xbmc.log(type(response))
 
                             self.shouldRefresh = True
                             self.close("DEL")
@@ -300,26 +337,24 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30105)))
                 else:
                     xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30114)))
-        elif self.archiveButton != None and self.archiveButton == source:
-            choices = self.xnewa.RecDirs.keys()
+        elif archiveButtonId == controlId:
+            choices = list(self.xnewa.RecDirs.keys())
             setting =  xbmcgui.Dialog().select(smartUTF8(__language__(30115)), choices)
-            print setting
+            xbmc.log( str(setting))
             if setting != -1:
                 dialog = xbmcgui.Dialog()
                 ret = dialog.yesno(choices[setting], '%s %s?' % (smartUTF8(__language__(30116)), choices[setting]))
                 if ret == 1:
-                    print self.detailData['recording_oid']
-                    print choices[setting]
                     if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
                         try:
                             if self.xnewa.archiveRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData['recording_oid'], choices[setting]  ):
-                                print 'file archived'
+                                xbmc.log('file archived')
                             else:
                                 xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30105)))
                         except:
                             xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30105)))
             xbmcgui.WindowXML.setFocus(self, self.archiveButton)
-        elif self.scheduleType == source:
+        elif scheduleTypeId == controlId:
             self.detailData['rectype']
             if self.detailData['recording_oid'] == 0: # Only for new recording
                     self.detailData['rectype'] = self._pickFromList("Select recording type", ["Record Once",
@@ -331,25 +366,25 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     "Record Season (Weekends, this timeslot)",
                     "Record All Episodes, All Channels"], self.detailData['rectype'])
                     self._updateView()
-        elif self.qualityControl == source:
+        elif qualityControlId == controlId:
             self.detailData['recquality'] = self._pickFromList("Select recording quality", ["Best", "Better", "Good", "Default"], self.detailData['recquality'])
             self._updateView()
-        elif self.prePadding == source:
+        elif prePaddingId == controlId:
             self.detailData['prepadding'] = str(self._getNumber("Select prepadding minutes", self.detailData['prepadding'], -5, 30))
             self._updateView()
-        elif self.postPadding == source:
+        elif postPaddingId == controlId:
             self.detailData['postpadding'] = str(self._getNumber("Select postpadding minutes", self.detailData['postpadding'], 0, 120))
             self._updateView()
-        elif self.extendTime == source:
+        elif extendTimeId == controlId:
             self.detailData['extendend'] = str(self._getNumber("Select time extenstion (minutes)", 0, 0, 30))
             self._updateView()
-        elif self.keepRecs == source:
+        elif keepRecsId == controlId:
             self.detailData['maxrecs'] = str(self._getNumber("Select recordings to keep (0 means all)", self.detailData['maxrecs'], 0, 30))
             self._updateView()
-        elif self.recDirId == source:
-            self.detailData['directory'] = self._pickFromList("Recording Directory", self.xnewa.RecDirs.keys(), self.detailData['directory'])
+        elif recDirIdId == controlId:
+            self.detailData['directory'] = self._pickFromList("Recording Directory", list(self.xnewa.RecDirs.keys()), self.detailData['directory'])
             self._updateView()
-        elif self.priority == source:
+        elif priorityId == controlId:
             if self.detailData['priority'] != 0:
                 choices = []
                 choices.append(__language__(30038))
@@ -359,13 +394,12 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 if newPriority != __language__(30038):
                     self.detailData['priority'] = newPriority
                 self._updateView()
-        elif self.playButton == source or self.resumeButton == source:
+        elif playButtonId == controlId or resumeButtonId == controlId:
             from threading import Thread
-            t = Thread(target=self._myPlayer, args=(None,source,))
+            t = Thread(target=self._myPlayer, args=(None,controlId,))
             t.start()
 
     def _myPlayer(self, detail=None, button=None, isMin = False, Audio = False):
-        import xbmcgui,xbmc
         if detail is not None:
             self.detailData = detail
 
@@ -380,25 +414,24 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         if self.player.isPlaying():
             isMin = True
             self.player.stop()
-            print "vlc stopped"
             self.player = XBMCPlayer(settings=self.settings, xnewa=self.xnewa)
-        print "started player"
-        if self.detailData.has_key('playlist') == True:
+        xbmc.log("started player")
+        if ('playlist' in self.detailData) == True:
             Audio = True
             url = self.detailData['playlist']
-            print url
-        elif self.detailData.has_key('filename') == False:
+            xbmc.log(url)
+        elif ('filename' in self.detailData) == False:
             self.channelIcon = self.xnewa.getShowIcon(self.detailData['title'])
             if self.channelIcon == None:
                 self.channelIcon = self.xnewa.getChannelIcon(self.detailData['channel'][0])
-            print self.detailData
+            print (self.detailData)
 
             if self.channelIcon is not None:
                 listitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
             else:
                 listitem = xbmcgui.ListItem(self.detailData['title'])
-
-            if self.detailData['season'] !=0:
+            #v5
+            if  'season' in self.detailData and self.detailData['season'] !=0:
                 infolabels={ "Title": self.detailData['title'], 'tvshowtitle':self.detailData['subtitle'], 'season': self.detailData['season'], 'episode': self.detailData['episode'],'mediatype': 'episode','plot': self.detailData['desc'] }
             elif self.detailData['subtitle'] != '':
                 infolabels={ "Title": self.detailData['title'], 'tvshowtitle':self.detailData['subtitle'],'mediatype': 'episode','plot': self.detailData['desc'] }
@@ -416,13 +449,12 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             url += self.xnewa.client
             if self.settings.NextPVR_STREAM == 'VLC':
                 # vlc streaming test
-                print self.detailData['program_oid']
                 if self.xnewa.startVlcFileByEPGEventOID(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData['program_oid']):
                     url = self.xnewa.getVlcURL()
                     xbmc.sleep(self.settings.XNEWA_PREBUFFER)
                     isVlc = True
             elif self.settings.NextPVR_STREAM == 'Direct':
-                import direct
+                from . import direct
                 durl = direct.LiveTV(self.detailData['channel'])
                 if durl != None:
                     url = durl
@@ -435,7 +467,6 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     else:
                         strChannel = self.detailData['channel'][1]+'.'+ self.detailData['channel'][2]
                     durls = mypy.getLiveTVURLList(strChannel)
-                    print durls
                     if durls:
                         xbmc.PlayList(0).clear()
                         for durl in durls:
@@ -445,10 +476,9 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                                 newlistitem = xbmcgui.ListItem(self.detailData['title'])
                             newlistitem.setInfo( type="video", infoLabels=infolabels )
                             xbmc.PlayList(0).add(durl,newlistitem)
-                        print xbmc.PlayList(0).size()
                         self.playlist = xbmc.PlayList(0)
                 except:
-                    print 'HDHR problem'
+                    xbmc.log('HDHR problem')
             elif self.settings.NextPVR_STREAM == 'Timeshift':
 
                 if self.xnewa.defaultSchedule == None:
@@ -468,16 +498,13 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
                 xbmc.sleep(1200)
 
-                print 'Timeshift: buffered'
+                xbmc.log('Timeshift: buffered')
                 self.player.setTimeShift(False)
 
-
-                print self.settings.XNEWA_PREBUFFER
                 for x in range(0, 4):
                     xbmc.sleep(self.settings.XNEWA_PREBUFFER)
 
                 self.detailData = self.xnewa.getDetails(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData['program_oid'], 'E', False )
-                print self.detailData
                 durl = self.detailData['filename']
                 if durl[0:2]=='\\\\':
                     durl = 'smb:'+self.detailData['filename'].replace('\\','/')
@@ -487,9 +514,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     durl = durl.encode('utf-8')
                 except:
                     pass
-                print durl
                 if not xbmcvfs.exists(durl):
-                    print 'shifting not found'
+                    xbmc.log('shifting not found')
                     isTimeShifted = False
                     try:
                         self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData)
@@ -497,7 +523,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         xbmc.sleep(500)
                         self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData)
                     except:
-                        print 'cancel'
+                        xbmc.log('cancel')
                     xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
                 else:
                     isTimeShifted = True
@@ -506,14 +532,6 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 
             elif self.settings.NextPVR_STREAM == 'Timeshift1':
 
-                # vlc streaming test
-                if self.player.isPlaying():
-                #                    if self.xnewa.stopVlcStreamProcessObject(self.settings.NextPVR_USER, self.settings.NextPVR_PW):
-                    print "vlc timeshift stopped"
-                print "vlc timeshift started"
-                print self.detailData['program_oid']
-                print self.detailData['channel'][1]
-                print self.settings.XNEWA_PREBUFFER
                 myDlg = xbmcgui.DialogProgress()
                 myDlg.create("Timeshifting", "")
                 myDlg.update(5, "Starting NextPVR playback")
@@ -529,26 +547,31 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     for x in range(0, 3):
                         myDlg.update(10+x*10, "Pre-buffering")
                         xbmc.sleep(self.settings.XNEWA_PREBUFFER)
-                    print 'Timeshift: post sleep'
                     if xbmcvfs.exists(url) == False:
                         myDlg.update(45, "Second chance buffering ...")
-                        print 'Timeshift: Not found sleep'
                         xbmc.sleep(4000)
-                    print 'Timeshift: buffered'
                     myDlg.update(50, "Starting player")
                     isTimeShifted = True
                     self.player.setTimeShift(True)
                 else:
-                    print "Fall back to default"
                     myDlg.close()
             elif self.settings.NextPVR_STREAM == 'PVR' and xbmc.getCondVisibility('System.HasPVRAddon') :
                 channels = self.xnewa.getPVRChannels()
                 if channels != None:
-                    print self.detailData
-                    #num = str(self.detailData['channel'][0]))
+
                     chnum = str(self.detailData['channel_oid'])
                     url = 'pvr://channels/tv/All channels/pvr.nextpvr_' + chnum + '.pvr'
-                    print url
+                    xbmc.log(url)
+                    pvr = []
+                    pvr.append(PVRChannel(
+                        uniqueId = 1,
+                        isRadio = False,
+                        channelNumber = 2,
+                        channelName = 'TVO',
+                        streamURL = None,
+                        encryptionSystem = 0,
+                        iconPath =  None))
+                    infolabels['channel'] = pvr
             elif self.settings.NextPVR_STREAM == 'Transcode':
                 xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
                 self.xnewa.startTranscodeLiveStreamByChannelNumber( self.detailData['channel'][1])
@@ -566,7 +589,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             try:
                 self.showIcon = self.xnewa.getShowIcon(self.detailData['title'])
             except:
-				self.showIcon = None
+                self.showIcon = None
             if self.showIcon is not None:
                 listitem = xbmcgui.ListItem(self.detailData['title'], thumbnailImage=self.showIcon)
             else:
@@ -578,20 +601,13 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 infolabels={"Title": self.detailData['title'], 'tvshowtitle':self.detailData['subtitle'],'mediatype': 'episode','plot': self.detailData['desc']}
             else:
                 infolabels={"Title": self.detailData['title'],'plot': self.detailData['desc']}
-            print infolabels
             listitem.setInfo( type="Video", infoLabels=infolabels )
             #listitem.setInfo('video',{'Genre':'Comedy','title':'ttvvv','tagline':'dddmedy'})
             if self.settings.NextPVR_STREAM != 'Transcode':
                 bookmarkSecs = 0
-                if self.detailData.has_key('nextUrl') == False:
-                    if self.resumeButton == button:
+                if ('nextUrl' in self.detailData) == False:
+                    if resumeButtonId == button:
                         bookmarkSecs = self.detailData['resume']
-                        #import datetime
-                        #formatSeconds = str(datetime.timedelta(seconds=bookmarkSecs))
-                        #question = 'Resume from %s?' % formatSeconds
-                        #resume = xbmcgui.Dialog().yesno(self.detailData['title'],'', question,'','Resume','Beginning')
-                        #print resume
-                        #if resume== 0:
                         listitem.setProperty('startoffset',str(bookmarkSecs))
                 else:
                     bookmarkSecs = self.detailData['bookmarkSecs']
@@ -605,35 +621,32 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             elif os.name != 'nt':
                 url = url.replace('\\','/')
             try:
-                url = url.encode('utf-8')
+                url = py2_encode(url)
             except:
                 pass
-            print url
+            xbmc.log(url)
             if url.startswith('plugin') == False and url.startswith('http') == False and url.startswith('rtmp') == False and url.startswith('mms') == False and (not xbmcvfs.exists(url)  or self.settings.NextPVR_STREAM == 'VLC') :
-                print "not found"
+                xbmc.log("not found")
 
                 if self.xnewa.offline == True:
                     xbmcgui.Dialog().ok(smartUTF8(__language__(30136)), smartUTF8(__language__(30117)))
                     return
 
-                if self.detailData.has_key('nextUrl') == False:
+                if ('nextUrl' in self.detailData) == False:
                     url = self.urly + "/live?recording=" +str(self.detailData['recording_oid']) + self.xnewa.client
                 else:
-                    import urllib
-                    myFile = urllib.quote(self.detailData['nextUrl'].encode('utf-8'),'\\/:%.?=;')
+                    myFile = urllib.parse.quote(self.detailData['nextUrl'].encode('utf-8'),'\\/:%.?=;')
 
                     if myFile.startswith('/stream?f='):
                         myFile = myFile + '&mode=http'
                     myFile += self.xnewa.client
-                    print myFile
+                    xbmc.log(myFile)
                     url = self.urly + myFile
                 if self.settings.NextPVR_STREAM == 'Direct':
-                    import urllib
                     #url = your url here
-                    f1 = urllib.quote(url)
+                    f1 = urllib.parse.quote(url)
                 elif self.settings.NextPVR_STREAM == 'VLC':
                     # vlc streaming test
-                    print self.detailData
                     if self.xnewa.startVlcFileByScheduleOID(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData['recording_oid']):
                         url = self.xnewa.getVlcURL()
                         isVlc = True
@@ -666,21 +679,20 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 #resume['Player.Position.Time'] =
                 param['options'] = {'resume' : {'hours': h, 'minutes': m, 'seconds' : s, 'milliseconds':0} }
             response = myJSON.Player.Open(param)
-            print response
         else:
             if Audio == False:
-                print "Playing " + url
+                xbmc.log("Playing " + url)
                 if self.playlist != None:
                     self.player.play( self.playlist, listitem, windowed=isMin )
                 else:
                     self.player.play( url, listitem, windowed=isMin )
             else:
                 self.player.play( url )
-            print 'player started'
+            xbmc.log('player started')
 #        ...
         self._lastPos = 0
         self._duration = -2
-        print 'entering loop'
+        xbmc.log('entering loop')
         while self.player.is_active:
             if self.player.is_started and self.player.isPlayingVideo():
                 if self.player.getTotalTime() > 10:
@@ -695,7 +707,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                             self._lastPos = self.player.getTime()
                             self._duration = self.player.getTotalTime()
                         except:
-                            print "could net get last"
+                            xbmc.log("could net get last")
                 elif self._duration == -2:
                     if isTimeShifted:
                         if self.settings.NextPVR_STREAM == 'Timeshift':
@@ -706,16 +718,14 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                             xbmc.sleep(200)
                             self.player.pause()
                             xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
-                            print self.player.getTotalTime()
+                            xbmc.log(str(self.player.getTotalTime()))
                     self._duration = -1
 
             self.player.sleep(250)
 
         self.player = None
-        if self.detailData.has_key('filename') == True and self.xnewa.offline == False:
+        if ('filename' in self.detailData) == True and self.xnewa.offline == False:
             if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
-                print self._duration
-                print self.cancelOID
                 if self.cancelOID != 0:
                     try:
                         self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData)
@@ -723,12 +733,12 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         xbmc.sleep(500)
                         self.xnewa.cancelRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData)
                     except:
-                        print 'cancel'
+                        xbmc.log('cancel')
                 else:
-                    if self.detailData.has_key('library_duration'):
+                    if 'library_duration' in self.detailData:
                         self._duration =  self.detailData['library_duration']
-                    print self._duration
-                    if self.detailData.has_key('recording_oid') == True:
+                    xbmc.log(str(self._duration))
+                    if ('recording_oid' in self.detailData) == True:
                         retval = self.xnewa.setPlaybackPositionObject(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData, self._lastPos, self._duration )
                     else:
                         retval = self.xnewa.setLibraryPlaybackPosition(self.detailData['filename'], self._lastPos, self._duration )
@@ -736,15 +746,13 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 #todo cache playback
                 pass
         if isVlc == True:
-            if self.xnewa.stopVlcStreamProcess(self.settings.NextPVR_USER, self.settings.NextPVR_PW):
-                print "vlc stopped"
+            self.xnewa.stopVlcStreamProcess(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
 
         if self.settings.NextPVR_STREAM == 'Transcode' and self.detailData['recording_oid'] != 0:
             self.xnewa.sendTranscodeStop()
-            print 'Stopping transcoding'
 
+        xbmc.log("play ended")
 
-        print "ended"
     def _getDetails(self):
         self.win.setProperty('busy', 'true')
         if self.xnewa.offline == False and self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
@@ -771,20 +779,13 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.channel.setLabel(self.detailData['channel'][0])
         else:
             self.channel.setLabel('All Channels')
-        #self.win.setProperty('title', self.detailData['title'])
-        #self.win.setProperty('channel', self.detailData['channel'][0])
-        #if self.heading is not None:
-        #    self.channel.setLabel(self.detailData['channel'][0])
 
         if self.oid_type!="R" and self.oid_type !="E":
             self.win.setProperty('genre', str(self.detailData['genres']))
 
-
         self.channelIcon = self.xnewa.getChannelIcon(self.detailData['channel'][0])
         if self.channelIcon is not None:
             import sys
-            #y = unicode(self.channelIcon,self.xnewa.getfilesystemencoding)
-            #z = y.encode('utf-8')
             self.channelImage.setImage(self.channelIcon)
 
         if self.epg == True:
@@ -793,7 +794,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 if self.detailData['status'] != "In-Progress":
                     self.playButton.setLabel("Watch")
 
-        elif self.detailData.has_key('filename') == False:
+        elif ('filename' in self.detailData) == False:
             self.playButton.setVisible(False)
         elif self.detailData['filename'] !=  '':
             self.playButton.setVisible(True)
@@ -824,11 +825,11 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.statusLabel.setVisible(True)
             self.statusLabel.setLabel(self.detailData['status'])
 
-        print self.detailData['status']
-        print self.detailData['rectype']
+        xbmc.log(self.detailData['status'])
+        xbmc.log(self.detailData['rectype'])
 
         if self.detailData['rectype'] !="" and self.detailData['rectype'] != 'Record Once' and self.detailData['rectype'] != "Single"  and self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress" and self.detailData['status'] != "Failed" and self.detailData['status'] != "Conflict" and self.detailData['rectype'] != "Multiple":
-            print 'recurring'
+            xbmc.log('recurring')
             self.win.setProperty('heading', 'Recurring Recording Properties')
             self.recordingTypeLabel.setVisible(True)
             self.recordingTypeLabel.setLabel(smartUTF8(__language__(30007)))
@@ -836,14 +837,14 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.timeEndLabel.setLabel(self.xnewa.formatTime(self.detailData['end']))
             self.dateLabel.setLabel(self.xnewa.formatDate(self.detailData['start']))
             self.dateLongLabel.setLabel(self.xnewa.formatDate(self.detailData['start'], withyear=True))
-            self.durationLabel.setLabel(str(int((self.detailData['end'] - self.detailData['start']).seconds / 60)))
+            self.durationLabel.setLabel(str(int(old_div((self.detailData['end'] - self.detailData['start']).seconds, 60))))
             self.descLabel.setVisible(True)
             import re
-            print self.detailData['desc']
+            xbmc.log(self.detailData['desc'])
             m = re.search('AdvancedRules\': u"(.+?)"', self.detailData['desc'])
             if m:
                 found = '\nAdvanced Rule: ' + m.group(1)
-                print found
+                xbmc.log(found)
             elif self.detailData['desc'].startswith('KEYWORD:'):
                 found = '\n' + self.detailData['desc']
             else:
@@ -859,13 +860,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             if self.oid_type!="R"  and self.oid_type !="E":
                 self.showSeperator.setVisible(True)
 
-                #self.subtitleLabel.setVisible(False)
-                #self.timeLabel.setVisible(True)
-                #self.descLabel.setVisible(False)
-
-
                 self.extendTime.setVisible(False)
-
                 self.qualityControl.setLabel( "Quality:", label2=self.detailData['recquality'] )
                 self.qualityControl.setVisible(False)
                 self.prePadding.setLabel( "Pre-Padding (min.):", label2=self.detailData['prepadding'] )
@@ -923,7 +918,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.timeEndLabel.setLabel(self.xnewa.formatTime(self.detailData['end']))
             self.dateLabel.setLabel(self.xnewa.formatDate(self.detailData['start']))
             self.dateLongLabel.setLabel(self.xnewa.formatDate(self.detailData['start'], withyear=True))
-            self.durationLabel.setLabel(str(int((self.detailData['end'] - self.detailData['start']).seconds / 60)))
+            self.durationLabel.setLabel(str(int(old_div((self.detailData['end'] - self.detailData['start']).seconds, 60))))
             self.descLabel.setVisible(True)
             self.descLabel.setText(self.detailData['desc'])
 
@@ -985,7 +980,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 xbmcgui.WindowXML.setFocus(self, self.scheduleType)
         else:
             self.win.setProperty('heading', 'Program Details')
-            if self.settings.XNEWA_EPISODE == True and self.detailData.has_key('filename') == True:
+            if self.settings.XNEWA_EPISODE == True and ('filename' in self.detailData) == True:
                 if os.path.isdir(os.path.dirname(self.detailData['filename'])):
                     self.update = False;
                     myFilename = self.detailData['filename']
@@ -995,29 +990,24 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     myJSON = XBMCJSON()
                     param = {}
                     param['filter'] = {"field": "filename", "operator": "is", "value": os.path.basename(myFilename)}
-                    print param['filter']
+                    xbmc.log(param['filter'])
                     if self.detailData['movie'] == True:
                         param['properties'] = ["setid", "title", "file", "lastplayed", "resume",]
                         response =  myJSON.VideoLibrary.GetMovies(param)
                     else:
                         param['properties'] = ["tvshowid", "showtitle", "file", "lastplayed", "resume",]
                         response =  myJSON.VideoLibrary.GetEpisodes(param)
-                    print response
                     try:
-                        print response['result']
+                        xbmc.log(response['result'])
                         if response['result']['limits']['total'] == 1:
                             if self.detailData['movie'] == True:
                                 self.xbmcId =  response['result']['movies'][0]['movieid']
-                                print response['result']['movies'][0]['resume']
                                 self.xbmcResume = response['result']['movies'][0]['resume']['position']
                             else:
-                                print response['result']['episodes'][0]['tvshowid']
                                 self.xbmcId =  response['result']['episodes'][0]['tvshowid']
-                                print response['result']['episodes'][0]['resume']
                                 self.xbmcResume = response['result']['episodes'][0]['resume']['position']
                                 if self.detailData['filename'] != response['result']['episodes'][0]['file']:
                                     self.detailData['filename'] = response['result']['episodes'][0]['file']
-                                    print "Playing Library File " + self.detailData['filename']
                         else:
                             param = {}
                             if os.name != 'nt' or myFilename[0:3] == 'smb':
@@ -1025,9 +1015,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                             else:
                                 param['directory']=os.path.dirname(myFilename)+'\\'
                             response = myJSON.VideoLibrary.Scan(param)
-                            print response
                             try:
-                                print response['result']
                                 sleep(2)
                                 param = {}
                                 param['filter'] = {"field": "filename", "operator": "is", "value": os.path.basename(myFilename)}
@@ -1038,22 +1026,20 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                                     param['properties'] = ["tvshowid", "showtitle", "file"]
                                     response =  myJSON.VideoLibrary.GetEpisodes(param)
 
-                                print response
                                 try:
                                     if response['result']['limits']['total'] == 1:
                                         if self.detailData['movie'] == True:
                                             self.xbmcId =  response['result']['movies'][0]['movieid']
                                             self.xbmcResume = response['result']['movies'][0]['resume']['position']
                                         else:
-                                            print response['result']['episodes'][0]['tvshowid']
                                             self.xbmcId =  response['result']['episodes'][0]['tvshowid']
                                             self.xbmcResume = response['result']['episodes'][0]['resume']['position']
                                 except:
-                                    print response['result']
+                                    xbmc.log("Failed @1")
                             except:
-                                print response['error']
+                                xbmc.log("Failed @2")
                     except:
-                        print response['error']
+                        xbmc.log("Failed @3")
             self.subtitleLabel.setVisible(True)
             if self.detailData['season'] == 0:
                 self.subtitleLabel.setLabel(self.detailData['subtitle'])
@@ -1063,7 +1049,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.timeEndLabel.setLabel(self.xnewa.formatTime(self.detailData['end']))
             self.dateLabel.setLabel(self.xnewa.formatDate(self.detailData['start']))
             self.dateLongLabel.setLabel(self.xnewa.formatDate(self.detailData['start'], withyear=True))
-            self.durationLabel.setLabel(str(int((self.detailData['end'] - self.detailData['start']).seconds / 60)))
+            self.durationLabel.setLabel(str(int(old_div((self.detailData['end'] - self.detailData['start']).seconds, 60))))
             self.descLabel.setVisible(True)
             self.descLabel.setText(self.detailData['desc'])
 
@@ -1082,7 +1068,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 self.recDirId.setVisible(False)
                 self.placeFiller.setVisible(True)
             else:
-                print 'NextPVR Resume is ' + `self.detailData['resume']` + ' Library ' + `self.xbmcResume`
+                xbmc.log('NextPVR Resume is {0} Library {1}'.format(self.detailData['resume'],self.xbmcResume))
+
                 if self.xbmcResume > self.detailData['resume']:
                     self.detailData['resume'] = self.xbmcResume
                 if self.oid_type !="E" and self.detailData['resume'] > 0:
@@ -1097,7 +1084,6 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     self.resumeButton.setVisible(False)
 
             if self.detailData['status'] != "Completed" and self.detailData['status'] != "In-Progress"  and self.detailData['status'] != "Failed":
-                print datetime.now(),self.detailData['end']
                 if datetime.now() < self.detailData['end'] and self.settings.XNEWA_READONLY == False:
                     self.recordButton.setVisible(True)
                     self.quickrecordButton.setVisible(True)
@@ -1163,14 +1149,14 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
 
 class XBMCPlayer(xbmc.Player):
     def __init__( self, *args, **kwargs ):
-        xbmc.Player.__init__(self, *args, **kwargs)
+        #xbmc.Player.__init__(self, *args, **kwargs)
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
 
         self.is_started = False
         self.is_active = True
         self.isTimeShifted = False
-        print "#XBMCPlayer#"
+        xbmc.log("#XBMCPlayer#")
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
         self.heartbeat = datetime.now() + timedelta(seconds=10)
@@ -1183,21 +1169,21 @@ class XBMCPlayer(xbmc.Player):
         xbmc.log("#Im Resumed #")
 
     def onPlayBackStarted( self ):
-        print "#Playback Started#"
+        xbmc.log("#Playback Started#")
         try:
-            print "#Im playing :: " + self.getPlayingFile()
+            xbmc.log("#Im playing :: " + self.getPlayingFile())
         except:
-            print "#I failed get to what Im playing#"
+            xbmc.log("#I failed get to what Im playing#")
         self.is_started = True
-        print self.getTotalTime()
+        xbmc.log(str(self.getTotalTime()))
 
     def onPlayBackEnded( self ):
         self.is_active = False
-        print "#Playback Ended#"
+        xbmc.log("#Playback Ended#")
 
     def onPlayBackStopped( self ):
         self.is_active = False
-        print "## Playback Stopped ##"
+        xbmc.log("## Playback Stopped ##")
 
     def sleep(self, s):
         xbmc.sleep(s)
@@ -1208,11 +1194,11 @@ class XBMCPlayer(xbmc.Player):
 
     def sendHeartbeat(self):
         if self.isTimeShifted and datetime.now() > self.heartbeat:
-            print "## Heartbeat"
+            xbmc.log("## Heartbeat")
             if self.settings.NextPVR_STREAM == 'Transcode':
                 self.heartbeat = datetime.now() + timedelta(seconds=3)
                 self.xnewa.sendTranscodeHeartbeat()
             else:
                 self.xnewa.sendVlcHeartbeat(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
                 self.heartbeat = datetime.now() + timedelta(seconds=10)
-            print self.heartbeat
+            xbmc.log(str(self.heartbeat))

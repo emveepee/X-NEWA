@@ -11,7 +11,7 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.xbmc.x-newa 30000]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
 			<param name="breadcrumbs_icon" value="icons/home/tv.png" />
 		</include>
 		<include content="BottomBar">
@@ -24,9 +24,9 @@
                 <top>100</top>
                 <width>1630</width>
                 <height>750</height>
-                <texture>lists/buttonmenu-separator.png</texture>                          
-                <colordiffuse>B0FFFFFF</colordiffuse>                                    
-          </control>  
+                <texture>lists/buttonmenu-separator.png</texture>
+                <colordiffuse>B0FFFFFF</colordiffuse>
+          </control>
 		<control type="group" id="1300">
 			<left>0</left>
 			<top>110</top>
@@ -61,16 +61,16 @@
 				<label>-</label>
 				<scroll>true</scroll>
 				<scrollspeed>30</scrollspeed>
-			</control>		
+			</control>
 			<control type="label" id="1030">
 				<description>DESCRIPTION control</description>
 				<top>70</top>
 				<width>1500</width>
 				<height>100</height>
-				<wrapmultiline>true</wrapmultiline>			
+				<wrapmultiline>true</wrapmultiline>
 				<align>left</align>
 				<font>font12</font>
-				<label>-</label>			
+				<label>-</label>
 				<scroll>true</scroll>
 				<scrollspeed>30</scrollspeed>
 			</control>

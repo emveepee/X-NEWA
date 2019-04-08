@@ -7,17 +7,17 @@
 		<system>1</system>
 		<posx>0</posx>
 		<posy>0</posy>
-	</coordinates>        
+	</coordinates>
 	<controls>
 		<control type="videowindow" id="200">
-            <depth>DepthBackground</depth>        
+            <depth>DepthBackground</depth>
 			<top>0</top>
 			<left>0</left>
 			<width>100%</width>
 			<height>100%</height>
             <backgroundcolor>0</backgroundcolor>
-			<visible>Player.HasVideo</visible>            
-		</control>    
+			<visible>Player.HasVideo</visible>
+		</control>
 		<control type="image" id="100">
 			<top>0</top>
 			<left>0</left>
@@ -32,7 +32,7 @@
             <height>200</height>
             <label>Hit Back to return</label>
             <font>font35</font>
-			<textcolor>white</textcolor>            
+			<textcolor>white</textcolor>
 			<visible>Player.HasVideo + String.contains(Window.Property(sdlmode),false)</visible>
 		</control>
 		<control type="label" id="120">
@@ -41,12 +41,12 @@
             <width>500</width>
             <height>200</height>
             <label></label>
-			<textcolor>yellow</textcolor>            
+			<textcolor>yellow</textcolor>
 			<visible>Player.HasVideo + String.contains(Window.Property(sdlmode),false)</visible>
 		</control>
         <control type="label">
                 <left>1000</left>
-                <top>680</top>        
+                <top>680</top>
                 <width>200</width>
                 <height>25</height>
                 <font>font20</font>
@@ -56,10 +56,10 @@
                 <textcolor>orange</textcolor>
                 <visible>Player.HasAudio + !String.IsEmpty(MusicPlayer.Duration)</visible>
                 <scroll>true</scroll>
-            </control>           
+            </control>
             <control type="label">
                 <left>1000</left>
-                <top>680</top>        
+                <top>680</top>
                 <width>200</width>
                 <height>25</height>
                 <font>font20</font>
@@ -69,6 +69,6 @@
                 <textcolor>orange</textcolor>
                 <visible>Player.HasAudio + String.IsEmpty(MusicPlayer.Duration)</visible>
                 <scroll>true</scroll>
-            </control>  
-    </controls>        
+            </control>
+    </controls>
 </window>

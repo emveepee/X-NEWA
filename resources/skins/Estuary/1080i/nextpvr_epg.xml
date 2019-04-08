@@ -11,8 +11,8 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.xbmc.x-newa 30000]" />
-			<param name="sublabel" value="$ADDON[script.xbmc.x-newa 30019]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
+			<param name="sublabel" value="$ADDON[script.kodi.knew4v5 30019]" />
 		</include>
 		<include content="BottomBar">
 			<param name="info_visible" value="false" />
@@ -61,16 +61,16 @@
 				<label>-</label>
 				<scroll>true</scroll>
 				<scrollspeed>30</scrollspeed>
-			</control>		
+			</control>
 			<control type="label" id="1030">
 				<description>DESCRIPTION control</description>
 				<top>70</top>
 				<width>1500</width>
 				<height>100</height>
-				<wrapmultiline>true</wrapmultiline>			
+				<wrapmultiline>true</wrapmultiline>
 				<align>left</align>
 				<font>font12</font>
-				<label>-</label>			
+				<label>-</label>
 				<scroll>true</scroll>
 				<scrollspeed>30</scrollspeed>
 			</control>

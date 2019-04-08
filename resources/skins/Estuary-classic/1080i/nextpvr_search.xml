@@ -11,7 +11,7 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.xbmc.x-newa 30000]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
 			<param name="breadcrumbs_icon" value="icons/home/tv.png" />
 		</include>
 		<include content="BottomBar">
@@ -32,7 +32,7 @@
 					<font>font24_title</font>
 					<align>left</align>
 					<valign>bottom</valign>
-					<label>$ADDON[script.xbmc.x-newa 30023]</label>
+					<label>$ADDON[script.kodi.knew4v5 30023]</label>
 				</control>
 				<control type="group">
 					<description>Header for list of shows</description>
@@ -43,7 +43,7 @@
 						<width>250</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.xbmc.x-newa 30009]</label>
+						<label>$ADDON[script.kodi.knew4v5 30009]</label>
 					</control>
 					<control type="label">
 						<description>Title</description>
@@ -51,7 +51,7 @@
 						<width>400</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.xbmc.x-newa 30011]</label>
+						<label>$ADDON[script.kodi.knew4v5 30011]</label>
 					</control>
 					<control type="label">
 						<description>Start Time</description>
@@ -59,7 +59,7 @@
 						<width>300</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.xbmc.x-newa 30028]</label>
+						<label>$ADDON[script.kodi.knew4v5 30028]</label>
 					</control>
 				</control>
 <!-- ############ End Search Header ############ -->
@@ -106,7 +106,7 @@
 							<width>297</width>
 							<font>font12</font>
 							<align>left</align>
-							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
 						</control>
 					</itemlayout>
 					<focusedlayout height="35">
@@ -139,7 +139,7 @@
 							<width>297</width>
 							<font>font12</font>
 							<align>left</align>
-							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
 						</control>
 					</focusedlayout>
 				</control>
@@ -176,7 +176,7 @@
 								<width>120</width>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.xbmc.x-newa 30013]:</label>
+								<label>$ADDON[script.kodi.knew4v5 30013]:</label>
 							</control>
 							<control type="label">
 								<left>125</left>
@@ -194,7 +194,7 @@
 								<width>120</width>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.xbmc.x-newa 30012]:</label>
+								<label>$ADDON[script.kodi.knew4v5 30012]:</label>
 							</control>
 							<control type="label">
 								<left>125</left>
@@ -211,7 +211,7 @@
 								<width>120</width>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.xbmc.x-newa 30009]:</label>
+								<label>$ADDON[script.kodi.knew4v5 30009]:</label>
 							</control>
 							<control type="label">
 								<left>125</left>
@@ -229,7 +229,7 @@
 								<width>120</width>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.xbmc.x-newa 30056]:</label>
+								<label>$ADDON[script.kodi.knew4v5 30056]:</label>
 							</control>
 							<control type="label">
 								<left>125</left>
@@ -237,7 +237,7 @@
 								<height>25</height>
 								<font>font12</font>
 								<align>left</align>
-								<label>$INFO[Container(600).ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029]</label>
+								<label>$INFO[Container(600).ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029]</label>
 							</control>
 						</control>
 						<control type="group">
@@ -247,7 +247,7 @@
 								<width>600</width>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.xbmc.x-newa 30041]</label>
+								<label>$ADDON[script.kodi.knew4v5 30041]</label>
 							</control>
 							<control type="textbox">
 								<visible>!IsEmpty(Container(600).ListItem.Property(description))</visible>
@@ -269,14 +269,14 @@
 								<height>430</height>
 								<font>font12</font>
 								<align>left</align>
-								<label>$ADDON[script.xbmc.x-newa 30045].</label>
+								<label>$ADDON[script.kodi.knew4v5 30045].</label>
 								<scroll>true</scroll>
 								<wrapmultiline>true</wrapmultiline>
 								<autoscroll time="2000" delay="10000" repeat="5000"></autoscroll>
 							</control>
 						</control>
 					</control>
-				</control> 
+				</control>
 				<control type="scrollbar" id="6000">
 					<left>972</left>
 					<top>80</top>
@@ -303,29 +303,29 @@
 				<control type="label" id="200">
 					<description>NextPVR Options</description>
 					<include>MediaMenuLabelCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30000] $ADDON[script.xbmc.x-newa 30018]</label>
+					<label>$ADDON[script.kodi.knew4v5 30000] $ADDON[script.kodi.knew4v5 30018]</label>
 				</control>
 				<control type="button" id="250">
 					<description>Search</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30023]...</label>
+					<label>$ADDON[script.kodi.knew4v5 30023]...</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
 				</control>
 				<control type="button" id="251">
 					<description>Filter</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 32007]: $ADDON[script.xbmc.x-newa 30011]</label>
+					<label>$ADDON[script.kodi.knew4v5 32007]: $ADDON[script.kodi.knew4v5 30011]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
-				</control>                
+				</control>
 				<control type="button" id="270">
 					<description>Fullscreen</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.xbmc.x-newa 30044]</label>
+					<label>$ADDON[script.kodi.knew4v5 30044]</label>
 					<onclick>fullscreen</onclick>
 					<enable>!substring(Window.Property(busy),true)</enable>
 					<visible>Player.HasVideo</visible>
 				</control>
-			</control>			
+			</control>
 		</control>
 		<control type="button" id="999">
 			<description>Fake button for initial focus</description>
@@ -338,7 +338,7 @@
 			<onleft>9000</onleft>
 			<onright>600</onright>
 			<onup>600</onup>
-			<ondown>600</ondown>                        
+			<ondown>600</ondown>
             <texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
 			<visible>true</visible>

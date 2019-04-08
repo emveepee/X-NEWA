@@ -22,9 +22,9 @@
   <controls>
 
     <!-- ============================================= -->
-    <!--   S C R E E N       B A C K G R O U N D       -->          
-    <!-- ============================================= -->              
-  
+    <!--   S C R E E N       B A C K G R O U N D       -->
+    <!-- ============================================= -->
+
     <!-- Copy of CommonBackground -->
     <control type="image">
       <description>background image</description>
@@ -44,9 +44,9 @@
         <animation effect="slide" end="1030,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 
         <!-- ============================================= -->
-        <!--   C O N T E N T     B A C K G R O U N D       -->          
-        <!-- ============================================= -->              
-      
+        <!--   C O N T E N T     B A C K G R O U N D       -->
+        <!-- ============================================= -->
+
         <!-- Copy of ContentPanel -->
         <control type="image">
             <posx>265</posx>
@@ -57,8 +57,8 @@
         </control>
 
         <!-- ============================================= -->
-        <!-- Upcoming Recordings Table Header              -->          
-        <!-- ============================================= -->              
+        <!-- Upcoming Recordings Table Header              -->
+        <!-- ============================================= -->
         <control type="image">
             <description>table header</description>
             <posx>315</posx>
@@ -67,7 +67,7 @@
             <height>40</height>
             <texture flipx="true">header.png</texture>
         </control>
-        
+
         <control type="label">
             <posx>325</posx>
             <posy>140</posy>
@@ -78,7 +78,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30009][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30009][/B]</label>
         </control>
 
         <control type="label">
@@ -91,7 +91,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30011][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -118,7 +118,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30028][/B]</label>
+            <label>[B]$ADDON[script.kodi.knew4v5 30028][/B]</label>
             <visible>substring(Window.Property(recordings),true)</visible>
         </control>
 
@@ -132,7 +132,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30012][/B]</label>       
+            <label>[B]$ADDON[script.kodi.knew4v5 30012][/B]</label>
             <visible>substring(Window.Property(recordings),true)</visible>
         </control>
         <control type="label">
@@ -145,13 +145,13 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.xbmc.x-newa 30055][/B]</label>       
+            <label>[B]$ADDON[script.kodi.knew4v5 30055][/B]</label>
             <visible>!substring(Window.Property(recordings),true)</visible>
         </control>
 
         <!-- ============================================= -->
-        <!--  Upcoming Recordings Table                    -->          
-        <!-- ============================================= -->              
+        <!--  Upcoming Recordings Table                    -->
+        <!-- ============================================= -->
         <control type="list" id="600">
             <posx>315</posx>
             <posy>180</posy>
@@ -168,7 +168,7 @@
             <preloaditems>10</preloaditems>
 
             <itemlayout height="30">
-                <!-- 
+                <!--
                 <control type="image">
                     <posx>0</posx>
                     <posy>0</posy>
@@ -177,7 +177,7 @@
                     <texture border="10">input-nofocus.png</texture>
                 </control>
                 -->
-                 
+
                 <!--
                 <control type="image">
                     <posx>5</posx>
@@ -188,7 +188,7 @@
                     <aspectratio>keep</aspectratio>
                 </control>
                 -->
-                
+
                 <control type="label">
                     <posx>10</posx>
                     <posy>0</posy>
@@ -215,7 +215,7 @@
                     <label>$INFO[ListItem.Property(title)]</label>
                     <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
-                
+
                 <control type="label">
                     <posx>150</posx>
                     <posy>0</posy>
@@ -229,8 +229,8 @@
                     <label>$INFO[ListItem.Property(title)]</label>
                     <visible>!substring(Window.Property(recordings),true)</visible>
                 </control>
-                               
-                               
+
+
                 <control type="label">
                     <posx>350</posx>
                     <posy>0</posy>
@@ -254,7 +254,7 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
                     <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
@@ -284,9 +284,9 @@
                     <label>$INFO[ListItem.Property(channel)]</label>
                     <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
-                
+
             </itemlayout>
-            
+
             <focusedlayout height="62">
 
                 <control type="image">
@@ -379,8 +379,8 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.xbmc.x-newa 30029])</label>
-                    <visible>substring(Window.Property(recordings),true)</visible>                    
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
+                    <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
                 <control type="label">
@@ -422,7 +422,7 @@
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(episode)]; $INFO[ListItem.Property(description)]</label>
                     <visible>!IsEmpty(ListItem.Property(episode))</visible>
-                </control> 
+                </control>
                 <control type="label">
                     <posx>150</posx>
                     <posy>31</posy>
@@ -435,22 +435,22 @@
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Property(description)]</label>
                     <visible>IsEmpty(ListItem.Property(episode))</visible>
-                </control> 
+                </control>
 
             </focusedlayout>
         </control>
-        
+
         <control type="scrollbar" id="6000">
             <description>Scroll Bar</description>
             <posx>1225</posx>
             <posy>140</posy>
             <width>16</width>
             <height>500</height>
-            <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground> 
-            <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar> 
-            <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus> 
-            <textureslidernib>scrollbar_nib.png</textureslidernib> 
-            <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus> 
+            <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+            <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+            <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+            <textureslidernib>scrollbar_nib.png</textureslidernib>
+            <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
             <onleft>600</onleft>
             <onright>250</onright>
             <showonepage>false</showonepage>
@@ -467,7 +467,7 @@
 <!--            <texture border="40">-</texture>-->
 <!--            <visible>Player.HasVideo</visible>-->
 <!--        </control>-->
-                      
+
         <control type="videowindow">
             <posx>30</posx>
             <posy>60</posy>
@@ -475,12 +475,12 @@
             <height>386</height>
             <visible>Player.HasVideo</visible>
         </control>
-        
+
     </control>
 
     <!-- ============================================= -->
-    <!--        H E A D E R                            -->          
-    <!-- ============================================= -->              
+    <!--        H E A D E R                            -->
+    <!-- ============================================= -->
     <control type="image">
       <description>Header Panel</description>
       <posx>0</posx>
@@ -510,7 +510,7 @@
       <align>left</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>$ADDON[script.xbmc.x-newa 30020] $ADDON[script.xbmc.x-newa 30002]</label>
+      <label>$ADDON[script.kodi.knew4v5 30020] $ADDON[script.kodi.knew4v5 30002]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
       <visible>false</visible>
@@ -525,7 +525,7 @@
       <align>right</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>[B]$INFO[Window.Property(archive)] $ADDON[script.xbmc.x-newa 30002][/B]</label>
+      <label>[B]$INFO[Window.Property(archive)] $ADDON[script.kodi.knew4v5 30002][/B]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -544,10 +544,10 @@
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
     </control>
-        
+
     <!-- ============================================= -->
-    <!--  N A V     B U T T O N S                      -->          
-    <!-- ============================================= -->              
+    <!--  N A V     B U T T O N S                      -->
+    <!-- ============================================= -->
     <control type="grouplist" id="2000">
         <description>Buttons</description>
         <posx>0</posx>
@@ -557,20 +557,20 @@
         <ondown>2000</ondown>
         <onleft>600</onleft>
         <onright>600</onright>
-        
+
         <!-- Copy of include Window_OpenClose_Left_Panel_Animation -->
         <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
         <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
         <animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
         <animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-        
+
         <control type="button" id="251">
             <description>Refresh button</description>
-            <label>$ADDON[script.xbmc.x-newa 30024]</label>
+            <label>$ADDON[script.kodi.knew4v5 30024]</label>
             <width>285</width>
             <align>left</align>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
@@ -579,11 +579,11 @@
         </control>
         <control type="button" id="252">
             <description>Import button</description>
-            <label> $ADDON[script.xbmc.x-newa 30027]</label>
+            <label> $ADDON[script.kodi.knew4v5 30027]</label>
             <width>285</width>
             <align>left</align>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
@@ -592,40 +592,40 @@
         </control>
         <control type="button" id="253">
             <description>Sort button</description>
-            <label> $ADDON[script.xbmc.x-newa 30122]</label>
+            <label> $ADDON[script.kodi.knew4v5 30122]</label>
             <width>285</width>
             <align>left</align>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
             <pulseonselect>true</pulseonselect>
             <enable>!substring(Window.Property(busy),true)</enable>
-        </control>        
+        </control>
 		<control type="radiobutton" id="255">
-		    <description>Filter</description>                    
-            <width>260</width>            
+		    <description>Filter</description>
+            <width>260</width>
             <textoffsetx>40</textoffsetx>
             <label>Filter</label>
-            <enable>!substring(Window.Property(busy),true)</enable>            
-		</control>        
+            <enable>!substring(Window.Property(busy),true)</enable>
+		</control>
         <control type="button" id="254">
             <description>Action button</description>
             <label>Process Tagged Files</label>
             <width>285</width>
             <align>left</align>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                    
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
             <texturenofocus>button_nofocus.png</texturenofocus>
             <pulseonselect>true</pulseonselect>
             <enable>substring(Window.Property(tagged),true)</enable>
-        </control>                
-         
+        </control>
+
     </control>
-    
+
     <control type="image">
         <posx>30</posx>
         <posy>190</posy>
@@ -659,9 +659,9 @@
 
         <visible>substring(Window.Property(busy),true)</visible>
 
-        <animation effect="fade" time="250">VisibleChange</animation>    
+        <animation effect="fade" time="250">VisibleChange</animation>
 
     </control>
-        
+
   </controls>
 </window>

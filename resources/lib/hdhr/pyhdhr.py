@@ -1,40 +1,49 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 import time
 import string
 from datetime import datetime
-import urllib2
+try:
+    from urllib.request import urlopen, Request
+    from urllib.error import HTTPError
+except ImportError:
+    from urllib2 import urlopen, Request, HTTPError
 import json
 import os
 from decimal import Decimal
 import operator
 import re
+import xbmc
 
 try:
   Log
 except NameError:
-    class Logger:
+    class Logger(object):
         def __init__(self):
             return
-        
+
         def Debug(self, s):
-            print(s)
+            xbmc.log(s)
 
         def Info(self, s):
-            print(s)
+            xbmc.log(s)
 
         def Warn(self, s):
-            print(s)
-          
+            xbmc.log(s)
+
         def Error(self, s):
-            print(s)
+            xbmc.log(s)
 
         def Critical(self, s):
-            print(s)
+            xbmc.log(s)
 
         def Exception(self, s):
-            print(s)
-        
+            xbmc.log(s)
+
     Log = Logger()
-        
+
 URL_DISCOVER = 'http://my.hdhomerun.com/discover'
 URL_GUIDE_BASE = 'http://my.hdhomerun.com/api/guide.php?DeviceAuth='
 URL_RECORDING_RULES = 'http://my.hdhomerun.com/api/recording_rules?DeviceAuth='
@@ -45,38 +54,38 @@ def searchString(needle,haystack):
         if re.search(n, haystack, re.IGNORECASE):
             return True
 
-class SortType:
+class SortType(object):
     asc = 0
     desc = 1
 
-class GroupType:
+class GroupType(object):
     All = 0
     SeriesID = 1
     Category = 2
 
-class SeriesSummary:
+class SeriesSummary(object):
     SeriesID = ""
     ImageURL = ""
     EpisodeCount = 0
-    
+
     def __init__(self,SeriesID,ImageURL):
         self.SeriesID = SeriesID
         self.ImageURL = ImageURL
         self.EpisodeCount = 1
-        
+
     def getSeriesID(self):
         return self.SeriesID
 
     def getImageURL(self):
         return self.ImageURL
-        
+
     def getEpisodeCount(self):
         return self.EpisodeCount
-        
+
     def addEpisodeCount(self,ct):
         self.EpisodeCount = self.EpisodeCount + ct
 
-class ChannelInfo:
+class ChannelInfo(object):
     GuideNumber = ""
     GuideName = ""
     ImageURL = ""
@@ -88,7 +97,7 @@ class ChannelInfo:
     URL = ""
     Favorite = -1
     Tuner = None
-    
+
     def __init__(self,Tuner):
         self.Tuner = Tuner
         return
@@ -130,13 +139,13 @@ class ChannelInfo:
 
     def getImageURL(self):
         return self.ImageURL
-    
+
     def getAffiliate(self):
         return self.Affiliate
 
     def getVideoCodec(self):
         return self.VideoCodec
-    
+
     def getAudioCodec(self):
         return self.AudioCodec
 
@@ -148,11 +157,11 @@ class ChannelInfo:
 
     def getFavorite(self):
         return self.Favorite
-        
+
     def getTuner(self):
         return self.Tuner
 
-class ProgramInfo:
+class ProgramInfo(object):
     SeriesID = ""
     EpisodeNumber = ""
     EpisodeTitle = ""
@@ -163,10 +172,10 @@ class ProgramInfo:
     StartTime = 0
     ProgramFilters = []
     EndTime = 0
-    
+
     def __init__(self):
         return
-        
+
     def parse(self,parsestr,PyHDHR):
         if 'SeriesID' in parsestr:
             self.SeriesID = parsestr['SeriesID']
@@ -190,7 +199,7 @@ class ProgramInfo:
             for filter in parsestr['Filter']:
                 f = PyHDHR.addProgramFilter(ProgramFilter(filter))
                 self.addProgramFilter(f)
-        
+
     def getSeriesID(self):
         return self.SeriesID
 
@@ -217,23 +226,23 @@ class ProgramInfo:
 
     def addProgramFilter(self,ProgramFilter):
         self.ProgramFilters.append(ProgramFilter)
-        
+
     def getProgramFilters(self):
         return self.ProgramFilters
 
     def getEndTime(self):
         return self.EndTime
 
-class ProgramFilter:
+class ProgramFilter(object):
     Name = ""
-    
+
     def __init__(self,Name):
-        self.Name = Name      
+        self.Name = Name
 
     def getName(self):
         return self.Name
 
-class RecordedProgram:
+class RecordedProgram(object):
     Category =  ""
     ChannelAffiliate = ""
     ChannelImageURL =  ""
@@ -257,10 +266,10 @@ class RecordedProgram:
     DisplayGroupTitle =  ""
     PlayURL =  ""
     CmdURL =  ""
-    
+
     def __init__(self):
         return
-        
+
     def parse(self,parsestr):
         if 'Category' in parsestr:
             self.Category = parsestr['Category']
@@ -311,7 +320,7 @@ class RecordedProgram:
 
     def getCategory(self):
         return self.Category
-        
+
     def getChannelAffiliate(self):
         return self.ChannelAffiliate
 
@@ -378,7 +387,7 @@ class RecordedProgram:
     def getCmdURL(self):
         return self.CmdURL
 
-class RecordingRule:
+class RecordingRule(object):
     SeriesID = ""
     Title = ""
     ImageURL = ""
@@ -388,10 +397,10 @@ class RecordingRule:
     EndPadding = 0
     StartPadding = 0
     RecordingRuleID = ""
-    
+
     def __init__(self):
         return
-        
+
     def parse(self,parsestr):
         if 'SeriesID' in parsestr:
             self.SeriesID = parsestr['SeriesID']
@@ -411,7 +420,7 @@ class RecordingRule:
             self.StartPadding = parsestr['StartPadding']
         if 'RecordingRuleID' in parsestr:
             self.RecordingRuleID = parsestr['RecordingRuleID']
-        
+
     def getSeriesID(self):
         return self.SeriesID
 
@@ -423,13 +432,13 @@ class RecordingRule:
 
     def setRecentOnly(self,RecentOnly):
         self.RecentOnly = RecentOnly
-    
+
     def getRecentOnly(self):
         return self.RecentOnly
 
     def setPriority(self,Priority):
         self.Priority = Priority
-    
+
     def getPriority(self):
         return self.Priority
 
@@ -438,27 +447,27 @@ class RecordingRule:
 
     def setEndPadding(self,EndPadding):
         self.EndPadding = EndPadding
-    
+
     def getEndPadding(self):
         return self.EndPadding
 
     def setStartPadding(self,StartPadding):
         self.StartPadding = StartPadding
-    
+
     def getStartPadding(self):
         return self.StartPadding
 
     def getRecordingRuleID(self):
         return self.RecordingRuleID
-    
-class BaseDevice:
+
+class BaseDevice(object):
     LocalIP = ""
     BaseURL = ""
     DiscoverURL = ""
-    
+
     def __init__(self):
         return
-        
+
     def getLocalIP(self):
         return self.LocalIP
 
@@ -483,10 +492,10 @@ class Tuner(BaseDevice):
     LastDiscover = 0
     LastTranscodeOptionDiscover = 0
     TranscodeOption = None
-    
+
     def __init__(self,PyHDHR):
         self.PyHDHR = PyHDHR
-        
+
     def parse(self,parsestr):
         if 'DeviceID' in parsestr:
             self.DeviceID = parsestr['DeviceID']
@@ -498,10 +507,10 @@ class Tuner(BaseDevice):
             self.DiscoverURL = parsestr['DiscoverURL']
         if 'LineupURL' in parsestr:
             self.LineupURL = parsestr['LineupURL']
-        
+
     def getDeviceID(self):
         return self.DeviceID
-        
+
     def getLineupURL(self):
         return self.LineupURL
 
@@ -528,10 +537,10 @@ class Tuner(BaseDevice):
 
     def getConditionalAccess(self):
         return self.ConditionalAccess
-        
+
     def getChannelInfos(self):
         return self.ChannelInfos
-        
+
     def getTranscodeOption(self):
         if time.time() - self.LastTranscodeOptionDiscover < 60 and self.TranscodeOption:
             return self.TranscodeOption
@@ -541,9 +550,9 @@ class Tuner(BaseDevice):
         if self.ModelNumber == "HDTC-2US":
             try:
                 regx = Regex('/([0-9]+.[0-9]+.[0-9]+.[0-9]+)').search(self.DiscoverURL)
-                ip = regx.group(1)                
-                
-                response = urllib2.urlopen("http://"+ip+"/transcode.html",None,5)
+                ip = regx.group(1)
+
+                response = urlopen("http://"+ip+"/transcode.html",None,5)
 
                 regx = Regex('transcodeChanged\(\)">((.|\n)+?)</select>').search(response.read())
                 selecttags = regx.group(1)
@@ -559,9 +568,9 @@ class Tuner(BaseDevice):
             return True
 
         self.LastDiscover = time.time()
-        
+
         try:
-            response = urllib2.urlopen(self.DiscoverURL,None,5)
+            response = urlopen(self.DiscoverURL,None,5)
             data = json.loads(response.read())
             if 'TunerCount' in data:
                 self.TunerCount = data['TunerCount']
@@ -587,7 +596,7 @@ class Tuner(BaseDevice):
     def processLineup(self,PyHDHR):
         self.discover()
         try:
-            response = urllib2.urlopen(self.LineupURL,None,5)
+            response = urlopen(self.LineupURL,None,5)
             data = json.loads(response.read())
             for item in data:
                 if 'GuideNumber' in item:
@@ -608,7 +617,7 @@ class Tuner(BaseDevice):
         if not self.DeviceAuth:
             return False
         try:
-            response = urllib2.urlopen(URL_GUIDE_BASE + self.DeviceAuth,None,5)
+            response = urlopen(URL_GUIDE_BASE + self.DeviceAuth,None,5)
             data = json.loads(response.read())
             for item in data:
                 if 'GuideNumber' in item:
@@ -631,10 +640,10 @@ class DVR(BaseDevice):
     FreeSpace = ""
     Version = ""
     FriendlyName = ""
-    
+
     def __init__(self):
         return
-        
+
     def parse(self,parsestr):
         if 'StorageID' in parsestr:
             self.StorageID = parsestr['StorageID']
@@ -646,13 +655,13 @@ class DVR(BaseDevice):
             self.DiscoverURL = parsestr['DiscoverURL']
         if 'StorageURL' in parsestr:
             self.StorageURL = parsestr['StorageURL']
-        
+
     def getStorageID(self):
         return self.StorageID
-        
+
     def getStorageURL(self):
         return self.StorageURL
-        
+
     def getFreeSpace():
         return self.FreeSpace
 
@@ -661,10 +670,10 @@ class DVR(BaseDevice):
 
     def getFriendlyName():
         return self.FriendlyName
-        
+
     def discover(self):
         try:
-            response = urllib2.urlopen(self.DiscoverURL,None,5)
+            response = urlopen(self.DiscoverURL,None,5)
             data = json.loads(response.read())
             if 'FreeSpace' in data:
                 self.FreeSpace = data['FreeSpace']
@@ -677,8 +686,8 @@ class DVR(BaseDevice):
             Log.Critical("Exception in DVR.discover while attempting to load: "+str(self.DiscoverURL))
             Log.Critical(e)
             return False
-        
-class PyHDHR:
+
+class PyHDHR(object):
     Tuners = {}
     DVRs = {}
     ProgramFilters = {}
@@ -690,10 +699,10 @@ class PyHDHR:
     LastDiscover = 0
     LastRecordedDiscover = 0
     RecordedPrograms = {}
-    
+
     def __init__(self):
         return
-        
+
     def getTuners(self):
         self.discover()
         return self.Tuners
@@ -704,22 +713,22 @@ class PyHDHR:
 
     def setDeviceAuth(self,DeviceID,DeviceAuth):
         self.DeviceAuths[DeviceID] = DeviceAuth
-        
+
     def getDeviceAuth(self):
         retstr = ""
         for key in self.DeviceAuths:
             retstr += self.DeviceAuths[key]
         return retstr
-    
+
     def addProgramFilter(self,pf):
         if pf.getName() not in self.ProgramFilters:
             self.ProgramFilters[pf.getName()] = pf
         return self.ProgramFilters[pf.getName()]
-        
+
     def getProgramFilters(self):
         self.discover()
         return self.ProgramFilters
-        
+
     def registerChannelInfo(self,chaninfo,tuner):
         if chaninfo.getGuideNumber() in self.ChannelLineup:
             if tuner not in self.ChannelLineup[chaninfo.getGuideNumber()]:
@@ -730,28 +739,28 @@ class PyHDHR:
             chans.append(tuner)
             self.ChannelLineup[chaninfo.getGuideNumber()] = chans
         self.ChannelInfos[chaninfo.getGuideNumber()] = chaninfo
-        
+
     def getChannelInfo(self,guideno):
         if guideno in self.ChannelInfos:
             return self.ChannelInfos[guideno]
         else:
             return None
-        
+
     def getChannelList(self):
         self.discover()
         self.ChannelArray.sort()
         return self.ChannelArray
-        
+
     def getWhatsOn(self,guideno=None):
         self.discover()
-        
+
         if not guideno:
             onprogs = {}
             for key in self.ChannelInfos:
                 progs = self.ChannelInfos[key].getProgramInfos()
                 if len(progs) > 0:
                     onprogs[self.ChannelInfos[key].getGuideNumber()] = progs[0]
-            return onprogs        
+            return onprogs
         else:
             if guideno in self.ChannelInfos:
                 progs = self.ChannelInfos[guideno].getProgramInfos()
@@ -767,7 +776,7 @@ class PyHDHR:
         return None
 
     def getLiveTVURLList(self,guideno):
-        self.discover(True)        
+        self.discover(True)
         urls = []
         for tunerkey in self.Tuners:
             chaninfos = self.Tuners[tunerkey].getChannelInfos()
@@ -775,22 +784,22 @@ class PyHDHR:
                 urls.append('file.ts')
                 urls.append(chaninfos[guideno].getURL())
         return urls
-                
+
     def getRecordedPrograms(self,force=False):
         self.discover()
-        
+
         if not force and len(self.RecordedPrograms) != 0:
             if time.time() - self.LastRecordedDiscover < 60:
                 return self.RecordedPrograms
-            
+
         self.LastRecordedDiscover = time.time()
 
         self.RecordedPrograms = {}
-        print("getRecordedPrograms - DVRs:"+str(self.DVRs))
+        xbmc.log("getRecordedPrograms - DVRs:"+str(self.DVRs))
         for key in self.DVRs:
             Log.Debug("getRecordedPrograms key:"+key)
             try:
-                response = urllib2.urlopen(self.DVRs[key].getStorageURL(),None,5)
+                response = urlopen(self.DVRs[key].getStorageURL(),None,5)
                 data = json.loads(response.read())
                 for item in data:
                     recprog = RecordedProgram()
@@ -804,10 +813,10 @@ class PyHDHR:
     def getFilteredRecordedPrograms(self,sortby,grouptype,groupby):
         self.discover()
         progs = self.getRecordedPrograms()
-        
+
         if progs:
             filteredprogs = []
-            for prog in (sorted(progs.values(), key=operator.attrgetter('RecordEndTime'), reverse=(True if sortby == SortType.asc else False))):
+            for prog in (sorted(list(progs.values()), key=operator.attrgetter('RecordEndTime'), reverse=(True if sortby == SortType.asc else False))):
                 if grouptype == GroupType.All:
                     filteredprogs.append(prog)
                 elif grouptype == GroupType.SeriesID:
@@ -820,7 +829,7 @@ class PyHDHR:
                     pass
             return filteredprogs
         return None
-    
+
     def getRecordedProgram(self,key):
         self.discover()
         progs = self.getRecordedPrograms()
@@ -829,7 +838,7 @@ class PyHDHR:
                 return progs[key]
         else:
             return None
-            
+
     def getRecordedSeries(self):
         self.discover()
         progs = self.getRecordedPrograms()
@@ -841,11 +850,11 @@ class PyHDHR:
             else:
                 series[progs[key].getDisplayGroupTitle()].addEpisodeCount(1)
         return series
-        
+
     def searchWhatsOn(self,query):
         self.discover()
         progs = self.getWhatsOn()
-        
+
         foundprogs = {}
         for key in progs:
             if(searchString(query,progs[key].getTitle()) or
@@ -859,7 +868,7 @@ class PyHDHR:
                         foundprogs[key] = progs[key]
                         break
         return foundprogs
-        
+
     def searchRecorded(self,query):
         self.discover()
         progs = self.getRecordedPrograms()
@@ -876,17 +885,17 @@ class PyHDHR:
             ):
                 foundprogs[key] = progs[key]
         return foundprogs
-        
+
     def getRecordingRules(self):
         self.discover()
         self.processRecordingRules()
         return self.RecordingRules
-        
+
     def processRecordingRules(self):
         if not self.getDeviceAuth():
             return False
         try:
-            response = urllib2.urlopen(URL_RECORDING_RULES+self.getDeviceAuth(),None,5)
+            response = urlopen(URL_RECORDING_RULES+self.getDeviceAuth(),None,5)
             data = json.loads(response.read())
             for item in data:
                 if 'RecordingRuleID' in item:
@@ -901,36 +910,36 @@ class PyHDHR:
             Log.Critical("Exception in PyHDHR.processRecordingRules while attempting to load: "+str(URL_RECORDING_RULES+self.getDeviceAuth()))
             Log.Critical(e)
             return False
-            
+
     def discover(self,force=False):
         if not force:
             if time.time() - self.LastDiscover < 60:
                 return True
-            
+
         self.LastDiscover = time.time()
-            
+
         try:
-            response = urllib2.urlopen(URL_DISCOVER,None,5)
+            response = urlopen(URL_DISCOVER,None,5)
             data = json.loads(response.read())
-            print("PyHDHR.discover")
-            print("data:"+str(data))
+            xbmc.log("PyHDHR.discover")
+            xbmc.log("data:"+str(data))
             for item in data:
-                print("item:"+str(item))
+                xbmc.log("item:"+str(item))
                 if 'StorageID' in item and 'StorageURL' in item:
                     #DVR
                     if item['StorageID'] in self.DVRs:
-                        print("existing dvr:"+item['StorageID'])
+                        xbmc.log("existing dvr:"+item['StorageID'])
                         self.DVRs[item['StorageID']].parse(item)
                         self.DVRs[item['StorageID']].discover()
                     else:
-                        print("new dvr:"+item['StorageID'])
+                        xbmc.log("new dvr:"+item['StorageID'])
                         dvr = DVR()
                         dvr.parse(item)
                         if dvr.discover():
-                            print("discovered successfully")
+                            xbmc.log("discovered successfully")
                             self.DVRs[item['StorageID']] = dvr
                         else:
-                            print("discover failed")
+                            xbmc.log("discover failed")
                 elif 'DeviceID' in item and 'LineupURL' in item:
                     #Tuner
                     if item['DeviceID'] in self.Tuners:
@@ -947,19 +956,19 @@ class PyHDHR:
                             self.Tuners[item['DeviceID']] = tuner
                 else:
                     Log.Debug("PyHDHR.discover - could not determine device type - " + str(item))
-            print("done disovering. dvrs:"+str(self.DVRs))
+            xbmc.log("done disovering. dvrs:"+str(self.DVRs))
             return True
         except Exception as e:
             Log.Critical("Exception in PyHDHR.discover while attempting to load: "+str(URL_DISCOVER))
             Log.Critical(e)
             return False
-            
+
     def discoveryDump(self,filename):
         f = open(filename,'w')
         f.write("Full Discovery\n")
         try:
             f.write("\nDiscover: "+URL_DISCOVER+"\n")
-            response = urllib2.urlopen(URL_DISCOVER,None,5)
+            response = urlopen(URL_DISCOVER,None,5)
             data = json.loads(response.read())
             f.write("\nRAW:\n"+str(data)+"\n\nFormatted:\n")
             for item in data:
@@ -972,7 +981,7 @@ class PyHDHR:
                     #DVR
                     f.write("\nDiscover DVR: "+item['DiscoverURL']+"\n")
                     try:
-                        response1 = urllib2.urlopen(item['DiscoverURL'],None,5)
+                        response1 = urlopen(item['DiscoverURL'],None,5)
                         data1 = json.loads(response1.read())
                         f.write("\nRAW:\n"+str(data1)+"\n\nFormatted:\n")
                         for key1 in data1:
@@ -983,9 +992,9 @@ class PyHDHR:
                     except Exception as e:
                         Log.Critical("Exception in PyHDHR.discoveryDump while attempting to load: "+str(item['DiscoverURL']))
                         Log.Critical(e)
-                    f.write("\nDiscover DVR Storage: "+item['StorageURL']+"\n")                    
+                    f.write("\nDiscover DVR Storage: "+item['StorageURL']+"\n")
                     try:
-                        response1 = urllib2.urlopen(item['StorageURL'],None,5)
+                        response1 = urlopen(item['StorageURL'],None,5)
                         data1 = json.loads(response1.read())
                         f.write("\nRAW:\n"+str(data1)+"\n\nFormatted:\n")
                         for item1 in data1:
@@ -1002,7 +1011,7 @@ class PyHDHR:
                     #Tuner
                     f.write("\nDiscover Tuner: "+item['DiscoverURL']+"\n")
                     try:
-                        response1 = urllib2.urlopen(item['DiscoverURL'],None,5)
+                        response1 = urlopen(item['DiscoverURL'],None,5)
                         data1 = json.loads(response1.read())
                         f.write("\nRAW:\n"+str(data1)+"\n\nFormatted:\n")
                         for key1 in data1:
@@ -1015,7 +1024,7 @@ class PyHDHR:
                         Log.Critical(e)
                     f.write("\nDiscover Tuner Lineup: "+item['LineupURL']+"\n")
                     try:
-                        response1 = urllib2.urlopen(item['LineupURL'],None,5)
+                        response1 = urlopen(item['LineupURL'],None,5)
                         data1 = json.loads(response1.read())
                         f.write("\nRAW:\n"+str(data1)+"\n\nFormatted:\n")
                         for item1 in data1:
@@ -1044,6 +1053,5 @@ if __name__ == "__main__":
    rp = p.getFilteredRecordedPrograms(SortType.asc,GroupType.All,None)
    if rp:
       for r in rp:
-         print(r.getProgramID())
+         xbmc.log(r.getProgramID())
    p.discoveryDump(args.file)
-

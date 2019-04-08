@@ -1,5 +1,6 @@
 # global vars across all modules
 
+from builtins import str
 import traceback
 import sys
 
@@ -35,7 +36,7 @@ ACTION_NEXT_SUBTITLE    = 26
 ACTION_SHOW_PLAYLIST    = 33
 ACTION_Y 	            = 34	# Y
 
-ACTION_PLAYER_PLAY      = 79	
+ACTION_PLAYER_PLAY      = 79
 ACTION_REMOTE_MENU		= 247	# menu on remote
 ACTION_PAUSE    		= 12	# remote
 ACTION_STOP     		= 13	# remote
@@ -206,17 +207,17 @@ import xbmc, os
 __addon__        = Addon()
 __addonname__    = __addon__.getAddonInfo('id')
 __addonversion__ = __addon__.getAddonInfo('version')
-__addonpath__    = __addon__.getAddonInfo('path').decode('utf-8')
+__addonpath__    = __addon__.getAddonInfo('path')
 
 WHERE_AM_I = __addonpath__
 
 
 # Script doc constants
-__scriptname__ = "X-NEWA"
-__version__ = '2.5.4'
+__scriptname__ = "knew4v5"
+__version__ = '2.6.0'
 __author__ = 'emveepee'
 __original_author__ = 'Ton van der Poel'
-__date__ = '2019-01-29'
+__date__ = '2019-03-26'
 
 XBMC_DIALOG_BUSY_OPEN = "ActivateWindow(busydialognocancel)"
 XBMC_DIALOG_BUSY_CLOSE = "Dialog.Close(busydialognocancel)"
@@ -230,13 +231,13 @@ def debug( value ):
 		try:
 			if value[0] == ">": debugIndentLvl += 2
 			pad = rjust("", debugIndentLvl)
-			print pad + str(value)
+			xbmc.log(pad + str(value))
 			if value[0] == "<": debugIndentLvl -= 2
 		except:
 			try:
-				print value
+				xbmc.log(value)
 			except:
-				print "Debug() Bad chars in string"
+				xbmc.log("Debug() Bad chars in string")
 
 
 #################################################################################################################
@@ -248,6 +249,6 @@ def handleException(txt=''):
 		text = ''
 		for l in list:
 			text += l
-		print title + ": " + text
-		messageOK(title, text)
+		xbmc.log( title + ": " + text)
+		xbmcgui.Dialog().ok(title, text)
 	except: pass

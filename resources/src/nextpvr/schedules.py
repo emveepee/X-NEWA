@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 #  MythBox for XBMC - http://mythbox.googlecode.com
 #  Copyright (C) 2009 analogue@yahoo.com
@@ -17,6 +18,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from builtins import str
 import os
 import xbmcgui
 import operator
@@ -25,7 +27,11 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+
+schedulesListBoxId = 600
+refreshButtonId = 250
+sortButtonId = 253
 
 # ==============================================================================
 class SchedulesWindow(xbmcgui.WindowXML):
@@ -51,13 +57,12 @@ class SchedulesWindow(xbmcgui.WindowXML):
             self.render()
 
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.schedulesListBox:
+        if controlId == schedulesListBoxId:
             self.goEditSchedule()
-        elif source == self.refreshButton:
+        elif controlId == refreshButtonId:
             self.xnewa.cleanCache('scheduledRecordings.p')
             self.render()
-        elif source == self.sortButton:
+        elif controlId == sortButton.Id:
             order = [smartUTF8(__language__(30011)),smartUTF8(__language__(30012)),smartUTF8(__language__(30042))]
             ret = xbmcgui.Dialog().select(smartUTF8(__language__(30122)), order);
             if ret != -1:
@@ -83,7 +88,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 
     def goEditSchedule(self):
 
-        import details
+        from . import details
         oid = self.scheduleData[self.schedulesListBox.getSelectedPosition()]['recording_oid']
         detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid,type="F")
         detailDialog.doModal()
@@ -131,7 +136,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 
     def renderPosters(self):
         # split up poster lookup to run in parallel
-        for schedules in util.slice(self.listItemsBySchedule.keys(), 4):
+        for schedules in util.slice(list(self.listItemsBySchedule.keys()), 4):
             self.renderPostersThread(schedules)
 
     def renderPostersThread(self, schedules):
@@ -148,4 +153,3 @@ class SchedulesWindow(xbmcgui.WindowXML):
                 channel =  self.channelsById[schedule.getChannelId()]
                 if channel.getIconPath():
                     self.setListItemProperty(listItem, 'poster', self.mythChannelIconCache.get(channel))
-

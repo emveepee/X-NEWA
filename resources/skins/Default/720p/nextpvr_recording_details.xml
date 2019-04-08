@@ -11,9 +11,9 @@
   <controls>
 
     <!-- ============================================= -->
-    <!--   S C R E E N       B A C K G R O U N D       -->          
-    <!-- ============================================= -->              
-  
+    <!--   S C R E E N       B A C K G R O U N D       -->
+    <!-- ============================================= -->
+
     <!-- Copy of CommonBackground -->
     <control type="image">
       <description>background image</description>
@@ -33,9 +33,9 @@
         <animation effect="slide" end="1030,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 
         <!-- ============================================= -->
-        <!--   C O N T E N T     B A C K G R O U N D       -->          
-        <!-- ============================================= -->              
-      
+        <!--   C O N T E N T     B A C K G R O U N D       -->
+        <!-- ============================================= -->
+
         <!-- Copy of ContentPanel -->
         <control type="image">
             <posx>265</posx>
@@ -44,28 +44,28 @@
             <height>580</height>
             <texture border="50,0,0,45">vpanel1.png</texture>
         </control>
-        
+
         <!-- ============================================= -->
-        <!--            L A B E L S   C O L U M N          -->          
-        <!-- ============================================= -->              
+        <!--            L A B E L S   C O L U M N          -->
+        <!-- ============================================= -->
         <control type="grouplist" id="3000">
             <description>Column of text labels</description>
             <posx>320</posx>
             <posy>135</posy>
             <itemgap>32</itemgap>
-            <control type="label"><description>title</description><label>$ADDON[script.xbmc.x-newa 30011]</label></control>
-            <control type="label"><description>air date</description><label>$ADDON[script.xbmc.x-newa 30009]</label></control>
-            <control type="label"><description>channel</description><label>$ADDON[script.xbmc.x-newa 30012]</label></control>                     
-            <control type="label"><description>episode</description><label>$ADDON[script.xbmc.x-newa 30040]</label></control>
+            <control type="label"><description>title</description><label>$ADDON[script.kodi.knew4v5 30011]</label></control>
+            <control type="label"><description>air date</description><label>$ADDON[script.kodi.knew4v5 30009]</label></control>
+            <control type="label"><description>channel</description><label>$ADDON[script.kodi.knew4v5 30012]</label></control>
+            <control type="label"><description>episode</description><label>$ADDON[script.kodi.knew4v5 30040]</label></control>
             <!--
             <control type="label"><description>category</description><label>SCRIPT614</label></control>
             -->
-            <control type="label"><description>description</description><label>$ADDON[script.xbmc.x-newa 30041]</label></control>
+            <control type="label"><description>description</description><label>$ADDON[script.kodi.knew4v5 30041]</label></control>
         </control>
 
         <!-- ============================================= -->
-        <!--        D E T A I L S  C O L U M N             -->          
-        <!-- ============================================= -->              
+        <!--        D E T A I L S  C O L U M N             -->
+        <!-- ============================================= -->
         <control type="grouplist" id="4000">
             <description>Column of Show Details</description>
             <posx>475</posx>
@@ -85,17 +85,17 @@
             <control type="label">
                 <description>Air Date</description>
                 <textcolor>0xffddddff</textcolor>
-                <label>$INFO[Control.GetLabel(316)] $INFO[Control.GetLabel(314)] - $INFO[Control.GetLabel(315)] ($INFO[Control.GetLabel(318)] $ADDON[script.xbmc.x-newa 30029])</label>
-            </control>                        
-            
+                <label>$INFO[Control.GetLabel(316)] $INFO[Control.GetLabel(314)] - $INFO[Control.GetLabel(315)] ($INFO[Control.GetLabel(318)] $ADDON[script.kodi.knew4v5 30029])</label>
+            </control>
+
             <control type="label" id="304">
                 <description>Channel Label</description>
                 <align>left</align>
                 <texturefocus>-</texturefocus>
                 <texturenofocus>-</texturenofocus>
                 <label>$INFO[Window.Property(channel)]</label>
-            </control>            
-                                        
+            </control>
+
             <control type="label" id="310">
                 <description>subtitle</description>
                 <width>750</width>
@@ -104,19 +104,19 @@
                 <textcolor>0xffddddff</textcolor>
                 <info>Window.Property(subtitle)</info>
             </control>
-            
+
             <control type="textbox" id="311">
                 <description>Show desc</description>
                 <width>750</width>
                 <height>90</height>
-                <align>left</align>                
+                <align>left</align>
                 <scrollout>false</scrollout>
                 <pauseatend>500</pauseatend>
                 <textcolor>0xffddddff</textcolor>
                 <info>Window.Property(description)</info>
             </control>
 
-            <!-- 
+            <!--
             <control type="label" id="4005">
                 <description>Category</description>
                 <textcolor>0xffddddff</textcolor>
@@ -156,7 +156,7 @@
         </control>
 
         <!-- ============================================= -->
-        <!--        T H U M B N A I L                      -->          
+        <!--        T H U M B N A I L                      -->
         <!-- ============================================= -->
         <control type="image" id="4010">
             <description>Preview shadow</description>
@@ -168,7 +168,7 @@
             <info>Window.Property(thumbnailShadow)</info>
             <visible>!Player.HasVideo</visible>
         </control>
-                      
+
         <control type="image" id="305">
             <description>Channel Image</description>
             <posx>210r</posx>
@@ -180,7 +180,7 @@
             <aspectratio>fill</aspectratio>
             <fadetime>400</fadetime>
         </control>
-        
+
         <control type="image" id="302">
             <description>Preview Thumbnail</description>
             <posx>20</posx>
@@ -191,8 +191,8 @@
             <!--info>Window.Property(thumbnail)</info-->
             <aspectratio>fill</aspectratio>
             <fadetime>400</fadetime>
-            <visible>!Player.HasVideo</visible>            
-        </control>        
+            <visible>!Player.HasVideo</visible>
+        </control>
         <control type="videowindow" id="4011">
             <posx>320</posx>
             <posy>320</posy>
@@ -200,13 +200,13 @@
             <height>320</height>
             <visible>Player.HasVideo</visible>
         </control>
-        
+
     </control>
 
 
     <!-- ============================================= -->
-    <!--        H E A D E R                            -->          
-    <!-- ============================================= -->              
+    <!--        H E A D E R                            -->
+    <!-- ============================================= -->
     <control type="image">
       <description>Header Panel</description>
       <posx>0</posx>
@@ -236,7 +236,7 @@
       <align>right</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <info>Window.Property(heading)</info>      
+      <info>Window.Property(heading)</info>
       <label>Details</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
@@ -256,31 +256,31 @@
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
     </control>
-        
+
     <!-- ============================================= -->
-    <!--  N A V     B U T T O N S                      -->          
-    <!-- ============================================= -->              
+    <!--  N A V     B U T T O N S                      -->
+    <!-- ============================================= -->
     <control type="grouplist" id="2000">
         <description>Buttons</description>
         <posx>0</posx>
         <posy>122</posy>
-        <width>280</width>        
+        <width>280</width>
         <itemgap>1</itemgap>
         <onup>2000</onup>
         <ondown>2000</ondown>
-        
+
         <!-- Copy of include Window_OpenClose_Left_Panel_Animation -->
         <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
         <animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
         <animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
         <animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-        
-			
+
+
         <control type="button" id="253">
             <description>Close button</description>
-            <label>$ADDON[script.xbmc.x-newa 30031]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+            <label>$ADDON[script.kodi.knew4v5 30031]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -288,65 +288,13 @@
             <pulseonselect>true</pulseonselect>
             <!--onup>252</onup>
             <ondown>254</ondown-->
-        </control>        
+        </control>
         <control type="button" id="258">
             <description>Resume button</description>
             <height>40</height>
-            <label>$ADDON[script.xbmc.x-newa 30032]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
-            <align>left</align>
-            <textoffsetx>40</textoffsetx>
-            <texturefocus>button_focus.png</texturefocus>
-            <texturenofocus>button_nofocus.png</texturenofocus>
-            <pulseonselect>true</pulseonselect>
-            <!--onup>253</onup>
-            <ondown>251</ondown-->
-        </control>        
-        <control type="button" id="259">
-            <description>Unwatch button</description>
-            <height>40</height>
-            <label>$ADDON[script.xbmc.x-newa 30033]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
-            <align>left</align>
-            <textoffsetx>40</textoffsetx>
-            <texturefocus>button_focus.png</texturefocus>
-            <texturenofocus>button_nofocus.png</texturenofocus>
-            <pulseonselect>true</pulseonselect>
-            <!--onup>253</onup>
-            <ondown>251</ondown-->
-        </control>        
-        <control type="button" id="252">
-            <description>Quick Record button</description>
-            <height>40</height>
-            <label>$ADDON[script.xbmc.x-newa 30035] $ADDON[script.xbmc.x-newa 30034]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
-            <align>left</align>
-            <textoffsetx>40</textoffsetx>
-            <texturefocus>button_focus.png</texturefocus>
-            <texturenofocus>button_nofocus.png</texturenofocus>
-            <pulseonselect>true</pulseonselect>
-        </control>                        
-        <control type="button" id="260">
-            <description>Record button</description>
-            <height>40</height>
-            <label>$ADDON[script.xbmc.x-newa 30034]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
-            <align>left</align>
-            <textoffsetx>40</textoffsetx>
-            <texturefocus>button_focus.png</texturefocus>
-            <texturenofocus>button_nofocus.png</texturenofocus>
-            <pulseonselect>true</pulseonselect>
-        </control>                        
-        <control type="button" id="254">
-            <description>Play button</description>
-            <height>40</height>
-            <label>$ADDON[script.xbmc.x-newa 30036]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+            <label>$ADDON[script.kodi.knew4v5 30032]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -355,13 +303,65 @@
             <!--onup>253</onup>
             <ondown>251</ondown-->
         </control>
-        
-        
+        <control type="button" id="259">
+            <description>Unwatch button</description>
+            <height>40</height>
+            <label>$ADDON[script.kodi.knew4v5 30033]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
+            <align>left</align>
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+            <!--onup>253</onup>
+            <ondown>251</ondown-->
+        </control>
+        <control type="button" id="252">
+            <description>Quick Record button</description>
+            <height>40</height>
+            <label>$ADDON[script.kodi.knew4v5 30035] $ADDON[script.kodi.knew4v5 30034]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
+            <align>left</align>
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+        </control>
+        <control type="button" id="260">
+            <description>Record button</description>
+            <height>40</height>
+            <label>$ADDON[script.kodi.knew4v5 30034]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
+            <align>left</align>
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+        </control>
+        <control type="button" id="254">
+            <description>Play button</description>
+            <height>40</height>
+            <label>$ADDON[script.kodi.knew4v5 30036]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
+            <align>left</align>
+            <textoffsetx>40</textoffsetx>
+            <texturefocus>button_focus.png</texturefocus>
+            <texturenofocus>button_nofocus.png</texturenofocus>
+            <pulseonselect>true</pulseonselect>
+            <!--onup>253</onup>
+            <ondown>251</ondown-->
+        </control>
+
+
         <control type="button" id="251">
             <description>Delete button</description>
-            <label>$ADDON[script.xbmc.x-newa 30038]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+            <label>$ADDON[script.kodi.knew4v5 30038]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -370,12 +370,12 @@
             <!--onup>251</onup>
             <ondown>257</ondown-->
         </control>
-        
+
         <control type="button" id="257">
             <description>Archive or Cancel button</description>
-            <label>$ADDON[script.xbmc.x-newa 30039]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+            <label>$ADDON[script.kodi.knew4v5 30039]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -390,9 +390,9 @@
 
         <control type="button" id="255">
             <description>Refresh button</description>
-            <label>$ADDON[script.xbmc.x-newa 30024]</label>
-            <textcolor name="white">FFFFFFFF</textcolor>                        
-            <focusedcolor name="white">FFFFFFFF</focusedcolor>                                                                    
+            <label>$ADDON[script.kodi.knew4v5 30024]</label>
+            <textcolor name="white">FFFFFFFF</textcolor>
+            <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -403,7 +403,7 @@
         </control>
 
     </control>
-    
+
     <control type="group">
         <posx>60</posx>
         <posy>470</posy>
@@ -421,7 +421,7 @@
             <fadetime>400</fadetime>
         </control>
     </control>
-        
+
     <control type="multiimage">
         <description>Busy animation</description>
         <posx>722</posx>
@@ -432,7 +432,7 @@
         <timeperimage>50</timeperimage>
         <fadetime>0</fadetime>
         <visible>substring(Window.Property(busy),true) + !Player.HasVideo</visible>
-        <animation effect="fade" time="250">VisibleChange</animation>    
+        <animation effect="fade" time="250">VisibleChange</animation>
     </control>
 
     <control type="label">
@@ -461,7 +461,7 @@
 			<control type="label" id="318"></control>
 		</control>
 <!-- ############ End Unused but Required Controls ############ -->
-        
+
   </controls>
 
 </window>

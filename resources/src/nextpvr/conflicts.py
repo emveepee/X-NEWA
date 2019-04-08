@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import absolute_import
 #
 #  MythBox for XBMC - http://mythbox.googlecode.com
 #  Copyright (C) 2009 analogue@yahoo.com
@@ -17,6 +19,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from builtins import str
+from past.utils import old_div
 import datetime, time, sys
 import xbmcgui
 import os
@@ -24,31 +28,35 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+
+programsListBoxId = 600
+refreshButtonId = 251
 
 # ==============================================================================
 class ConflictedRecordingsWindow(xbmcgui.WindowXML):
-    
+
     def __init__(self, *args, **kwargs):
         self.closed = False
-        self.win = None    
+        self.win = None
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
-        
+
     def onInit(self):
         if not self.win:
             self.win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             self.programsListBox = self.getControl(600)
             self.refreshButton = self.getControl(251)
             self.render()
-        
+
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.refreshButton:
+        if controlId == refreshButtonId:
             self.render()
+        elif controlId == programsListBoxId:
+            self.goEditSchedule()
         else:
-            print self.conflictedData[self.programsListBox.getSelectedPosition()]
-            import details
+            print(self.conflictedData[self.programsListBox.getSelectedPosition()])
+            from . import details
             if self.conflictedData[self.programsListBox.getSelectedPosition()]['start'] > datetime.datetime.now():
                 oid = self.conflictedData[self.programsListBox.getSelectedPosition()]['program_oid']
                 detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="E")
@@ -58,10 +66,10 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
             detailDialog.doModal()
             if detailDialog.returnvalue is not None:
                 pass
-             
+
     def onFocus(self, controlId):
         pass
-            
+
     def onAction(self, action):
         #log.debug('Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId()))
         if action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
@@ -75,9 +83,8 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
                 theConflicts = self.xnewa.getConflicts(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.conflictedData[self.programsListBox.getSelectedPosition()])
                 theDlg = xbmcgui.Dialog()
                 theArr = []
-                for prog in theConflicts:
-                    print prog['title']
-                    theArr.append(prog['title'])
+                for conflict in theConflicts:
+                    theArr.append(conflict['title'] + " " + str(conflict['start']) )
                 pos = theDlg.select('Choose recording to cancel', theArr)
                 if pos >= 0:
                     if xbmcgui.Dialog().yesno(smartUTF8(__language__(30102)), "%s: %s?" % (smartUTF8(__language__(30103)), theArr[pos])):
@@ -85,7 +92,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
                         self.render()
             except:
                 self.win.setProperty('busy', 'false')
-                xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), '%s!' % smartUTF8(__language__(30105)))                
+                xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), '%s!' % smartUTF8(__language__(30105)))
             self.win.setProperty('busy', 'false')
         else:
             self.win.setProperty('busy', 'false')
@@ -98,7 +105,6 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
         if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
             try:
                 self.conflictedData = self.xnewa.getConflictedRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
-                #print self.conflictedData
                 if len(self.conflictedData) == 0:
                     xbmcgui.Dialog().ok('%s!' % smartUTF8(__language__(30106)), '%s!' % smartUTF8(__language__(30107)))
                     self.close()
@@ -109,7 +115,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
                     listItem.setProperty('airdate', airdate)
                     listItem.setProperty('title', t['title'])
                     listItem.setProperty('start', self.xnewa.formatTime(t['start']))
-                    duration = int((t['end'] - t['start']).seconds / 60)
+                    duration = int(old_div((t['end'] - t['start']).seconds, 60))
                     listItem.setProperty('duration', str(duration) )
                     listItem.setProperty('channel', t['channel'][0])
                     if len(t['subtitle']) > 0:
@@ -124,7 +130,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
             except:
                 self.win.setProperty('busy', 'false')
                 xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
-                        
+
             self.win.setProperty('busy', 'false')
         else:
             self.win.setProperty('busy', 'false')
@@ -133,7 +139,7 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
 
     def formattedAirDate(self, previous, current):
         result = ''
-        if not previous or previous <> current:
+        if not previous or previous != current:
             today = self.xnewa.formatDate(datetime.date.today())
             if current == today:
                 result = 'Today'

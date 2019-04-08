@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 #
 #  MythBox for XBMC - http://mythbox.googlecode.com
 #  Copyright (C) 2009 analogue@yahoo.com
@@ -17,6 +20,9 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import datetime, time
 import xbmcgui
 import os
@@ -25,7 +31,14 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+
+programsListBoxId = 600
+refreshButtonId = 251
+importButtonId = 252
+sortButtonId = 253
+actionButtonId = 254
+filterButtonId = 255
 
 
 # ==============================================================================
@@ -37,7 +50,6 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
         self.settings = kwargs['settings']
         self.xnewa = kwargs['xnewa']
         self.mode = 0
-        print self.settings.XNEWA_SORT_RECORDING
         self.sortTitle = [True,True]
         self.sortDate = [False,False]
         if self.settings.XNEWA_SORT_RECORDING == 0:
@@ -50,7 +62,6 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
             self.sortTitle[0] = False
             self.sortDate[0] = False
 
-        print self.settings.XNEWA_SORT_EPISODE
         if self.settings.XNEWA_SORT_EPISODE == 0 or self.settings.XNEWA_SORT_EPISODE == 3:
             self.sortTitle[1] = True
             self.sortDate[1] = True
@@ -83,21 +94,19 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
             self.win.setProperty('tagged', 'false')
 
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.programsListBox:
+        if controlId == programsListBoxId:
             self.goEditSchedule()
-        elif source == self.refreshButton:
+        elif controlId == refreshButtonId:
             self.xnewa.cleanCache('recentRecordings*.p')
             self.xnewa.cleanCache('summary.List')
             self.render()
-        elif source == self.importButton:
+        elif controlId == importButtonId:
             dialog = xbmcgui.Dialog()
             ret = dialog.yesno(smartUTF8(__language__(30127)), '%s %s' % (smartUTF8(__language__(30121)), self.recentData[self.programsListBox.getSelectedPosition()]['title']))
-        elif source == self.actionButton:
+        elif controlId == actionButtonId:
             order = [__language__(30038),__language__(30039),__language__(32003),__language__(30054),__language__(32004),__language__(30033)]
             ret = xbmcgui.Dialog().select(__language__(32005), order);
             if ret > 0:
-                print order[ret]
                 self.processFile(order[ret])
                 if self.selections > 0:
                     self.win.setProperty('tagged', 'true')
@@ -106,8 +115,8 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                 if self.mode ==0:
                     self.render()
 
-        elif source == self.filterButton:
-            choices = self.xnewa.RecDirs.keys()
+        elif controlId == filterButtonId:
+            choices = list(self.xnewa.RecDirs.keys())
             if self.filterButton.isSelected():
                 archive =  xbmcgui.Dialog().select(smartUTF8(__language__(30115)), choices)
                 if archive != -1:
@@ -123,7 +132,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                 self.xnewa.cleanCache('recentRecordings*.p')
                 self.xnewa.cleanCache('summary.List')
                 self.render()
-        elif source == self.sortButton:
+        elif controlId == sortButtonId:
             order = [smartUTF8(__language__(30011)),smartUTF8(__language__(30148)),smartUTF8(__language__(30149)),__language__(32006)]
             ret = xbmcgui.Dialog().select(smartUTF8(__language__(30122)), order);
             if ret != -1:
@@ -171,8 +180,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
             if self.selections > 0:
                 for i in range(self.programsListBox.size()):
                     if self.programsListBox.getListItem(i).isSelected():
-                        print i
-                        print self.programsListBox.getListItem(i).getProperty('oid')
+                        print(self.programsListBox.getListItem(i).getProperty('oid'))
         elif action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
             if self.filtered:
                 self.xnewa.cleanCache('recentRecordings*.p')
@@ -186,7 +194,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 
     def goEditSchedule(self):
 
-        import details
+        from . import details
 
         if self.mode == 0:
             self.showPosition = self.programsListBox.getSelectedPosition()
@@ -239,7 +247,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                                 listItem.setProperty('status', t['status'])
                                 listItem.setProperty('start', self.xnewa.formatTime(t['start']))
                                 listItem.setProperty('end', self.xnewa.formatTime(t['end']))
-                                duration = int((t['end'] - t['start']).seconds / 60)
+                                duration = int(old_div((t['end'] - t['start']).seconds, 60))
                                 listItem.setProperty('duration', str(duration) )
                                 listItem.setProperty('channel', t['channel'][0])
                                 listItem.setProperty('description', t['desc'])
@@ -255,7 +263,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                             self.sortButton.setVisible(False)
                         newPosition = 0
                 else:
-                    print 'calling summary for recDir ' + str(self.recDir)
+                    xbmc.log( 'calling summary for recDir ' + str(self.recDir))
                     self.recentData = self.xnewa.getRecordingsSummary(self.settings.NextPVR_USER, self.settings.NextPVR_PW,self.sortTitle[0],not self.sortDate[0],self.recDir)
                     self.win.setProperty('recordings', 'false')
                     previous = None
@@ -290,7 +298,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 
     def formattedAirDate(self, previous, current):
         result = ''
-        if not previous or previous <> current:
+        if not previous or previous != current:
             today = self.xnewa.formatDate(datetime.date.today())
             if current == today:
                 result = smartUTF8(__language__(30133))
@@ -304,36 +312,30 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 
 
     def processFile(self, process_type):
-        print process_type
         deleteAll = None
         archiveSetting = None
         refresh = False
         for i in range(self.programsListBox.size()):
             if self.programsListBox.getListItem(i).isSelected():
-                print self.programsListBox.getListItem(i).getProperty('oid')
                 oid = int(self.programsListBox.getListItem(i).getProperty('oid'))
                 for j,progDetails in enumerate(self.recentData):
                     if progDetails:
                         if oid == progDetails['recording_oid']:
                             if process_type == __language__(30039):
                                 if archiveSetting == None:
-                                    choices = self.xnewa.RecDirs.keys()
+                                    choices = list(self.xnewa.RecDirs.keys())
                                     archiveSetting =  xbmcgui.Dialog().select(smartUTF8(__language__(30115)), choices)
-                                    print archiveSetting
                                     if archiveSetting != -1:
                                         dialog = xbmcgui.Dialog()
                                         ret = dialog.yesno(choices[archiveSetting], '%s %s?' % (smartUTF8(__language__(30116)), choices[archiveSetting]))
-                                        if ret == 1:
-                                            print progDetails['recording_oid']
-                                            print choices[archiveSetting]
-                                        else:
+                                        if ret != 1:
                                             archiveSetting = -1
 
                                 if archiveSetting != -1:
                                     if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
                                         try:
                                             if self.xnewa.archiveRecording(self.settings.NextPVR_USER, self.settings.NextPVR_PW,progDetails['recording_oid'], choices[archiveSetting]  ):
-                                                print 'file archived'
+                                                xbmc.log('file archived')
                                             else:
                                                 xbmcgui.Dialog().ok(smartUTF8(__language__(30104)), smartUTF8(__language__(30105)))
                                         except:
@@ -341,12 +343,9 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 
 
                             elif process_type == __language__(32003):
-                                print progDetails['status']
-                                print progDetails
-
                                 if progDetails['status'] == "Failed":
                                     ret = xbmcgui.Dialog().yesno('%s %s' % (smartUTF8(__language__(30135)), progDetails['title']), '%s\n%s?' % (smartUTF8(__language__(30112)), progDetails['title']))
-                                elif progDetails['status'] != "In-Progress" and progDetails.has_key('filename'):
+                                elif progDetails['status'] != "In-Progress" and 'filename' in progDetails:
                                     ret = xbmcgui.Dialog().yesno('%s %s' % (smartUTF8(__language__(30054)), progDetails['title']), '%s\n%s?' % (smartUTF8(__language__(30111)), progDetails['filename']))
                                 else:
                                     break
@@ -368,7 +367,6 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                                 else:
                                     break
                             elif process_type == __language__(32004):
-                                print progDetails['filename']
                                 duration = progDetails['duration']
                                 if duration == 0:
                                     duration = int(self.programsListBox.getListItem(i).getProperty('duration')) * 60
@@ -381,7 +379,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                                         duration = int(self.programsListBox.getListItem(i).getProperty('duration')) * 60
                                     retval = self.xnewa.setLibraryPlaybackPosition(progDetails['filename'], 0, duration )
                             else:
-                                print 'Unknown process type'
+                                xbmc.log('Unknown process type')
 
                             self.programsListBox.getListItem(i).select(False)
                             self.selections -= 1
@@ -391,5 +389,3 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
             self.xnewa.cleanCache('recentRecordings*.p')
             self.xnewa.cleanCache('summary.List')
             self.mode = 0
-
-

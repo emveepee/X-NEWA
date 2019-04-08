@@ -1,6 +1,9 @@
 #v.0.1.1
 
+from builtins import str
+from past.builtins import basestring
 import unicodedata
+from kodi_six.utils import py2_encode, py2_decode
 
 def smartUnicode(s):
     if not s:
@@ -8,21 +11,20 @@ def smartUnicode(s):
     try:
         if not isinstance(s, basestring):
             if hasattr(s, '__unicode__'):
-                s = unicode(s)
+                s = str(s)
             else:
-                s = unicode(str(s), 'UTF-8')
-        elif not isinstance(s, unicode):
-            s = unicode(s, 'UTF-8')
+                s = str(str(s), 'UTF-8')
+        elif not isinstance(s, str):
+            s = str(s, 'UTF-8')
     except:
         if not isinstance(s, basestring):
             if hasattr(s, '__unicode__'):
-                s = unicode(s)
+                s = str(s)
             else:
-                s = unicode(str(s), 'ISO-8859-1')
-        elif not isinstance(s, unicode):
-            s = unicode(s, 'ISO-8859-1')
+                s = str(str(s), 'ISO-8859-1')
+        elif not isinstance(s, str):
+            s = str(s, 'ISO-8859-1')
     return s
 
 def smartUTF8(s):
-    return smartUnicode(s).encode('utf-8')
-
+    return  py2_decode(smartUnicode(s))

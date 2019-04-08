@@ -17,7 +17,7 @@
 
   <category label="30220">
     <setting default="Confluence" id="skin" label="30226" type="labelenum" values="Confluence|Classic|Estuary|Estuary-classic" />
-    <setting default="JSON" id="interface" label="30221" type="labelenum" values="JSON|XML|SOAP" />
+    <setting default="JSON" id="interface" label="30221" type="labelenum" values="JSON|XML" />
     <setting default="false" id="syncXBMC" label="30222" type="bool" />
     <setting default="false" id="fetchFanart" label="30223" type="bool" />
     <setting default="false" id="userdataCache" label="30272" type="bool" />
@@ -27,7 +27,7 @@
     <setting default="false" id="client_quality" label="30225" type="bool" />
     <setting default="true" id="liveSkin" label="30227" type="bool" />
     <setting default="false" id="stopContext" label="30228" type="bool" />
-    <setting default="true" id="popContext" label="30229" type="bool" />		
+    <setting default="true" id="popContext" label="30229" type="bool" />
   </category>
 
   <category label="30240">
@@ -47,7 +47,7 @@
     <setting default="255.255.255.255" id="broadcast" label="30250" subsetting="true" type="text" visible="eq(-2,true))" />
     <setting default="5" id="wol_attempts" label="30251" subsetting="true" type="number" visible="eq(-3,true))" />
     <setting label="EPG" type="lsep" />
-    <setting default="All Channels" id="group" label="30131" type="labelenum" values="All Channels" />
+    <setting default="All Channels" id="group" label="30131" type="labelenum" values="[|'|A|l|l| |C|h|a|n|n|e|l|s|'|,| |'|M|o|v|i|e|s|'|,| |'|D|i|g|i|t|a|l| |C|h|a|n|n|e|l|s|'|,| |'|A|T|S|C| |C|h|a|n|n|e|l|s|'|,| |'|S|p|o|r|t|s|'|,| |'|E|a|s|t| |F|e|e|d|s|'|,| |'|W|e|s|t| |F|e|e|d|s|'|,| |'|H|D|P|V|R|/|C|o|l|o|s|s|u|s| |C|h|a|n|n|e|l|s|'|,| |'|A|n|a|l|o|g| |C|h|a|n|n|e|l|s|'|,| |'|G|l|o|b|a|l|'|,| |'|N|e|x|t|E|n|d|'|]" />
     <setting default="15" id="scrollInterval" label="30252" option="int" range="5,5,30" type="slider" />
     <setting default="60" id="displayInterval" label="30253" option="int" range="30,15,480" type="slider" />
     <setting default="2" id="epgCache" label="30254" option="int" range="1,1,5" type="slider" />

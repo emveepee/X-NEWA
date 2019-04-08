@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
 #
 #  MythBox for XBMC - http://mythbox.googlecode.com
 #  Copyright (C) 2009 analogue@yahoo.com
@@ -17,6 +20,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+from builtins import str
+from past.utils import old_div
 import datetime, time
 import xbmcgui
 import os
@@ -25,8 +30,11 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.xbmc.x-newa').getLocalizedString
+__language__ = Addon('script.kodi.knew4v5').getLocalizedString
 
+programsListBoxId = 600
+searchButtonId = 250
+optionsButtonId = 251
 
 # ==============================================================================
 class SearchWindow(xbmcgui.WindowXML):
@@ -49,12 +57,11 @@ class SearchWindow(xbmcgui.WindowXML):
             self.win.setFocusId(250)
 
     def onClick(self, controlId):
-        source = self.getControl(controlId)
-        if source == self.programsListBox:
+        if controlId == programsListBoxId:
             self.goEditSchedule()
-        elif source == self.searchButton:
+        elif controlId == searchButtonId:
             self.render()
-        elif source == self.optionsButton:
+        elif controlId == optionsButtonId:
             options = [__language__(30011),__language__(30041),__language__(32008),__language__(30020)]
             self.option += 1
             if self.option > 3:
@@ -73,7 +80,7 @@ class SearchWindow(xbmcgui.WindowXML):
             self.close()
 
     def goEditSchedule(self):
-        import details
+        from . import details
         oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
         if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
             detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
@@ -89,7 +96,6 @@ class SearchWindow(xbmcgui.WindowXML):
     def render(self, reload=True):
         if reload:
             myText = self._getText("%s:" % smartUTF8(__language__(30151)),"")
-            print( 'the text is %s' % myText )
             if myText is None or myText == '':
                 self.close()
                 return
@@ -125,7 +131,7 @@ class SearchWindow(xbmcgui.WindowXML):
                         listItem.setProperty('title', t['title'])
                         listItem.setProperty('start', self.xnewa.formatTime(t['start']))
                         listItem.setProperty('end', self.xnewa.formatTime(t['end']))
-                        duration = int((t['end'] - t['start']).seconds / 60)
+                        duration = int(old_div((t['end'] - t['start']).seconds, 60))
                         listItem.setProperty('duration', str(duration))
                         listItem.setProperty('channel', t['channel'][0])
                         listItem.setProperty('description', t['desc'])
@@ -160,7 +166,7 @@ class SearchWindow(xbmcgui.WindowXML):
 
     def formattedAirDate(self, previous, current):
         result = ''
-        if not previous or previous <> current:
+        if not previous or previous != current:
             today = self.xnewa.formatDate(datetime.date.today())
             if current == today:
                 result = smartUTF8(__language__(30133))

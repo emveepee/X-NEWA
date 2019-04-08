@@ -41,7 +41,7 @@
 			<itemgap>5</itemgap>
 			<control type="label" id="999">
 				<include>WindowTitleCommons</include>
-				<label>$ADDON[script.xbmc.x-newa 30000] [COLOR=blue] - [/COLOR] $ADDON[script.xbmc.x-newa 30052]</label>
+				<label>$ADDON[script.kodi.knew4v5 30000] [COLOR=blue] - [/COLOR] $ADDON[script.kodi.knew4v5 30052]</label>
 			</control>
 		</control>
 		<include>Clock</include>
@@ -86,16 +86,16 @@
 				<label>-</label>
 				<scroll>true</scroll>
 				<scrollspeed>30</scrollspeed>
-			</control>		
+			</control>
 			<control type="label" id="1030">
 				<description>DESCRIPTION control</description>
 				<posy>570</posy>
 				<width>1000</width>
 				<height>55</height>
-				<wrapmultiline>true</wrapmultiline>			
+				<wrapmultiline>true</wrapmultiline>
 				<align>left</align>
 				<font>font12</font>
-				<label>-</label>			
+				<label>-</label>
 				<scroll>true</scroll>
 				<scrollspeed>30</scrollspeed>
 			</control>

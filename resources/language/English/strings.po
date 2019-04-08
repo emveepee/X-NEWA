@@ -1,6 +1,6 @@
 # Kodi Media Center language file
-# Addon Name: X-NEWA
-# Addon id: script.xbmc.x-newa
+# Addon Name: NextPVR New Client
+# Addon id: script.kodi.knew4v5
 # Addon Provider: emveepee
 msgid ""
 msgstr ""
@@ -503,7 +503,7 @@ msgstr ""
 
 
 msgctxt "#30220"
-msgid "X-NEWA Client"
+msgid "Client Settings"
 msgstr ""
 
 msgctxt "#30221"

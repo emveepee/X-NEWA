@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 """
-	X-NEWA
+	knew4v5
 
 	Controlling NextPVR from within XBMC.
 
@@ -13,30 +13,32 @@
 	To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
 
 
-    Additional support may be found on xboxmediacenter or NextPVR forums.	
+    Additional support may be found on xboxmediacenter or NextPVR forums.
 """
-
-__scriptname__ = "X-NEWA"
+from builtins import str
+__scriptname__ = "knew4v5"
 __author__     = "emveepee"
 __credits__    = "bunch of ppl"
 
 if __name__ == '__main__':
     import os, sys, xbmc
+    from kodi_six import xbmc, xbmcaddon, xbmcgui
     from xbmcaddon import Addon
-    DIR_HOME = Addon('script.xbmc.x-newa').getAddonInfo('path')
-    __language__ = Addon('script.xbmc.x-newa').getLocalizedString
-    print DIR_HOME
+    DIR_HOME = Addon('script.kodi.knew4v5').getAddonInfo('path')
+    __language__ = Addon('script.kodi.knew4v5').getLocalizedString
+    xbmc.log(DIR_HOME)
     #sys.path.append(os.path.join(DIR_HOME, 'resources', 'src'))
     #sys.path.append(os.path.join(DIR_HOME, 'resources', 'lib'))
     sys.path.insert(0, os.path.join(DIR_HOME, 'resources', 'lib'))
     sys.path.insert(0, os.path.join(DIR_HOME, 'resources', 'src'))
-    print sys.path
+    xbmc.log(str(sys.path))
     from nextpvr.home import HomeWindow
     from nextpvr.emulate import EmulateWindow
     from XNEWAGlobals import *
     from XNEWA_Connect import XNEWA_Connect
     from XNEWA_Settings import XNEWA_Settings
     from fix_utf8 import smartUTF8
+
 
     try:
         # start script main
@@ -59,15 +61,15 @@ if __name__ == '__main__':
                     elif sys.argv[1] == "schedules":
                         from nextpvr.schedules import SchedulesWindow
                         sw = SchedulesWindow('nextpvr_schedules.xml', WHERE_AM_I,my_settings.XNEWA_SKIN, settings=my_settings, xnewa=my_xnewa)
-                        sw.doModal()                        
+                        sw.doModal()
                     elif sys.argv[1] == "epg":
                         from nextpvr.epg import EpgWindow
                         ew = EpgWindow('nextpvr_epg.xml', WHERE_AM_I,my_settings.XNEWA_SKIN, settings=my_settings, xnewa=my_xnewa)
-                        ew.doModal()                        
+                        ew.doModal()
                     elif sys.argv[1] == "recordings":
                         from nextpvr.recent import RecentRecordingsWindow
                         rw = RecentRecordingsWindow('nextpvr_recent.xml', WHERE_AM_I,my_settings.XNEWA_SKIN, settings=my_settings, xnewa=my_xnewa)
-                        rw.doModal()                        
+                        rw.doModal()
                     else:
                         HomeWindow('nextpvr_home.xml', WHERE_AM_I, settings=my_settings, xnewa=my_xnewa).doModal()
                 else:
@@ -76,7 +78,6 @@ if __name__ == '__main__':
                 ew = EmulateWindow("nextpvr_emulate.xml", WHERE_AM_I,my_settings.XNEWA_SKIN, settings=my_settings, xnewa=my_xnewa)
                 ew.doModal()
         else:
-            import xbmcgui
             dialog = xbmcgui.Dialog()
             ok = dialog.ok('%s' % smartUTF8(__language__(30100)), '%s \n%s' % (smartUTF8(__language__(30101)), my_xnewa.ip))
     except:
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         handleException()
 
     debug("exiting script: " + __scriptname__)
-    
+
     # remove other globals
     try:
         del dialogProgress

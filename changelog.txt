@@ -1,3 +1,10 @@
+[B]2.6.0[/B]
+- New name knew4v5
+- support python3 for Kodi v19 and python2
+- initial support for web client for NextPVR v5
+- Removed NEWA on NextPVR v5
+- added tempo control for Kodi v18
+
 [B]2.5.4[/B]
 - Error logging certain characters in web client
 - Updated web client skins for Classic and Confluence skins

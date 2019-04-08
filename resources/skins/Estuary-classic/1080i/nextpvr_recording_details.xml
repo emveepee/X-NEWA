@@ -80,7 +80,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30040]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30040]:</label>
 							<visible>!IsEmpty(Control.GetLabel(310))</visible>
 						</control>
 						<control type="label">
@@ -91,7 +91,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30013]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30013]:</label>
 							<visible>!IsEmpty(Control.GetLabel(309))</visible>
 						</control>
 						<control type="label">
@@ -102,7 +102,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30012]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30012]:</label>
 						</control>
 						<control type="label">
 							<description>Air Date</description>
@@ -112,7 +112,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30009]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30009]:</label>
 						</control>
 						<control type="label">
 							<description>Duration</description>
@@ -122,7 +122,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.xbmc.x-newa 30056]:</label>
+							<label>$ADDON[script.kodi.knew4v5 30056]:</label>
 						</control>
 					</control>
 					<control type="grouplist" id="4000">
@@ -189,11 +189,11 @@
 							<aligny>center</aligny>
 							<font>font13</font>
 							<textcolor>white</textcolor>
-							<label>$INFO[Control.GetLabel(318)] $ADDON[script.xbmc.x-newa 30029]</label>
+							<label>$INFO[Control.GetLabel(318)] $ADDON[script.kodi.knew4v5 30029]</label>
 						</control>
 					</control>
 <!-- ############ End Labels ############ -->
-<!-- ############ Begin Description ############ -->				
+<!-- ############ Begin Description ############ -->
 					<control type="textbox" id="311">
 						<description>Description</description>
 						<top>425</top>
@@ -205,7 +205,7 @@
 						<label>-</label>
 						<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 					</control>
-<!-- ############ End Description ############ -->				
+<!-- ############ End Description ############ -->
 <!-- ############ Begin Navigation Buttons ############ -->
 					<control type="grouplist" id="2000">
 						<top>600</top>
@@ -221,55 +221,55 @@
 							<description>Resume</description>
 							<param name="id" value="258" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30032]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30032]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Unwatch</description>
 							<param name="id" value="259" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30033]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30033]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Quick Record</description>
 							<param name="id" value="252" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30035] $ADDON[script.xbmc.x-newa 30034]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30035] $ADDON[script.kodi.knew4v5 30034]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Record</description>
 							<param name="id" value="260" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30034]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30034]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Play</description>
 							<param name="id" value="254" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30036]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30036]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Delete</description>
 							<param name="id" value="251" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30038]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30038]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Archive (or Cancel)</description>
 							<param name="id" value="257" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30039]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30039]" />
 							<param name="onclick" value="SetFocus(300)" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Refresh</description>
 							<param name="id" value="255" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30024]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30024]" />
 						</include>
 						<include content="DefaultDialogButton">
 							<description>Close</description>
 							<param name="id" value="253" />
 							<param name="width" value="230" />
-							<param name="label" value="$ADDON[script.xbmc.x-newa 30031]" />
+							<param name="label" value="$ADDON[script.kodi.knew4v5 30031]" />
 						</include>
 					</control>
 <!-- ############ End Navigation Buttons ############ -->
