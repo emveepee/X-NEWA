@@ -1,8 +1,12 @@
 #v.0.1.1
 
 from builtins import str
-from past.builtins import basestring
+try:
+    basestring
+except NameError:
+    basestring = str  #For Python 3
 import unicodedata
+
 from kodi_six.utils import py2_encode, py2_decode
 
 def smartUnicode(s):

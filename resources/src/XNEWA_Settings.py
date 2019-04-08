@@ -37,7 +37,6 @@ class XNEWA_Settings(object):
         from uuid import getnode as get_mac
 
         if hasattr(os, 'uname'):
-            xbmc.log(os.uname())
             system = os.uname()[4]
         else:
             import platform

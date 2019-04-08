@@ -1,3 +1,7 @@
+[B]2.6.2[/B]
+- fix uname print
+- fix basestring past from futurize
+
 [B]2.6.1[/B]
 - remove past old_div function from futurize
 
