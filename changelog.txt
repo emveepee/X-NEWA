@@ -1,3 +1,6 @@
+[B]2.6.3[/B]
+- fix some int conversions lost on old_div
+
 [B]2.6.2[/B]
 - fix uname print
 - fix basestring past from futurize

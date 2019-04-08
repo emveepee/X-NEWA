@@ -330,8 +330,8 @@ class HomeWindow(xbmcgui.WindowXML):
             self.spaceUsed.setLabel(str(lUsed) + tmp[1])
             # Then, the images part
             x, y = self.spaceGreen.getPosition()
-            redWidth = (250 // lTotal ) * lUsed
-            greenWidth = 250 - redWidth
+            redWidth = int((250 // lTotal ) * lUsed)
+            greenWidth = int(250 - redWidth)
             self.spaceGreen.setWidth(greenWidth)
             self.spaceRed.setWidth(redWidth)
             self.spaceRed.setPosition(x+greenWidth, y)

@@ -260,7 +260,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.addControl(self.nowTimeCI)
 
         # Calculate Time Intervals
-        self.TimeIntervals = self.settings.EPG_DISP_INT // self.settings.EPG_SCROLL_INT) + 1
+        self.TimeIntervals = self.settings.EPG_DISP_INT // self.settings.EPG_SCROLL_INT + 1
 
         sst = "Time Ints: " + str(self.TimeIntervals)
         sst = "TIME DIS: " + str(self.settings.EPG_DISP_INT)
@@ -977,7 +977,7 @@ class EpgWindow(xbmcgui.WindowXML):
         if date.strftime("%Y-%m-%dT%H:%M:00") == tNew.strftime("%Y-%m-%dT%H:%M:00"):
             return self.epgProgsX + self.epgProgsW
         delta = date - self.epgStartTime
-        retpos = self.epgProgsX +  (delta.seconds // 60) * self.epgPixelsPerMin
+        retpos = int(self.epgProgsX +  (delta.seconds // 60) * self.epgPixelsPerMin)
         return retpos
 
     ###################################################################################################################

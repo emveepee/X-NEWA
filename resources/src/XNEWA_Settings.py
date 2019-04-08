@@ -77,8 +77,8 @@ class XNEWA_Settings(object):
         self.XNEWA_SORT_EPISODE = int(addon.getSetting("episodeSort"))
         self.NextPVR_STREAM = addon.getSetting("stream")
 
-        self.XNEWA_PREBUFFER = addon.getSetting("prebuffer") // 4
-        self.XNEWA_POSTBUFFER = addon.getSetting("postbuffer") // 4
+        self.XNEWA_PREBUFFER = int(addon.getSetting("prebuffer")) // 4
+        self.XNEWA_POSTBUFFER = int(addon.getSetting("postbuffer")) // 4
         self.EPG_SCROLL_INT = int(addon.getSetting("scrollInterval"))
         self.EPG_DISP_INT = int(addon.getSetting("displayInterval"))
         self.EPG_RETR_INT = int(addon.getSetting("epgCache"))
