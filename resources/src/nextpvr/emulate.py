@@ -737,7 +737,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                                 return
                             else:
                                 jsonActivity['recording_resume'] = seek
-                    #self.nextUrl = unquote(self.nextUrl)
+                    self.nextUrl = unquote(self.nextUrl)
                     if self.state == videoState.playing:
                         self.skipStop = True
                     self.quickPlayer(jsonActivity)
@@ -918,7 +918,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             self.renderstop = False
 
 
-        self.t1 = Thread(target=detailDialog._myPlayer, args=(dd,None,windowed,Audio))
+        self.t1 = Thread(target=detailDialog._myPlayer, args=(dd,None,windowed,Audio,False))
         self.t1.start()
         self.state = videoState.started
 

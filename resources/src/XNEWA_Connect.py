@@ -772,8 +772,10 @@ class XNEWA_Connect(object):
 ######################################################################################################
     def setPlaybackPositionObject(self, userid, password, rec, position, duration):
 
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             return self.setLibraryPlaybackPosition(rec["filename"], int(position),int(duration))
+        else:
+            xbmc.log("Playback resume support not currently available")
 
 ######################################################################################################
 # Retrieves a list of channelGroups...

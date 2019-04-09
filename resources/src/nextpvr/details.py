@@ -395,10 +395,10 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 self._updateView()
         elif playButtonId == controlId or resumeButtonId == controlId:
             from threading import Thread
-            t = Thread(target=self._myPlayer, args=(None,controlId,))
+            t = Thread(target=self._myPlayer, args=(None,controlId))
             t.start()
 
-    def _myPlayer(self, detail=None, button=None, isMin = False, Audio = False):
+    def _myPlayer(self, detail=None, button=None, isMin = False, Audio = False, setResume=True):
         if detail is not None:
             self.detailData = detail
 
@@ -737,10 +737,12 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     if 'library_duration' in self.detailData:
                         self._duration =  self.detailData['library_duration']
                     xbmc.log(str(self._duration))
-                    if ('recording_oid' in self.detailData) == True:
-                        retval = self.xnewa.setPlaybackPositionObject(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData, self._lastPos, self._duration )
-                    else:
-                        retval = self.xnewa.setLibraryPlaybackPosition(self.detailData['filename'], self._lastPos, self._duration )
+                    if (setResume == True):
+                        if ('recording_oid' in self.detailData) == True:
+                            retval = self.xnewa.setPlaybackPositionObject(self.settings.NextPVR_USER, self.settings.NextPVR_PW, self.detailData, self._lastPos, self._duration )
+                        else:
+                            #v5
+                            retval = self.xnewa.setLibraryPlaybackPosition(self.detailData['filename'], self._lastPos, self._duration )
             else:
                 #todo cache playback
                 pass

@@ -272,7 +272,7 @@
 				</control>
 				<control type="group">
 					<animation effect="slide" end="0,-1000" time="0">WindowOpen</animation>
-					<animation effect="slide" end="0,1000" time="0" condition="Control.HasFocus(600)">Conditional</animation>					
+					<animation effect="slide" end="0,1000" time="0" condition="Control.HasFocus(600)">Conditional</animation>
 					<animation effect="slide" end="0,-1000" time="0">WindowClose</animation>
 					<posx>775</posx>
 					<posy>0</posy>

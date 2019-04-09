@@ -16,9 +16,6 @@
     Additional support may be found on xboxmediacenter or NextPVR forums.
 """
 from builtins import str
-__scriptname__ = "knew4v5"
-__author__     = "emveepee"
-__credits__    = "bunch of ppl"
 
 if __name__ == '__main__':
     import os, sys, xbmc
@@ -27,8 +24,6 @@ if __name__ == '__main__':
     DIR_HOME = Addon('script.kodi.knew4v5').getAddonInfo('path')
     __language__ = Addon('script.kodi.knew4v5').getLocalizedString
     xbmc.log(DIR_HOME)
-    #sys.path.append(os.path.join(DIR_HOME, 'resources', 'src'))
-    #sys.path.append(os.path.join(DIR_HOME, 'resources', 'lib'))
     sys.path.insert(0, os.path.join(DIR_HOME, 'resources', 'lib'))
     sys.path.insert(0, os.path.join(DIR_HOME, 'resources', 'src'))
     xbmc.log(str(sys.path))
@@ -38,12 +33,12 @@ if __name__ == '__main__':
     from XNEWA_Connect import XNEWA_Connect
     from XNEWA_Settings import XNEWA_Settings
     from fix_utf8 import smartUTF8
-
-
+    xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
     try:
         # start script main
         my_settings = XNEWA_Settings()
         my_xnewa = XNEWA_Connect(settings=my_settings)
+        xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
         if my_xnewa.offline == False:
             DIR_HOME = WHERE_AM_I
             debug("--> Home Directory is: " + DIR_HOME)
@@ -81,10 +76,7 @@ if __name__ == '__main__':
             dialog = xbmcgui.Dialog()
             ok = dialog.ok('%s' % smartUTF8(__language__(30100)), '%s \n%s' % (smartUTF8(__language__(30101)), my_xnewa.ip))
     except:
-        debug("exiting script: " + __scriptname__)
         handleException()
-
-    debug("exiting script: " + __scriptname__)
 
     # remove other globals
     try:
