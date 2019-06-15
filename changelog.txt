@@ -1,3 +1,10 @@
+[B]2.7.0[/B]
+- most knewc python functions work with new api
+UI Client
+- prev key broken
+- need to send certain key to get UI back when OSD is disabled.
+
+
 [B]2.6.6[/B]
 - fix ident
 

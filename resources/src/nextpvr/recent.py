@@ -23,6 +23,7 @@ from __future__ import absolute_import
 from builtins import str
 from builtins import range
 import datetime, time
+import _strptime
 import xbmcgui
 import os
 
@@ -30,7 +31,7 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 
 programsListBoxId = 600
 refreshButtonId = 251

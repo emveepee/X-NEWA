@@ -29,7 +29,7 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 
 programsListBoxId = 600
 searchButtonId = 250
@@ -61,7 +61,10 @@ class SearchWindow(xbmcgui.WindowXML):
         elif controlId == searchButtonId:
             self.render()
         elif controlId == optionsButtonId:
-            options = [__language__(30011),__language__(30041),__language__(32008),__language__(30020)]
+            if self.settings.XNEWA_INTERFACE == 'JSON':
+                options = [__language__(30011),__language__(30041),__language__(32008),__language__(30020)]
+            else:
+                options = [__language__(30011),__language__(30041),'Subtitle',__language__(30020)]
             self.option += 1
             if self.option > 3:
                 self.option = 0
@@ -73,16 +76,34 @@ class SearchWindow(xbmcgui.WindowXML):
         pass
 
     def onAction(self, action):
-        #print 'Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId())
         if action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
             self.closed = True
             self.close()
 
     def goEditSchedule(self):
         from . import details
-        oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
         if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
-            detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
+            if self.settings.XNEWA_INTERFACE == 'JSON':
+                oid = self.searchData[self.programsListBox.getSelectedPosition()]['program_oid']
+                detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, type="E")
+            else:
+                data = self.searchData[self.programsListBox.getSelectedPosition()]
+                fakeEvent = []
+                fakeEvent.append(data['program_oid'])
+                fakeEvent.append(data['subtitle'])
+                fakeEvent.append(data['desc'])
+                fakeEvent.append(data['title'])
+                fakeEvent.append(None)
+                fakeEvent.append(None)
+                fakeEvent.append(data['start'])
+                fakeEvent.append(data['end'])
+                fakeEvent.append(None)
+                channel = {}
+                channel[0]=data['channel'][0]
+                channel[1]=data['channel'][1]
+                channel[2]=data['channel_oid']
+                fakeEvent.append(channel)
+                detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=None, type="E", passedData=fakeEvent)
             detailDialog.doModal()
             if detailDialog.returnvalue is not None:
                 if detailDialog.returnvalue == "PICK":

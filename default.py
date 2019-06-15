@@ -21,8 +21,8 @@ if __name__ == '__main__':
     import os, sys, xbmc
     from kodi_six import xbmc, xbmcaddon, xbmcgui
     from xbmcaddon import Addon
-    DIR_HOME = Addon('script.kodi.knew4v5').getAddonInfo('path')
-    __language__ = Addon('script.kodi.knew4v5').getLocalizedString
+    DIR_HOME = Addon('script.kodi.knewc').getAddonInfo('path')
+    __language__ = Addon('script.kodi.knewc').getLocalizedString
     xbmc.log(DIR_HOME)
     sys.path.insert(0, os.path.join(DIR_HOME, 'resources', 'lib'))
     sys.path.insert(0, os.path.join(DIR_HOME, 'resources', 'src'))

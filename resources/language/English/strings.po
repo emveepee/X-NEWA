@@ -1,6 +1,6 @@
 # Kodi Media Center language file
 # Addon Name: NextPVR New Client
-# Addon id: script.kodi.knew4v5
+# Addon id: script.kodi.knewc
 # Addon Provider: emveepee
 msgid ""
 msgstr ""
@@ -102,7 +102,7 @@ msgid "All"
 msgstr ""
 
 msgctxt "#30021"
-msgid "NextPVR Web Client"
+msgid "NextPVR UI Client"
 msgstr ""
 
 msgctxt "#30022"
@@ -498,7 +498,7 @@ msgid "Password"
 msgstr ""
 
 msgctxt "#30206"
-msgid "Autostart Web Client"
+msgid "Autostart UI Client"
 msgstr ""
 
 
@@ -608,7 +608,7 @@ msgid "EPG cell height"
 msgstr ""
 
 msgctxt "#30270"
-msgid "Web Client"
+msgid "UI Client"
 msgstr ""
 
 msgctxt "#30271"

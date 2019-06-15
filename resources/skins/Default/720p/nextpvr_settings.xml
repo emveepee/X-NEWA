@@ -180,7 +180,7 @@
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
             <control type="button" id="221">
-                <label>Web Client Size</label>
+                <label>UI Client Size</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2>xxx</label2>
@@ -193,7 +193,7 @@
                 <texturenofocus>input-nofocus.png</texturenofocus>
             </control>
             <control type="button" id="222">
-                <label>Web Client Quality</label>
+                <label>UI Client Quality</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <label2>xxx</label2>

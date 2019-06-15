@@ -78,7 +78,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30009][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30009][/B]</label>
         </control>
 
         <control type="label">
@@ -91,7 +91,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30011][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -118,7 +118,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30028][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30028][/B]</label>
             <visible>substring(Window.Property(recordings),true)</visible>
         </control>
 
@@ -132,7 +132,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30012][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30012][/B]</label>
             <visible>substring(Window.Property(recordings),true)</visible>
         </control>
         <control type="label">
@@ -145,7 +145,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30055][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30055][/B]</label>
             <visible>!substring(Window.Property(recordings),true)</visible>
         </control>
 
@@ -254,7 +254,7 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knewc 30029])</label>
                     <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
@@ -379,7 +379,7 @@
                     <selectedcolor>FFe2ff43</selectedcolor>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
+                    <label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knewc 30029])</label>
                     <visible>substring(Window.Property(recordings),true)</visible>
                 </control>
 
@@ -510,7 +510,7 @@
       <align>left</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>$ADDON[script.kodi.knew4v5 30020] $ADDON[script.kodi.knew4v5 30002]</label>
+      <label>$ADDON[script.kodi.knewc 30020] $ADDON[script.kodi.knewc 30002]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
       <visible>false</visible>
@@ -525,7 +525,7 @@
       <align>right</align>
       <aligny>center</aligny>
       <textcolor>ffffffff</textcolor>
-      <label>[B]$INFO[Window.Property(archive)] $ADDON[script.kodi.knew4v5 30002][/B]</label>
+      <label>[B]$INFO[Window.Property(archive)] $ADDON[script.kodi.knewc 30002][/B]</label>
       <animation effect="fade" time="200">WindowOpen</animation>
       <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -566,7 +566,7 @@
 
         <control type="button" id="251">
             <description>Refresh button</description>
-            <label>$ADDON[script.kodi.knew4v5 30024]</label>
+            <label>$ADDON[script.kodi.knewc 30024]</label>
             <width>285</width>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>
@@ -579,7 +579,7 @@
         </control>
         <control type="button" id="252">
             <description>Import button</description>
-            <label> $ADDON[script.kodi.knew4v5 30027]</label>
+            <label> $ADDON[script.kodi.knewc 30027]</label>
             <width>285</width>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>
@@ -592,7 +592,7 @@
         </control>
         <control type="button" id="253">
             <description>Sort button</description>
-            <label> $ADDON[script.kodi.knew4v5 30122]</label>
+            <label> $ADDON[script.kodi.knewc 30122]</label>
             <width>285</width>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>

@@ -31,7 +31,7 @@ from XNEWA_Connect import XNEWA_Connect
 from XNEWA_Settings import XNEWA_Settings
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 
 # =============================================================================
 class HomeWindow(xbmcgui.WindowXML):
@@ -74,7 +74,6 @@ class HomeWindow(xbmcgui.WindowXML):
                 self.includePercentages = False
             if self.settings.XNEWA_READONLY == True:
                 self.win.setProperty('readonly', 'true')
-                print('invisible')
 
             # button ids -> funtion ptr
             self.dispatcher = {
@@ -150,7 +149,6 @@ class HomeWindow(xbmcgui.WindowXML):
         oid = self.recentData[self.recentListBox.getSelectedPosition()]['recording_oid']
         detailDialog = details.DetailDialog("nextpvr_recording_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, settings=self.settings, xnewa=self.xnewa, oid=oid, type="R" )
         detailDialog.doModal()
-        print(detailDialog.returnvalue)
         if detailDialog.shouldRefresh:
             #self.xnewa.changedRecordings = False
             #self.recentData = self.xnewa.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW, 10)
@@ -208,7 +206,6 @@ class HomeWindow(xbmcgui.WindowXML):
         mywin = settings.settingsDialog('nextpvr_settings.xml', WHERE_AM_I, settings=self.settings,xnewa=self.xnewa)
         mywin.doModal()
         if self.settings.Reload:
-            print("Reloading")
             self.xnewa = XNEWA_Connect(settings=self.settings)
             if self.xnewa.offline == False:
                 self.win.setProperty('recent', 'true')
@@ -226,7 +223,8 @@ class HomeWindow(xbmcgui.WindowXML):
         self.getChannels = True
         self.xnewa.cleanCache('channel.List')
         self.xnewa.cleanCache('summary.List')
-        self.xnewa.cleanCache('guideListing-*.p')
+        self.xnewa.cleanCache('search.List')
+        #self.xnewa.cleanCache('guideListing-*.p')
         self.xnewa.cleanCache('*.p')
         self.refreshOnInit()
 
@@ -251,7 +249,7 @@ class HomeWindow(xbmcgui.WindowXML):
         else:
             self.offline = False
             self.win.setProperty('busy', 'false')
-            self.winOnline();
+            self.winOnline()
             xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
             self.offline = True
             self.win.setFocusId(257)
@@ -319,31 +317,46 @@ class HomeWindow(xbmcgui.WindowXML):
         if self.statusData['directory'] != None:
             tmp = self.statusData['directory'][0]['Total'].split(' ')
             uom = tmp[1]
-            print(type(tmp[0].replace(',','.')))
             lTotal = float(str(tmp[0].replace(',','.')))
             tmp = self.statusData['directory'][0]['Free'].split(' ')
             if uom != tmp[1]:
                 lTotal = lTotal * 1000
             lFree = float(tmp[0].replace(',','.'))
-            self.spaceFree.setLabel(str(lFree) + tmp[1])
             lUsed = lTotal - lFree
-            self.spaceUsed.setLabel(str(lUsed) + tmp[1])
-            # Then, the images part
-            x, y = self.spaceGreen.getPosition()
-            redWidth = int((250 // lTotal ) * lUsed)
-            greenWidth = int(250 - redWidth)
-            self.spaceGreen.setWidth(greenWidth)
-            self.spaceRed.setWidth(redWidth)
-            self.spaceRed.setPosition(x+greenWidth, y)
-            if self.includePercentages:
-                self.spacePercent.setPercent((100*lUsed)//lTotal)
+            driveSpace = tmp[1]
+        elif self.statusData['space'] != None:
+            lFree = self.statusData['space']['free']
+            lTotal = self.statusData['space']['total']
+            lUsed = lTotal - lFree
+            driveSpace = ' GB'
+            pass
+        else:
+            lFree = 0
+            lTotal = 1
+            driveSpace = ' GB'
+
+
+        lUsed = lTotal - lFree
+        self.spaceFree.setLabel(str(lFree) + driveSpace)
+        self.spaceUsed.setLabel(str(lUsed) + driveSpace )
+        # Then, the images part
+        x, y = self.spaceGreen.getPosition()
+        redWidth = int((250 // lTotal ) * lUsed)
+        greenWidth = int(250 - redWidth)
+        self.spaceGreen.setWidth(greenWidth)
+        self.spaceRed.setWidth(redWidth)
+        self.spaceRed.setPosition(x+greenWidth, y)
+        if self.includePercentages:
+            self.spacePercent.setPercent((100*lUsed)//lTotal)
+
         # Set up display of counters
-        self.countPending.setLabel(self.statusData['schedule']['Pending'])
-        self.countProgress.setLabel(self.statusData['schedule']['InProgress'])
-        self.countAvailable.setLabel(self.statusData['schedule']['Available'])
-        self.countFailed.setLabel(self.statusData['schedule']['Failed'])
-        self.countConflict.setLabel(self.statusData['schedule']['Conflict'])
-        self.countSeason.setLabel(self.statusData['schedule']['Recurring'])
+        if self.statusData['schedule'] != None:
+            self.countPending.setLabel(self.statusData['schedule']['Pending'])
+            self.countProgress.setLabel(self.statusData['schedule']['InProgress'])
+            self.countAvailable.setLabel(self.statusData['schedule']['Available'])
+            self.countFailed.setLabel(self.statusData['schedule']['Failed'])
+            self.countConflict.setLabel(self.statusData['schedule']['Conflict'])
+            self.countSeason.setLabel(self.statusData['schedule']['Recurring'])
 
     def winOnline(self):
         if self.xnewa.offline:

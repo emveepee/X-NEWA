@@ -76,7 +76,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30040]:</label>
+							<label>$ADDON[script.kodi.knewc 30040]:</label>
 							<visible>!IsEmpty(Control.GetLabel(310))</visible>
 						</control>
 						<control type="label">
@@ -86,7 +86,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30013]:</label>
+							<label>$ADDON[script.kodi.knewc 30013]:</label>
 							<visible>!IsEmpty(Control.GetLabel(309))</visible>
 						</control>
 						<control type="label">
@@ -96,7 +96,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30012]:</label>
+							<label>$ADDON[script.kodi.knewc 30012]:</label>
 						</control>
 						<control type="label">
 							<description>Time</description>
@@ -105,7 +105,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>button_focus</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30010]:</label>
+							<label>$ADDON[script.kodi.knewc 30010]:</label>
 						</control>
 						<control type="label">
 							<description>Recording Type Label</description>
@@ -320,31 +320,31 @@
 						<description>Save</description>
 						<param name="id" value="250" />
 						<param name="width" value="200" />
-						<param name="label" value="$ADDON[script.kodi.knew4v5 30053]" />
+						<param name="label" value="$ADDON[script.kodi.knewc 30053]" />
 					</include>
 					<include content="DefaultDialogButton">
 						<description>Delete</description>
 						<param name="id" value="251" />
 						<param name="width" value="200" />
-						<param name="label" value="$ADDON[script.kodi.knew4v5 30054]" />
+						<param name="label" value="$ADDON[script.kodi.knewc 30054]" />
 					</include>
 					<include content="DefaultDialogButton">
 						<description>Record</description>
 						<param name="id" value="252" />
 						<param name="width" value="200" />
-						<param name="label" value="$ADDON[script.kodi.knew4v5 30034]" />
+						<param name="label" value="$ADDON[script.kodi.knewc 30034]" />
 					</include>
 					<include content="DefaultDialogButton">
 						<description>Close</description>
 						<param name="id" value="253" />
 						<param name="width" value="200" />
-						<param name="label" value="$ADDON[script.kodi.knew4v5 30031]" />
+						<param name="label" value="$ADDON[script.kodi.knewc 30031]" />
 					</include>
 					<include content="DefaultDialogButton">
 						<description>Pay</description>
 						<param name="id" value="254" />
 						<param name="width" value="200" />
-						<param name="label" value="$ADDON[script.kodi.knew4v5 30036]" />
+						<param name="label" value="$ADDON[script.kodi.knewc 30036]" />
 					</include>
 				</control>
 <!-- ############ End Action Buttons ############ -->

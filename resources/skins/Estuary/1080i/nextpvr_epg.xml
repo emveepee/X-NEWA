@@ -11,8 +11,8 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
-			<param name="sublabel" value="$ADDON[script.kodi.knew4v5 30019]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knewc 30000]" />
+			<param name="sublabel" value="$ADDON[script.kodi.knewc 30019]" />
 		</include>
 		<include content="BottomBar">
 			<param name="info_visible" value="false" />

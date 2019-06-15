@@ -41,7 +41,7 @@
 			<itemgap>5</itemgap>
 			<control type="label" id="999">
 				<include>WindowTitleCommons</include>
-				<label>$ADDON[script.kodi.knew4v5 30000] [COLOR=blue] - [/COLOR] $ADDON[script.kodi.knew4v5 30052]</label>
+				<label>$ADDON[script.kodi.knewc 30000] [COLOR=blue] - [/COLOR] $ADDON[script.kodi.knewc 30052]</label>
 			</control>
 		</control>
 		<include>Clock</include>

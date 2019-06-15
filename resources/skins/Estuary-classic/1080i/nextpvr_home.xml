@@ -12,7 +12,7 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knewc 30000]" />
 			<param name="breadcrumbs_icon" value="icons/home/tv.png" />
 		</include>
 		<include content="BottomBar">
@@ -34,7 +34,7 @@
 					<font>font24_title</font>
 					<align>left</align>
 					<valign>bottom</valign>
-					<label>$ADDON[script.kodi.knew4v5 30003] $ADDON[script.kodi.knew4v5 30002]</label>
+					<label>$ADDON[script.kodi.knewc 30003] $ADDON[script.kodi.knewc 30002]</label>
 				</control>
 				<control type="group">
 					<top>42</top>
@@ -45,7 +45,7 @@
 						<height>35</height>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30011]</label>
+						<label>$ADDON[script.kodi.knewc 30011]</label>
 					</control>
 					<control type="label">
 						<description>Date/Time</description>
@@ -54,7 +54,7 @@
 						<height>35</height>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30009]/$ADDON[script.kodi.knew4v5 30010]</label>
+						<label>$ADDON[script.kodi.knewc 30009]/$ADDON[script.kodi.knewc 30010]</label>
 					</control>
 					<control type="label">
 						<description>Channel</description>
@@ -63,7 +63,7 @@
 						<height>35</height>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30012]</label>
+						<label>$ADDON[script.kodi.knewc 30012]</label>
 					</control>
 				</control>
 <!-- ############ End Upcoming Recordings Heading ############ -->
@@ -193,7 +193,7 @@
 					<font>font24_title</font>
 					<align>left</align>
 					<valign>bottom</valign>
-					<label>$ADDON[script.kodi.knew4v5 30014]</label>
+					<label>$ADDON[script.kodi.knewc 30014]</label>
 				</control>
 				<control type="group">
 					<top>42</top>
@@ -204,7 +204,7 @@
 						<height>35</height>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30011]</label>
+						<label>$ADDON[script.kodi.knewc 30011]</label>
 					</control>
 					<control type="label">
 						<description>Date/Time</description>
@@ -213,7 +213,7 @@
 						<height>35</height>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30009]/$ADDON[script.kodi.knew4v5 30010]</label>
+						<label>$ADDON[script.kodi.knewc 30009]/$ADDON[script.kodi.knewc 30010]</label>
 					</control>
 					<control type="label">
 						<description>Status</description>
@@ -222,7 +222,7 @@
 						<height>35</height>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30013]</label>
+						<label>$ADDON[script.kodi.knewc 30013]</label>
 					</control>
 				</control>
 <!-- ############ End What's New Heading ############ -->
@@ -352,7 +352,7 @@
 				<height>45</height>
 				<font>font24_title</font>
 				<align>left</align>
-				<label>$ADDON[script.kodi.knew4v5 30015]</label>
+				<label>$ADDON[script.kodi.knewc 30015]</label>
 			</control>
 			<control type="group">
 				<description>Estuary style free space indicator</description>
@@ -374,7 +374,7 @@
 						<height>35</height>
 						<font>font12</font>
 						<align>left</align>
-						<label>$INFO[Control.GetLabel(244)] $ADDON[script.kodi.knew4v5 30046]</label>
+						<label>$INFO[Control.GetLabel(244)] $ADDON[script.kodi.knewc 30046]</label>
 					</control>
 					<control type="label">
 						<description>Space Free</description>
@@ -383,7 +383,7 @@
 						<height>35</height>
 						<font>font12</font>
 						<align>right</align>
-						<label>$INFO[Control.GetLabel(245)] $ADDON[script.kodi.knew4v5 30047]</label>
+						<label>$INFO[Control.GetLabel(245)] $ADDON[script.kodi.knewc 30047]</label>
 					</control>
 				</control>
 			</control>
@@ -399,7 +399,7 @@
 				<width>230</width>
 				<font>font24_title</font>
 				<align>left</align>
-				<label>$ADDON[script.kodi.knew4v5 30017]</label>
+				<label>$ADDON[script.kodi.knewc 30017]</label>
 			</control>
 			<control type="group">
 				<top>42</top>
@@ -408,7 +408,7 @@
 					<width>260</width>
 					<font>font13</font>
 					<align>left</align>
-					<label>$ADDON[script.kodi.knew4v5 30003]:</label>
+					<label>$ADDON[script.kodi.knewc 30003]:</label>
 				</control>
 				<control type="label" id="243">
 					<description>Upcoming Value</description>
@@ -426,7 +426,7 @@
 					<width>260</width>
 					<font>font13</font>
 					<align>left</align>
-					<label>$ADDON[script.kodi.knew4v5 30004]:</label>
+					<label>$ADDON[script.kodi.knewc 30004]:</label>
 				</control>
 				<control type="label" id="242">
 					<description>In Progress Value</description>
@@ -444,7 +444,7 @@
 					<width>260</width>
 					<font>font13</font>
 					<align>left</align>
-					<label>$ADDON[script.kodi.knew4v5 30005]:</label>
+					<label>$ADDON[script.kodi.knewc 30005]:</label>
 				</control>
 				<control type="label" id="241">
 					<description>Available Value</description>
@@ -462,7 +462,7 @@
 					<width>260</width>
 					<font>font13</font>
 					<align>left</align>
-					<label>$ADDON[script.kodi.knew4v5 30006]:</label>
+					<label>$ADDON[script.kodi.knewc 30006]:</label>
 				</control>
 				<control type="label" id="240">
 					<description>Failed Value</description>
@@ -480,7 +480,7 @@
 					<width>260</width>
 					<font>font13</font>
 					<align>left</align>
-					<label>$ADDON[script.kodi.knew4v5 30007]:</label>
+					<label>$ADDON[script.kodi.knewc 30007]:</label>
 				</control>
 				<control type="label" id="238">
 					<description>Conflicts Value</description>
@@ -498,7 +498,7 @@
 					<width>260</width>
 					<font>font13</font>
 					<align>left</align>
-					<label>$ADDON[script.kodi.knew4v5 30008]:</label>
+					<label>$ADDON[script.kodi.knewc 30008]:</label>
 				</control>
 				<control type="label" id="239">
 					<description>Recurring Value</description>
@@ -528,74 +528,74 @@
 				<control type="label" id="200">
 					<description>NextPVR Options</description>
 					<include>MediaMenuLabelCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30000] $ADDON[script.kodi.knew4v5 30018]</label>
+					<label>$ADDON[script.kodi.knewc 30000] $ADDON[script.kodi.knewc 30018]</label>
 				</control>
 				<control type="button" id="251">
 					<description>TV Guide</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30019]</label>
+					<label>$ADDON[script.kodi.knewc 30019]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
 				</control>
 				<control type="button" id="258">
 					<description>Recordings</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30002]</label>
+					<label>$ADDON[script.kodi.knewc 30002]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(recent),false)</enable>
 				</control>
 				<control type="button" id="253">
 					<description>Upcoming Recordings</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30003] $ADDON[script.kodi.knew4v5 30002]</label>
+					<label>$ADDON[script.kodi.knewc 30003] $ADDON[script.kodi.knewc 30002]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(upcoming),false)</enable>
 				</control>
 				<control type="button" id="260" >
-					<description>NextPVR Web Client</description>
+					<description>NextPVR UI Client</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30021]</label>
+					<label>$ADDON[script.kodi.knewc 30021]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
 				</control>
 				<control type="button" id="252">
 					<description>Recurring Recordings</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002]</label>
+					<label>$ADDON[script.kodi.knewc 30007] $ADDON[script.kodi.knewc 30002]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(scheduled),false)</enable>
 				</control>
 				<control type="button" id="250" >
 					<description>TV Shows</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30022]</label>
+					<label>$ADDON[script.kodi.knewc 30022]</label>
 					<enable>!substring(Window.Property(busy),true)</enable>
 				</control>
 				<control type="button" id="254">
 					<description>Search</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30023]</label>
+					<label>$ADDON[script.kodi.knewc 30023]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
 				</control>
 				<control type="button" id="256">
 					<description>Refresh</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30024]</label>
+					<label>$ADDON[script.kodi.knewc 30024]</label>
 					<visible>!substring(Window.Property(offline),true)</visible>
 					<enable>!substring(Window.Property(busy),true)</enable>
 				</control>
 				<control type="button" id="257">
 					<description>Exit</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30026]</label>
+					<label>$ADDON[script.kodi.knewc 30026]</label>
 					<enable>!substring(Window.Property(busy),true)</enable>
 				</control>
 				<control type="button" id="259">
 					<description>Go Online</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30025]</label>
+					<label>$ADDON[script.kodi.knewc 30025]</label>
 					<visible>substring(Window.Property(offline),true)</visible>
 					<enable>!substring(Window.Property(busy),true)</enable>
 				</control>
 				<control type="button" id="270">
 					<description>Fullscreen</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30044]</label>
+					<label>$ADDON[script.kodi.knewc 30044]</label>
 					<onclick>fullscreen</onclick>
 					<enable>!substring(Window.Property(busy),true)</enable>
 					<visible>Player.HasVideo</visible>

@@ -27,7 +27,7 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 
 schedulesListBoxId = 600
 refreshButtonId = 250
@@ -62,9 +62,9 @@ class SchedulesWindow(xbmcgui.WindowXML):
         elif controlId == refreshButtonId:
             self.xnewa.cleanCache('scheduledRecordings.p')
             self.render()
-        elif controlId == sortButton.Id:
+        elif controlId == sortButtonId:
             order = [smartUTF8(__language__(30011)),smartUTF8(__language__(30012)),smartUTF8(__language__(30042))]
-            ret = xbmcgui.Dialog().select(smartUTF8(__language__(30122)), order);
+            ret = xbmcgui.Dialog().select(smartUTF8(__language__(30122)), order)
             if ret != -1:
                 if ret == 0:
                     self.sortkey = 'title'
@@ -90,7 +90,7 @@ class SchedulesWindow(xbmcgui.WindowXML):
 
         from . import details
         oid = self.scheduleData[self.schedulesListBox.getSelectedPosition()]['recording_oid']
-        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid,type="F")
+        detailDialog = details.DetailDialog("nextpvr_details.xml", WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid,type="F", passedData = self.scheduleData[self.schedulesListBox.getSelectedPosition()])
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             self.render()
@@ -103,7 +103,6 @@ class SchedulesWindow(xbmcgui.WindowXML):
             try:
                 self.scheduleData = self.xnewa.getScheduledRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
                 self.scheduleData.sort(key=operator.itemgetter(self.sortkey))
-                previous = None
                 for i, t in enumerate(self.scheduleData):
                     listItem = xbmcgui.ListItem('Row %d' % i)
                     listItem.setProperty('title', t['name'])
@@ -132,24 +131,3 @@ class SchedulesWindow(xbmcgui.WindowXML):
             #Todo: Show error message
             xbmcgui.Dialog().ok(smartUTF8(__language__(30108)), '%s!' % smartUTF8(__language__(30109)))
             self.close()
-
-
-    def renderPosters(self):
-        # split up poster lookup to run in parallel
-        for schedules in util.slice(list(self.listItemsBySchedule.keys()), 4):
-            self.renderPostersThread(schedules)
-
-    def renderPostersThread(self, schedules):
-        for i, schedule in enumerate(schedules):
-            if self.closed:
-                return
-            # Lookup poster if available
-            #log.debug('Poster %d/%d for %s' % (i+1, len(self.listItemsBySchedule), schedule.title()))
-            posterPath = self.fanArt.getRandomPoster(schedule)
-            listItem = self.listItemsBySchedule[schedule]
-            if posterPath:
-                self.setListItemProperty(listItem, 'poster', posterPath)
-            else:
-                channel =  self.channelsById[schedule.getChannelId()]
-                if channel.getIconPath():
-                    self.setListItemProperty(listItem, 'poster', self.mythChannelIconCache.get(channel))

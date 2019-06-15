@@ -9,6 +9,8 @@ from builtins import hex
 from builtins import range
 from builtins import object
 
+from  KNEW_Client import *
+
 ######################################################################################################
 # Class for connecting to a NextPVR instance
 #
@@ -32,9 +34,7 @@ Last_Error = ""
 # Sort fields
 
 import time
-import _strptime
-import datetime, time
-from datetime import timedelta
+from datetime import timedelta, datetime
 import dateutil.parser
 import tempfile
 import os.path
@@ -75,7 +75,6 @@ class XNEWA_Connect(object):
     # Instantiation
     def __init__(self, *args, **kwargs):
         self.settings = kwargs['settings']
-
         self.port = self.settings.NextPVR_PORT
         self.ip = self.settings.NextPVR_HOST
         xbmc.log(self.ip)
@@ -119,7 +118,7 @@ class XNEWA_Connect(object):
 
         self.vlc_url = None
         self.vlc_process = -1
-        self.miniEPG = datetime.datetime.max
+        self.miniEPG = datetime.max
         self.interface = self.settings.XNEWA_INTERFACE
         self.channels = None
         self.update_time = 9223372036854775807
@@ -153,15 +152,13 @@ class XNEWA_Connect(object):
 
         self.defaultSchedule = None
         self.methodTranscode = None
-
-    ######################################################################################################
-    # checking to see if NEWA is responding
-    ######################################################################################################
-
         self.sid = None
         self.client = None
         self.strClient = None
 
+    ######################################################################################################
+    # checking to see if NEWA is responding
+    ######################################################################################################
         self.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST)
 
         if self.sid == None:
@@ -449,34 +446,36 @@ class XNEWA_Connect(object):
     def GetNextPVRInfo(self, userid, password,channels=True):
         dic = {}
         if self.settings.XNEWA_WEBCLIENT != True:
-            #v5 change
-            from xml.dom import minidom
-            xbmc.log('XML info')
-            address = "http://" + self.ip + ":" + str(self.port) + NEWA_XMLINFO_PATH
-            website = urlopen(address)
-            website_html = website.read()
+            if self.settings.XNEWA_INTERFACE == 'JSON':
+                #v5 change
+                from xml.dom import minidom
+                xbmc.log('XML info')
+                address = "http://" + self.ip + ":" + str(self.port) + NEWA_XMLINFO_PATH
+                xbmc.log(address)
+                website = urlopen(address)
+                website_html = website.read()
 
-            dom = minidom.parseString(website_html)
-            #dom = None
-            if dom != None:
-                ret = self._getdictfromdom(dom, "Directory")
-                dic['directory'] = ret
-                ret = self._getdictfromdom(dom, "Schedule")
-                for dict in ret:
-                    dic['schedule'] = dict
-                ret = self._getdictfromdom(dom, "Tuner")
-                dic['tuner'] = ret
-                ret = self._getdictfromdom(dom, "Epg")
-                for dict in ret:
-                    dic['epg'] = dict
-                ret = self._getdictfromdom(dom, "Log")
-                for dict in ret:
-                    dic['log'] = dict
+                dom = minidom.parseString(website_html)
+                #dom = None
+                if dom != None:
+                    ret = self._getdictfromdom(dom, "Directory")
+                    dic['directory'] = ret
+                    ret = self._getdictfromdom(dom, "Schedule")
+                    for dict in ret:
+                        dic['schedule'] = dict
+                    ret = self._getdictfromdom(dom, "Tuner")
+                    dic['tuner'] = ret
+                    ret = self._getdictfromdom(dom, "Epg")
+                    for dict in ret:
+                        dic['epg'] = dict
+                    ret = self._getdictfromdom(dom, "Log")
+                    for dict in ret:
+                        dic['log'] = dict
             else:
-                dic['directory'] = None
+                dic = GetNextPVRInfo_v5 (self)
         if channels == True:
             # We also get, and cache, the channel data
-            self.channels = self.getChannelList(userid, password)
+            self.channels = self.getChannelList()
             self.channelGroups = self.getChannelGroupList(userid, password)
             self.setChannelGroups()
             self.RecDirs = self.getRecDirList(userid, password)
@@ -497,7 +496,7 @@ class XNEWA_Connect(object):
             root = tree.getroot()
             if root.attrib['stat'] == 'ok':
                 self.update_time =  int(root.find('last_update').text)
-                xbmc.log(datetime.datetime.fromtimestamp(self.update_time).strftime('%Y-%m-%d %H:%M:%S'))
+                xbmc.log(datetime.fromtimestamp(self.update_time).strftime('%Y-%m-%d %H:%M:%S'))
             elif root.attrib['stat'] == 'fail':
                 err = root.find('err')
                 if err.attrib['code'] == '8':
@@ -518,8 +517,8 @@ class XNEWA_Connect(object):
                     if self.update_time <= int(os.path.getmtime(os.path.join(self.mycache,cached))):
                         return True
                 return False
-            ft =  datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(self.mycache,cached)))
-            if ft + timedelta(hours=2) > datetime.datetime.now():
+            ft =  datetime.fromtimestamp(os.path.getmtime(os.path.join(self.mycache,cached)))
+            if ft + timedelta(hours=2) > datetime.now():
                 return True
 
         return False
@@ -549,8 +548,8 @@ class XNEWA_Connect(object):
         cnt = 0
         fileNames = glob.glob(os.path.join(self.mycache,spec))
         for file in fileNames:
-            ft =  datetime.datetime.fromtimestamp(os.path.getmtime(file))
-            if ft + timedelta(hours=2) < datetime.datetime.now():
+            ft =  datetime.fromtimestamp(os.path.getmtime(file))
+            if ft + timedelta(hours=2) < datetime.now():
                 os.remove(file)
             else:
                 cnt = cnt + 1
@@ -572,65 +571,69 @@ class XNEWA_Connect(object):
             retArr = self.myCachedPickleLoad(cached)
             return retArr
 
-        if sortTitle:
-            sortDate = True
-
-        xbmc.log("getRecordingsSummary json start")
-
-        try:
-
-            if self.defaultSchedule == None:
-                self.getDefaultSchedule()
-
-            import copy
-            recObj = copy.deepcopy(self.defaultSchedule)
-            if self.settings.XNEWA_COLOURS != None:
-                if 'red' in self.settings.XNEWA_COLOURS :
-                    recObj['recColorRed'] = True
-                else:
-                    recObj['recColorRed'] = False
-                if 'green' in self.settings.XNEWA_COLOURS :
-                    recObj['recColorGreen'] = True
-                else:
-                    recObj['recColorGreen'] = False
-                if 'yellow' in self.settings.XNEWA_COLOURS :
-                    recObj['recColorYellow'] = True
-                else:
-                    recObj['recColorYellow'] = False
-                if 'blue' in self.settings.XNEWA_COLOURS :
-                    recObj['recColorBlue'] = True
-                else:
-                    recObj['recColorBlue'] = False
-
-            if recDir != None:
-                recObj['recDir'] = recDir
-
-            option = ''
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             if sortTitle:
-                option = option + '&sortByName=true'
-            if sortDate:
-                option = option + '&sortAscending=true'
-            url = "http://" + self.ip + ":" + str(self.port) + '/public/ScheduleService/RecordingsSummary' + self.jsid + option
-            xbmc.log(url)
-            recObj = _json.dumps(recObj)
-            xbmc.log(recObj)
-            request = Request(url, recObj.encode('utf-8'))
-            request.add_header('Content-Type', 'application/json')
+                sortDate = True
+
+            xbmc.log("getRecordingsSummary json start")
+
             try:
-                response = urlopen(request)
-                xbmc.log("response from request was %d" % response.code)
-                results = response.read()
-                summaryResults = _json.loads(results)
-                retArr = []
-                for summary in summaryResults['RecordingsSummary']['summaryArray']:
-                    retArr.append(self._sum2dict_json(summary))
-            except URLError as e:
-                xbmc.log('error during request: %s' % e.code)
-                if e.code == 405:
-                    return None
-        except Exception as err:
-            xbmc.log(str(err))
-        xbmc.log("getRecordingsSummary json end")
+
+                if self.defaultSchedule == None:
+                    self.getDefaultSchedule()
+
+                import copy
+                recObj = copy.deepcopy(self.defaultSchedule)
+                if self.settings.XNEWA_COLOURS != None:
+                    if 'red' in self.settings.XNEWA_COLOURS :
+                        recObj['recColorRed'] = True
+                    else:
+                        recObj['recColorRed'] = False
+                    if 'green' in self.settings.XNEWA_COLOURS :
+                        recObj['recColorGreen'] = True
+                    else:
+                        recObj['recColorGreen'] = False
+                    if 'yellow' in self.settings.XNEWA_COLOURS :
+                        recObj['recColorYellow'] = True
+                    else:
+                        recObj['recColorYellow'] = False
+                    if 'blue' in self.settings.XNEWA_COLOURS :
+                        recObj['recColorBlue'] = True
+                    else:
+                        recObj['recColorBlue'] = False
+
+                if recDir != None:
+                    recObj['recDir'] = recDir
+
+                option = ''
+                if sortTitle:
+                    option = option + '&sortByName=true'
+                if sortDate:
+                    option = option + '&sortAscending=true'
+                url = "http://" + self.ip + ":" + str(self.port) + '/public/ScheduleService/RecordingsSummary' + self.jsid + option
+                xbmc.log(url)
+                recObj = _json.dumps(recObj)
+                xbmc.log(recObj)
+                request = Request(url, recObj.encode('utf-8'))
+                request.add_header('Content-Type', 'application/json')
+                try:
+                    response = urlopen(request)
+                    xbmc.log("response from request was %d" % response.code)
+                    results = response.read()
+                    summaryResults = _json.loads(results)
+                    retArr = []
+                    for summary in summaryResults['RecordingsSummary']['summaryArray']:
+                        retArr.append(self._sum2dict_json(summary))
+                except URLError as e:
+                    xbmc.log('error during request: %s' % e.code)
+                    if e.code == 405:
+                        return None
+            except Exception as err:
+                xbmc.log(str(err))
+            xbmc.log("getRecordingsSummary json end")
+        else:
+            retArr = getRecordingsSummary_v5(self)
+
         self.myCachedPickle(retArr,cached)
         return retArr
 
@@ -649,18 +652,22 @@ class XNEWA_Connect(object):
 ######################################################################################################
 # Retrieves a list of channels...
 ######################################################################################################
-    def getChannelList(self, userid, password):
+    def getChannelList(self):
         cached = 'channel.List'
         if self.checkCache(cached):
             dic = self.myCachedPickleLoad(cached)
             if '0' in dic:
                 xbmc.log("getChannelList cached end")
                 return dic
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             dic = self.getChannelList_json()
-            if dic != None:
-                self.myCachedPickle(dic,cached)
-                return dic
+        else:
+            dic = getChannelList_v5(self)
+
+        if dic != None:
+            self.myCachedPickle(dic,cached)
+        return dic
 
     def getChannelList_json(self):
 
@@ -760,7 +767,7 @@ class XNEWA_Connect(object):
             json_file.close()
             xbmc.log(str(jsonPlaybackPosition))
             if 'url' in jsonPlaybackPosition:
-                jsonPlaybackPositio['l']
+                jsonPlaybackPosition['l']
             return True
         except Exception as err:
             xbmc.log(str(err))
@@ -775,17 +782,18 @@ class XNEWA_Connect(object):
         if self.settings.XNEWA_INTERFACE == 'JSON':
             return self.setLibraryPlaybackPosition(rec["filename"], int(position),int(duration))
         else:
-            xbmc.log("Playback resume support not currently available")
+            return setLastPlayedPosition(self,rec["recording_oid"], int(position))
 
 ######################################################################################################
 # Retrieves a list of channelGroups...
 ######################################################################################################
     def getChannelGroupList(self, userid, password):
 
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             dic = self.getChannelGroupList_json()
             if dic != None:
                 return dic
+        return getChannelGroupList_v5(self)
 
 
     def getChannelGroupList_json(self):
@@ -837,10 +845,11 @@ class XNEWA_Connect(object):
 ######################################################################################################
     def getEPGGenres(self, userid, password):
 
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             dic = self.getEPGGenres_json()
             if dic != None:
                 return dic
+        return getEPGGenres_v5(self)
 
 
     def getEPGGenres_json(self):
@@ -871,13 +880,16 @@ class XNEWA_Connect(object):
 ######################################################################################################
     def getRecDirList(self, userid, password):
 
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             return self.getRecDirList_json()
+
+        return getRecDirList_v5(self)
 
     def getRecDirList_json(self):
 
         xbmc.log("getRecDirList JSON start")
         url = "http://" + self.ip + ":" + str(self.port) + '/public/ScheduleService/Get/RecDirs' + self.jsid
+        xbmc.log(url)
         dirs = {}
         try:
             json_file = urlopen(url)
@@ -890,20 +902,20 @@ class XNEWA_Connect(object):
                         dirs[dir['RecDirName'].encode('utf-8')] = dir['RecDir']
                     except:
                         xbmc.log('Duplicate of ' + dir['RecDirName'].encode('utf-8'))
-        except:
+        except Exception as err:
             xbmc.log('getRecDirList JSON error')
+            print(err)
             dirs = None
-        #xbmc.log(dirs)
         xbmc.log("getRecDirList JSON end")
         return dirs
 
 ######################################################################################################
-    def getDetails(self, userid, password, oid, type, fetchArt):
+    def getDetails(self, userid, password, oid, type, fetchArt, passedData=None):
 
         xbmc.log('Details ' + type)
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
-            if self.channels == None:
-                self.channels = self.getChannelList(userid, password)
+        if self.channels == None:
+            self.channels = self.getChannelList()
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             if type=="E" or type=='P':
                 url = "http://" + self.ip + ":" + str(self.port) + '/public/DetailsService/' + str(oid) + self.jsid
                 xbmc.log(url)
@@ -927,6 +939,13 @@ class XNEWA_Connect(object):
                 detailsService = _json.load(json_file)
                 json_file.close()
                 return self._recurr2dict(detailsService['epgEventJSONObject'])
+
+        if type=="E" or type=='P':
+            return epgTag2dict_v5(self,passedData)
+        elif type=="R":
+            return getRecording_v5(self,oid)
+        elif type=="F":
+            return getRecurringRecord(self,oid)
 
 ######################################################################################################
     def archiveRecording(self, userid, password, oid, directory):
@@ -988,14 +1007,15 @@ class XNEWA_Connect(object):
 
         cached = 'guideListing-' + dtTimeStart.strftime("%Y-%m-%dT%H") + '.p'
 
-        if self.settings.XNEWA_INTERFACE == 'XML' or self.settings.XNEWA_INTERFACE == 'Short' or self.settings.XNEWA_WEBCLIENT == True:
+        if self.settings.XNEWA_INTERFACE != 'JSON' or self.settings.XNEWA_WEBCLIENT == True:
             import calendar
-            if self.settings.XNEWA_INTERFACE == 'XML':
-                url = "http://" + self.ip + ":" + str(self.port) + '/services?method=channel.listings.current&sid='+ self.sid + '&start=' + str(int(calendar.timegm(dtTimeStart.timetuple()))) + '&end=' + str(int(calendar.timegm(dtTimeEnd.timetuple())))
+            if self.settings.XNEWA_INTERFACE == 'XML' or  self.settings.XNEWA_INTERFACE == 'Version5':
+                start = '&start=' + str(int(calendar.timegm(dtTimeStart.timetuple()))) + '&end=' + str(int(calendar.timegm(dtTimeEnd.timetuple())))
             else:
-                url = "http://" + self.ip + ":" + str(self.port) + '/services?method=channel.listings.current&sid=' + self.sid
-            xbmc.log(url)
-            retGuide = self._progs2array_xml(url)
+                start = None
+            xbmc.log(start)
+            #retGuide = self._progs2array_xml(url)
+            retGuide = getGuideInfo_v5(self,start)
         elif self.settings.XNEWA_INTERFACE == 'JSON':
             import calendar
             #url = "http://" + self.ip + ":" + str(self.port) + '/public/guideservice/listing?stime=' + dtTimeStart.strftime("%Y-%m-%dT%H:%M") + '&etime=' + dtTimeEnd.strftime("%Y-%m-%dT%H:%M")
@@ -1016,10 +1036,14 @@ class XNEWA_Connect(object):
           retArr = self.myCachedPickleLoad(cached)
           return retArr
 
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             retArr = self.getUpcomingRecordings_json(amount)
+        else:
+            retArr = getUpcomingRecordings_v5(self, amount)
+
+        if ( retArr != None):
             self.myCachedPickle(retArr,cached)
-            return retArr
+        return retArr
 
 
     def getUpcomingRecordings_json(self, amount=0):
@@ -1061,7 +1085,6 @@ class XNEWA_Connect(object):
 
         retArr = []
         sortFilterObj = _json.dumps(sortFilterObj)
-        #print sortFilterObj
         try:
             request = Request(url, sortFilterObj.encode('utf-8'))
             request.add_header('content-type', 'application/json')
@@ -1093,11 +1116,14 @@ class XNEWA_Connect(object):
         if self.checkCache(cached):
             retArr = self.myCachedPickleLoad(cached)
             return retArr
-
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             retArr = self.getRecentRecordings_json(amount, showName, sortTitle, sortDateDown, recDir)
-            self.myCachedPickle(retArr,cached)
-            return retArr
+        else:
+        #v5
+            retArr = getRecentRecordings_v5(self, amount, showName, sortTitle, sortDateDown, recDir)
+
+        self.myCachedPickle(retArr,cached)
+        return retArr
 
 
 
@@ -1150,8 +1176,6 @@ class XNEWA_Connect(object):
 
         retArr = []
         sortFilterObj = _json.dumps(sortFilterObj)
-        #print (sortFilterObj)
-
         try:
             request = Request(url, sortFilterObj.encode('utf-8'))
             request.add_header('Content-Type', 'application/json')
@@ -1207,11 +1231,14 @@ class XNEWA_Connect(object):
             return retArr
         if needle == None:
             return None
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             retArr =  self.searchProgram_json(needle,option)
-            if retArr:
-                self.myCachedPickle(retArr,cached)
-            return retArr
+        else:
+            retArr =  searchProgram_v5(self,quote(needle),option)
+        if retArr:
+            self.myCachedPickle(retArr,cached)
+
+        return retArr
 
 
 
@@ -1242,8 +1269,6 @@ class XNEWA_Connect(object):
         searchObj['searchPhrase'] = needle
         searchObj['searchCaseSensitive'] = False
         searchObj = _json.dumps(searchObj)
-        #print searchObj
-
         try:
             request = Request(url, searchObj.encode('utf-8'))
             request.add_header('Content-Type', 'application/json')
@@ -1271,12 +1296,17 @@ class XNEWA_Connect(object):
         xbmc.log(cached)
         if self.checkCache(cached):
             retArr = self.myCachedPickleLoad(cached)
-            #return retArr
-
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
-            retArr = self.getScheduledRecordings_json()
-            self.myCachedPickle(retArr,cached)
             return retArr
+
+        if self.settings.XNEWA_INTERFACE == 'JSON':
+            retArr = self.getScheduledRecordings_json()
+        else:
+            retArr = getScheduledRecordings_v5(self)
+
+        if retArr:
+            self.myCachedPickle(retArr,cached)
+
+        return retArr
 
 
     def getScheduledRecordings_json(self):
@@ -1314,8 +1344,6 @@ class XNEWA_Connect(object):
         sortFilterObj['NameFilterCaseSensitive'] = False
         retArr = []
         sortFilterObj = _json.dumps(sortFilterObj)
-        print (sortFilterObj)
-
         try:
             request = Request(url, sortFilterObj.encode('utf-8'))
             request.add_header('Content-Type', 'application/json')
@@ -1374,8 +1402,6 @@ class XNEWA_Connect(object):
         sortFilterObj['NameFilterCaseSensitive'] = False
         retArr = []
         sortFilterObj = _json.dumps(sortFilterObj)
-        #print sortFilterObj
-
         try:
             request = Request(url, sortFilterObj.encode('utf-8'))
             request.add_header('Content-Type', 'application/json')
@@ -1397,15 +1423,136 @@ class XNEWA_Connect(object):
 ######################################################################################################
     def updateRecording(self, userid, password, progDetails):
 
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             return self.updateRecording_json(progDetails)
+        else:
+            return updateRecording_v5(self,progDetails)
+
+    def updateRecording_json(self, progDetails):
+
+        days = progDetails['day']
+
+        recObj = {}
+
+        recObj['ChannelOid'] = progDetails['channel_oid']
+        recObj['startDate'] = str(progDetails['start'] - self.dst_offset)
+        recObj['endDate'] = str(progDetails['end'] - self.dst_offset)
+        if progDetails['recquality'].lower() == "good":
+            recObj['qualityGood'] = True
+        elif progDetails['recquality'].lower() == "better":
+            recObj['qualityBetter'] = True
+        elif progDetails['recquality'].lower() == "best":
+            recObj['qualityBest'] = True
+        else:
+            recObj['qualityDefault'] = True
+
+        if 'Monday' in days:
+            recObj['dayMonday'] = True
+        else:
+            recObj['dayMonday'] = False
+        if 'Tuesday' in days:
+            recObj['dayTuesday'] = True
+        else:
+            recObj['dayTuesday'] = False
+        if 'Wednesday' in days:
+            recObj['dayWednesday'] = True
+        else:
+            recObj['dayWednesday'] = False
+        if 'Thursday' in days:
+            recObj['dayThursday'] = True
+        else:
+            recObj['dayThursday'] = False
+        if 'Friday' in days:
+            recObj['dayFriday'] = True
+        else:
+            recObj['dayFriday'] = False
+        if 'Saturday' in days:
+            recObj['daySaturday'] = True
+        else:
+            recObj['daySaturday'] = False
+        if 'Sunday' in days:
+            recObj['daySunday'] = True
+        else:
+            recObj['daySunday'] = False
+
+
+        recObj['recColorRed'] = False
+        recObj['recColorGreen'] = False
+        recObj['recColorYellow'] = False
+        recObj['recColorBlue'] = False
+
+        recObj['onlyNew'] = progDetails['onlyNew']
+        recObj['allChannels'] = progDetails['allChannels']
+        recObj['pre_padding_min'] = progDetails['prepadding']
+        recObj['post_padding_min'] = progDetails['postpadding']
+        try:
+            recObj['extend_end_time_min'] = progDetails['extendend']
+        except:
+            recObj['extend_end_time_min'] = 0
+
+        recObj['days_to_keep'] = progDetails['maxrecs']
+
+        if progDetails['directory'] != "Default":
+            recObj['recDirId'] = progDetails['directory']
+
+        if progDetails['rectype'] == 'Recurring':
+            recObj['recurrOID'] = progDetails['recording_oid']
+            recObj['recurringName'] = progDetails['name']
+            recObj['manualRecTitle'] = progDetails['title']
+            if 'TimeSlot' in progDetails['desc']:
+                recObj['recordThisTimeslot'] = True
+            else:
+                recObj['recordAnyTimeslot'] = True
+
+            if len(days) == 1:
+                recObj['recordThisDay'] = True
+            elif len(days) == 7:
+                recObj['recordAnyDay'] = True
+            else:
+                recObj['recordSpecificDay'] = True
+
+            if progDetails['rules'] != None:
+                if progDetails['rules'].startswith('KEYWORD:'):
+                    recObj['rules'] = progDetails['rules']
+                #pass
+                #recObj['rules'] = progDetails['rules']
+
+            if progDetails['priority'] != 0:
+                recObj['recurr_priority'] = progDetails['priority']
+
+            url = "http://" + self.ip + ":" + str(self.port) + '/public/ScheduleService/UpdateRecurr' + self.jsid
+        else:
+            recObj['scheduleOID'] = progDetails['recording_oid']
+            url = "http://" + self.ip + ":" + str(self.port) + '/public/ScheduleService/UpdateRec' + self.jsid
+
+        recObj = _json.dumps(recObj)
+
+        xbmc.log(url)
+        try:
+            try:
+                request = Request(url, recObj)
+                request.add_header('Content-Type', 'application/json')
+                response = urlopen(request)
+            except URLError as e:
+                print (e.code)
+                return False
+            else:
+                print (response.getcode())
+                results = response.read()
+                updateResults = _json.loads(results)
+                print (updateResults)
+            return True
+        except Exception as err:
+            print (err)
+            return False
 
 
 ######################################################################################################
     def scheduleRecording(self, userid, password, progDetails):
-
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             return self.scheduleRecording_json(progDetails)
+        else:
+            return scheduleRecording_v5(self,progDetails)
 
 
 
@@ -1495,8 +1642,6 @@ class XNEWA_Connect(object):
             recObj['extend_end_time_min'] = 0
             recObj['days_to_keep'] = progDetails['maxrecs']
             recObj = _json.dumps(recObj)
-            #print recObj
-
             url = "http://" + self.ip + ":" + str(self.port) + '/public/ScheduleService/Record' + self.jsid
             xbmc.log(url)
             request = Request(url, recObj.encode('utf-8'))
@@ -1513,7 +1658,7 @@ class XNEWA_Connect(object):
                 if e.code == 500:
                     eresults = e.read()
                     scheduleResults = _json.loads(eresults)
-                    xbmc.log(scheduleResults)
+                    print (scheduleResults)
                     if 'schdConflicts' in scheduleResults['epgEventJSONObject']:
                         conflictName = []
                         for conflict in scheduleResults['epgEventJSONObject']['schdConflicts']:
@@ -1533,7 +1678,7 @@ class XNEWA_Connect(object):
                         self.Last_Error = scheduleResults['epgEventJSONObject']['rtn']['Message']
                     return e.code
         except Exception as err:
-            xbmc.log(err)
+            print(err)
             return -1
 
 ######################################################################################################
@@ -1549,10 +1694,10 @@ class XNEWA_Connect(object):
 
 ######################################################################################################
     def cancelRecording(self, userid, password, progDetails):
-
-        if self.settings.XNEWA_INTERFACE != 'SOAP':
+        if self.settings.XNEWA_INTERFACE == 'JSON':
             return self.cancelRecording_json(progDetails)
-
+        else:
+            return cancelRecording_v5(self,progDetails)
 
     def cancelRecording_json(self, progDetails):
         xbmc.log(str(progDetails))
@@ -1587,13 +1732,13 @@ class XNEWA_Connect(object):
 ######################################################################################################
     def formatDate( self, dt, withyear=False, gmtoffset=False ):
         if gmtoffset:
-            dt = dt - datetime.timedelta(seconds=time.timezone if (time.localtime().tm_isdst == 0) else time.altzone)
+            dt = dt - timedelta(seconds=time.timezone if (time.localtime().tm_isdst == 0) else time.altzone)
         return dt.strftime( self._dateformat( withyear ) )
 
 
     def formatTime( self, dt, withsecs=False, leadzero=False, gmtoffset=False ):
         if gmtoffset:
-            dt = dt - datetime.timedelta(seconds=time.timezone if (time.localtime().tm_isdst == 0) else time.altzone)
+            dt = dt - timedelta(seconds=time.timezone if (time.localtime().tm_isdst == 0) else time.altzone)
         df = dt.strftime( self._timeformat( withsecs ) )
         if leadzero or not df.startswith('0'):
             return df
@@ -1816,7 +1961,6 @@ class XNEWA_Connect(object):
 ######################################################################################################
     def _rec2dictDirect(self):
         import xml.etree.ElementTree as ET
-        import datetime
         xbmc.log("Processing xml pending recording list start")
         url = self.getURL()+ "/services?method=recording.list&filter=pending&sid=" + self.sid
         xbmc.log(url)
@@ -1841,12 +1985,13 @@ class XNEWA_Connect(object):
         retArr = []
         import xml.etree.ElementTree as ET
         import codecs
-        import datetime
         import time
-        self.miniEPG = datetime.datetime.max
+        self.miniEPG = datetime.max
 
         if getRecordings == True:
-            mydic = self._rec2dictDirect()
+            pass
+            #mydic = self._rec2dictDirect()
+            mydic = {}
         else:
             mydic = {}
 
@@ -1880,8 +2025,8 @@ class XNEWA_Connect(object):
                     dic['desc'] = ""
                     dic['subtitle'] = ""
 
-                dic['start'] = datetime.datetime.fromtimestamp((float(listing.find('start').text)/1000))
-                dic['end'] = datetime.datetime.fromtimestamp((float(listing.find('end').text)/1000))
+                dic['start'] = datetime.fromtimestamp((float(listing.find('start').text)/1000))
+                dic['end'] = datetime.fromtimestamp((float(listing.find('end').text)/1000))
                 if self.miniEPG > dic['end']:
                    self.miniEPG = dic['end']
 
@@ -1924,7 +2069,7 @@ class XNEWA_Connect(object):
         retArr = []
 
         import time
-        self.miniEPG = datetime.datetime.max
+        self.miniEPG = datetime.max
 
         if True:
             guideService = self.nextJson(url)
@@ -2323,11 +2468,15 @@ class XNEWA_Connect(object):
 
         return retArr
 #################################################################################################################
-    def jsonDate(self, dateStr, offset=datetime.datetime.min):
+    def jsonDate(self, dateStr, offset=datetime.min):
         try:
-            d = datetime.datetime.fromtimestamp(time.mktime(time.strptime(dateStr,'%Y-%m-%dT%H:%M:%SZ'))) - self.my_offset
-        except:
-            d = dateutil.parser.parse(dateStr)#.astimezone(dateutil.tz.tzlocal())
+            d = datetime.fromtimestamp(time.mktime(time.strptime(dateStr,'%Y-%m-%dT%H:%M:%SZ'))) - self.my_offset
+        except Exception as e:
+            try:
+                d = datetime.fromtimestamp(dateStr)
+                d = d - self.my_offset
+            except Exception as e:
+                d = dateutil.parser.parse(dateStr)#.astimezone(dateutil.tz.tzlocal())
         return datetime.datetime(d.year, d.month, d.day, d.hour, d.minute, d.second)
 ######################################################################################################
 # Creating a guid (string) for authenthication
@@ -2384,8 +2533,14 @@ class XNEWA_Connect(object):
         if self.sid != 'xnewa':
             return
         #v5
-        self.settings.XNEWA_INTERFACE = "Version5"
-        self.settings.XNEWA_WEBCLIENT = True
+        if sidLogin5(self) == True:
+            print (self.jsid)
+            self.settings.XNEWA_INTERFACE = "Version5"
+            #self.settings.XNEWA_WEBCLIENT = True
+        return
+        #don't fall through anymore
+        if self.sid != 'xnewa':
+            return
 
         import xml.etree.ElementTree as ET
         import codecs
@@ -2399,7 +2554,6 @@ class XNEWA_Connect(object):
             if root.attrib['stat'] == 'ok':
                 sid =  root.find('sid').text
                 salt = root.find('salt').text
-                #print self._hashMe(self.settings.NextPVR_PIN)
                 url = "http://" + self.ip + ":" + str(self.port) + '/service?method=session.login&sid=' + sid + '&md5='+ self._hashMe(':' + self._hashMe(self.settings.NextPVR_PIN) + ':' + salt)
                 xbmc.log(url)
                 request = Request(url, headers={"Accept" : "application/xml"})
@@ -2431,7 +2585,6 @@ class XNEWA_Connect(object):
                 self.jsid = '?sid=' + sid
                 salt = keys['clientKeys']['salt']
                 xbmc.log(salt)
-                #print self._hashMe(self.settings.NextPVR_PIN)
                 url = "http://" + self.ip + ":" + str(self.port) + '/public/Util/NPVR/Client/Initialize/' + self._hashMe(':' + self._hashMe(self.settings.NextPVR_PIN) + ':' + salt) + self.jsid
                 xbmc.log(url)
                 json_file = urlopen(url)
@@ -2444,6 +2597,9 @@ class XNEWA_Connect(object):
             self.offline = True
             self.settings.XNEWA_INTERFACE = 'JSON'
 
+    def logMessage(self,msg):
+        if self.settings.XNEWA_INTERFACE != 'JSON':
+            logMessage_v5(self,msg)
 
 ######################################################################################################
 # sid Login
@@ -2455,23 +2611,26 @@ class XNEWA_Connect(object):
     def setClient (self):
         if self.strClient == None:
             self.strClient = '&client=KNEW5'
-            url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=setting.get&format=json&key=/Settings/Version/BuildDate&sid=' + self.sid
-            xbmc.log(url)
-            try:
-                json_file = urlopen(url)
-                setting = _json.load(json_file)
-                print(setting)
-                json_file.close()
+            setting = self.getSettingJson('/Settings/Version/BuildDate')
+            if setting != None:
                 if 'value' in setting:
                     if setting['value'] > '161029' and self.settings.XNEWA_LIVE_SKIN:
                         self.strClient = '&client=sdl-KNEW5'
-            except Exception as err:
-                xbmc.log(str(err))
-                pass
 
         self.client = self.strClient + self.settings.XNEWA_MAC + '&sid=' + self.sid
 
 
+    def getSettingJson (self, key):
+        setting = None
+        url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=setting.get&format=json&key=' + key + '&sid=' + self.sid
+        xbmc.log(url)
+        try:
+            json_file = urlopen(url)
+            setting = _json.load(json_file)
+            json_file.close()
+        except Exception as err:
+            xbmc.log(str(err))
+        return setting
 
 ######################################################################################################
 # Creates a (MD5) hash of a string
@@ -2546,20 +2705,6 @@ def urlHEAD(self,url):
     except:
         mys = 404
     return mys
-#################################################################################################################
-def debug( value ):
-    global debugIndentLvl
-    if (DEBUG and value):
-        try:
-            if value[0] == ">": debugIndentLvl += 2
-            pad = rjust("", debugIndentLvl)
-            xbmc.log(pad + str(value))
-            if value[0] == "<": debugIndentLvl -= 2
-        except:
-            try:
-                xbmc.log(value)
-            except:
-                xbmc.log("Debug() Bad chars in string")
 
 # locate server on subnet
 

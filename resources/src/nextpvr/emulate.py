@@ -45,7 +45,7 @@ except ImportError:
 
 from fix_utf8 import smartUTF8
 from xbmcaddon import Addon
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 
 from XNEWAGlobals import *
 
@@ -187,7 +187,8 @@ class EmulateWindow(xbmcgui.WindowXML):
             url = keyBase + str(80|0x20000)
         elif actionID == ACTION_STOP:
             url = keyBase + str(83|0x20000)
-            self.state = videoState.stopped
+            if self.state != videoState.inactive:
+                self.state = videoState.stopped
         elif actionID == ACTION_NEXT_ITEM:
             if buttonID & 0xf046 == 0xf046 :
                 # NextPVR Ctrl-F
@@ -196,11 +197,12 @@ class EmulateWindow(xbmcgui.WindowXML):
             else:
                 url = keyBase + str(39|0x20000)
         elif actionID == ACTION_PREV_ITEM:
-            if '/live?channel=' not in xbmc.Player().getPlayingFile():
-                url = keyBase + str(37|0x20000)
+            if xbmc.Player().isPlayingVideo():
+                if '/live?channel=' not in xbmc.Player().getPlayingFile():
+                    url = keyBase + str(37|0x20000)
             else:
-                # send ctrl-w
-                url =  keyBase + str(87|0x20000)
+                # send ctrl-b doesn't work
+                url =  keyBase + str(37|0x20000)
         elif actionID == ACTION_PLAYER_FORWARD:
             url = keyBase + str(70|0x20000)
         elif actionID == ACTION_PLAYER_REWIND:
@@ -377,6 +379,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 self.exit = True
                 self.close()
             except Exception as err:
+                print (err)
                 if err.errno != 104 and err.errno != 10054:
                     print(err)
                     self.exit = True
@@ -384,7 +387,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 else:
                     xbmc.log('ignoring known error')
             if pauseActivity:
-                    self.getActivity()
+                self.getActivity()
         self.renderstop = False
         self.inControl = False
         self.ready = True
@@ -505,10 +508,25 @@ class EmulateWindow(xbmcgui.WindowXML):
                                         print(err)
                                 else:
                                     self.skipStop = False
+                            else:
+                                #url = self.base + '/control?key=131155' + self.xnewa.client
+                                url = self.base + '/control?key=' + str(83|0x20000) + self.xnewa.client
+                                xbmc.log(url)
+                                try:
+                                    jpgfile = urlopen(url)
+                                    screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                                    output = open(screenFile,'wb')
+                                    output.write(jpgfile.read())
+                                    output.close()
+                                    self.image.setImage(screenFile,False)
+                                    self.getActivity()
+                                except Exception as err:
+                                    print(err)
 
                             self.setOSDMode(True)
                             self.sidUpdate()
                             self.state = videoState.inactive
+                            self.xnewa.logMessage('Stopped playback')
 
                             url = self.base + '/control?key=131188' + self.xnewa.client
                             xbmc.log(url)
@@ -520,7 +538,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                                 output.close()
                                 self.image.setImage(screenFile,False)
                                 self.getActivity()
-                            except err:
+                            except Exception as err:
                                 print(err)
 
                 xbmc.sleep(1000)
@@ -536,14 +554,18 @@ class EmulateWindow(xbmcgui.WindowXML):
                             xbmc.log(url)
                             try:
                                 pngfile = urlopen(url)
-                                output = open(screenFile1,'wb')
-                                output.write(pngfile.read())
-                                output.close()
-                                pngfile.close()
-                                self.image.setImage(screenFile1,False)
+                                if pngfile.code == 200:
+                                    output = open(screenFile1,'wb')
+                                    output.write(pngfile.read())
+                                    output.close()
+                                    pngfile.close()
+                                    self.image.setImage(screenFile1,False)
+                                print (pngfile.code)
+                                self.setOSDMode(False)
                                 self.getActivity()
                             except Exception as err:
                                 print(err)
+
                     try:
                         url = self.base + '/control?media=' + str(xbmc.Player().getTime())  + self.xnewa.client
                         screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
@@ -566,6 +588,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     except Exception as err:
                         print(err)
                         pass
+                self.getActivity()
 
                 xbmc.sleep(1000)
         return
@@ -583,7 +606,7 @@ class EmulateWindow(xbmcgui.WindowXML):
         url = None
         keyBase = ''
         dialog = xbmcgui.Dialog()
-        value = dialog.select( 'Enter selection', [  'Remote Keys', 'Recordings',  'TV Guide',  'Main Menu', 'Exit Web Client', '0', '1', '2', '3', '4', '5','6', '7', '8', '9'])
+        value = dialog.select( 'Enter selection', [  'Remote Keys', 'Recordings',  'TV Guide',  'Main Menu', 'Exit UI Client', '0', '1', '2', '3', '4', '5','6', '7', '8', '9'])
         xbmc.log(str(value))
 
         if value == 4:
@@ -727,10 +750,10 @@ class EmulateWindow(xbmcgui.WindowXML):
                 import re
                 if jsonActivity['url'] != '':
                     self.nextUrl = re.sub('[^?&]*client[^&]+&*','',jsonActivity['url'],re.UNICODE)
-                    m = re.search('seek=(\d+)&', self.nextUrl)
+                    m = re.search(r'seek=(\d+)&', self.nextUrl)
                     if m:
                         seek  = int(m.group(1))
-                        self.nextUrl = re.sub('seek=(\d+)&','',self.nextUrl)
+                        self.nextUrl = re.sub(r'seek=(\d+)&','',self.nextUrl)
                         if 'recording_resume' not in jsonActivity:
                             if self.state == videoState.playing:
                                 xbmc.Player().seekTime(seek)
@@ -756,6 +779,14 @@ class EmulateWindow(xbmcgui.WindowXML):
                             xbmc.log('Leaving ' + file)
                     self.close()
                     return
+                elif jsonActivity['action'] == 'stop':
+                    url = self.base + '/control?media=stop' + self.xnewa.client
+                    xbmc.log(url)
+                    try:
+                        pngfile = urlopen(url)
+                        pngfile.close()
+                    except Exception as err:
+                        print(err)
             elif 'needsRendering' in jsonActivity:
                 if jsonActivity['needsRendering'] ==  True:
                     if isinstance(self.t1, Thread):
@@ -806,7 +837,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             try:
                 #v5
                 if self.settings.XNEWA_INTERFACE == 'XML' or self.settings.XNEWA_INTERFACE == 'Version5':
-                    url = self.base + '/services?method=channel.listings.current' + self.xnewa.client + '&channel_id=' + str (activity['channel_id'])
+                    url = self.base + '/service?method=channel.listings.current' + self.xnewa.client + '&channel_id=' + str (activity['channel_id'])
                     xbmc.log(url)
                     dd1 = self.xnewa._progs2array_xml(url)
                 else:
@@ -918,13 +949,8 @@ class EmulateWindow(xbmcgui.WindowXML):
             self.renderstop = False
 
 
-        self.t1 = Thread(target=detailDialog._myPlayer, args=(dd,None,windowed,Audio,False))
+        self.t1 = Thread(target=detailDialog._myPlayer, args=(dd,None,windowed,Audio, self.sdlmode == SDL.disabled))
         self.t1.start()
         self.state = videoState.started
 
-        #xbmc.executebuiltin('XBMC.ActivateWindow(25)')
-        #self.player = detailDialog.getPlayer()
-        #self.player.overlay = self
-        #xbmc.executebuiltin('ActivateWindow(visualisation)')
-        #xbmc.executebuiltin('ActivateWindow(musicosd)')
         return

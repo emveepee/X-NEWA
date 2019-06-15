@@ -97,7 +97,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30040]:</label>
+							<label>$ADDON[script.kodi.knewc 30040]:</label>
 							<visible>!IsEmpty(Control.GetLabel(310))</visible>
 						</control>
 						<control type="label">
@@ -108,7 +108,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30013]:</label>
+							<label>$ADDON[script.kodi.knewc 30013]:</label>
 							<visible>!IsEmpty(Control.GetLabel(309))</visible>
 						</control>
 						<control type="label">
@@ -118,7 +118,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30012]:</label>
+							<label>$ADDON[script.kodi.knewc 30012]:</label>
 						</control>
 						<control type="label">
 							<description>Time</description>
@@ -128,7 +128,7 @@
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>blue</textcolor>
-							<label>$ADDON[script.kodi.knew4v5 30010]:</label>
+							<label>$ADDON[script.kodi.knewc 30010]:</label>
 						</control>
 						<control type="label">
 							<description>Recording Type Label</description>
@@ -322,7 +322,7 @@
 						<label>Priority</label>
 						<textcolor name="white">FFFFFFFF</textcolor>
 						<focusedcolor name="white">FFFFFFFF</focusedcolor>
-						<label2>$ADDON[script.kodi.knew4v5 30049]</label2>
+						<label2>$ADDON[script.kodi.knewc 30049]</label2>
 						<width>600</width>
 						<height>35</height>
 						<align>left</align>
@@ -347,27 +347,27 @@
 					<ondown>201</ondown>
 					<control type="button" id="250">
 						<description>Save</description>
-						<label>$ADDON[script.kodi.knew4v5 30053]</label>
+						<label>$ADDON[script.kodi.knewc 30053]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="251">
 						<description>Delete</description>
-						<label>$ADDON[script.kodi.knew4v5 30054]</label>
+						<label>$ADDON[script.kodi.knewc 30054]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="252">
 						<description>Record</description>
-						<label>$ADDON[script.kodi.knew4v5 30034]</label>
+						<label>$ADDON[script.kodi.knewc 30034]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="253">
 						<description>Close</description>
-						<label>$ADDON[script.kodi.knew4v5 30031]</label>
+						<label>$ADDON[script.kodi.knewc 30031]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 					<control type="button" id="254">
 						<description>Play</description>
-						<label>$ADDON[script.kodi.knew4v5 30036]</label>
+						<label>$ADDON[script.kodi.knewc 30036]</label>
 						<include>ButtonInfoDialogsCommonValues</include>
 					</control>
 				</control>

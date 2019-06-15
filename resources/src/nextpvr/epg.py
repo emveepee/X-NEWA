@@ -33,7 +33,7 @@ from fix_utf8 import smartUTF8
 # Shared resources
 from XNEWAGlobals import *
 #todo what is DIR_HOME?
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 DIR_HOME =  WHERE_AM_I.replace( ";", "" )
 DIR_RESOURCES = os.path.join( DIR_HOME , "resources" )
 DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
@@ -367,7 +367,7 @@ class EpgWindow(xbmcgui.WindowXML):
         xbmcgui.WindowXML.removeControl(self, ctrl)
 
     ###############################################################################################
-    def setFocus(self, ctrl):
+    def setFocus1(self, ctrl):
         raise NameError("Don't do that here!")
 
     ###############################################################################################
@@ -480,7 +480,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 self.updateChannels(0)
                 self.idxRow = 0
                 self.idxCol = 0
-                self.reFocus();
+                self.reFocus()
                 return
             elif newRow > self.MaxDisplayChannels -1:
                 self.updateChannels(self.channelTop+1)
@@ -493,7 +493,7 @@ class EpgWindow(xbmcgui.WindowXML):
                     # Last displayed row
                         self.updateChannels(self.channelTop+1)
                         newRow = self.idxRow - 1
-                        break;
+                        break
                 # End of new
             if newIDX > len(self.epgButtons[newRow])-1:
                 newIDX = len(self.epgButtons[newRow])-1
@@ -510,7 +510,7 @@ class EpgWindow(xbmcgui.WindowXML):
 #                    self.setFocus(0, 0)
                     self.idxRow = self.MaxDisplayChannels - 1
                     self.idxCol = 0
-                    self.reFocus();
+                    self.reFocus()
                     return
                 else:
                     self.updateChannels(self.channelTop-1)
@@ -690,12 +690,23 @@ class EpgWindow(xbmcgui.WindowXML):
         from . import details
 
         oid = self.epgTagData[controlID][0]
-        detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="E")
+        epgChannel = self.epgTagData[controlID][4]
+        #self.epgTagData[ctrl.getId()] = [programme['oid'], programme['subtitle'], programme['desc'], programme['title'], nEpgPos, i, programme['start'], programme['end'], tagrec]
+        if self.settings.XNEWA_INTERFACE == 'JSON':
+            fakeEvent = None
+        else:
+            fakeEvent = self.epgTagData[controlID]
+            channel = {}
+            channel[0]=self.epgData[epgChannel]['name']
+            channel[1]=str(self.epgData[epgChannel]['num'])
+            channel[2]=self.epgData[epgChannel]['oid']
+            fakeEvent.append(channel)
+        detailDialog = details.DetailDialog("nextpvr_recording_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="E", passedData = fakeEvent  )
         detailDialog.doModal()
         if detailDialog.returnvalue is not None:
             print(detailDialog.returnvalue)
             if detailDialog.returnvalue == "PICK":
-                detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P")
+                detailDialog = details.DetailDialog("nextpvr_details.xml",  WHERE_AM_I,self.settings.XNEWA_SKIN, xnewa=self.xnewa, settings=self.settings, oid=oid, epg=True, type="P", passedData = fakeEvent  )
                 detailDialog.doModal()
 
         if detailDialog.returnvalue is not None:
@@ -717,7 +728,7 @@ class EpgWindow(xbmcgui.WindowXML):
         if self.moveBar < datetime.now() and  datetime.now() > self.epgStartTime:
             self.moveBar = datetime.now() + timedelta(seconds = 30)
             delta = datetime.now() - self.epgStartTime
-            posx = self.epgProgsX + (delta.seconds // 60) * self.epgPixelsPerMin
+            posx = self.epgProgsX + int(round(delta.seconds / 60 * self.epgPixelsPerMin))
             self.removeControl(self.nowTimeCI)
             self.nowTimeCI.setPosition(posx, self.epgY)
             self.nowTimeCI.setVisible(True)
@@ -856,7 +867,6 @@ class EpgWindow(xbmcgui.WindowXML):
             else:
                 print(self.epgTagData[cid][3])
                 break
-        print(self.epgTagData)
         oid = self.epgTagData[cid][0]
         epgChannel = self.epgTagData[cid][4]
         dd = {}
@@ -1039,17 +1049,23 @@ class EpgWindow(xbmcgui.WindowXML):
                 if programme['rec']:
                     theFFile = focusRecFile + theFile
                     theNFile = nofocusRecFile + theFile
+                    tagrec = programme['rec']
+                    if 'recording_id' in programme:
+                        tagrec = programme['recording_id']
+                    else:
+                        tagrec = programme['rec']
                 else:
                     theFFile = focusFile + theFile
                     theNFile = nofocusFile + theFile
+                    tagrec = None
                 ctrl = xbmcgui.ControlButton(int(nPosX), int(nPosY), theWidth, self.epgRowH, \
                                         theText, theFFile, theNFile, font=font, \
                                         textColor=textColor, \
                                         alignment=XBFONT_CENTER_Y|XBFONT_TRUNCATED)
                 self.addControl(ctrl)
-                self.epgTagData[ctrl.getId()] = [programme['oid'], programme['subtitle'], programme['desc'], programme['title'], nEpgPos, i, programme['start'], programme['end'] ]
+                self.epgTagData[ctrl.getId()] = [programme['oid'], programme['subtitle'], programme['desc'], programme['title'], nEpgPos, i, programme['start'], programme['end'], tagrec ]
                 self.epgButtons[nRow].append(ctrl)
-                break;
+                break
             # Put it in....
             #if nRightX == nMaxX:
             #theWidth = int(nMaxX - nPosX)
@@ -1071,22 +1087,27 @@ class EpgWindow(xbmcgui.WindowXML):
             if programme['rec']:
                 theFFile = focusRecFile + theFile
                 theNFile = nofocusRecFile + theFile
+                if 'recording_id' in programme:
+                    tagrec = programme['recording_id']
+                else:
+                    tagrec = programme['rec']
             else:
                 theFFile = focusFile + theFile
                 theNFile = nofocusFile + theFile
+                tagrec = None
             ctrl = xbmcgui.ControlButton(int(nPosX), int(nPosY), theWidth, self.epgRowH, \
                                             theText, theFFile, theNFile, font=font, \
                                             textColor=textColor, \
                                             alignment=XBFONT_CENTER_Y|XBFONT_TRUNCATED)
             self.addControl(ctrl)
-            self.epgTagData[ctrl.getId()] = [programme['oid'], programme['subtitle'], programme['desc'], programme['title'], nEpgPos, i, programme['start'], programme['end']]
+            self.epgTagData[ctrl.getId()] = [programme['oid'], programme['subtitle'], programme['desc'], programme['title'], nEpgPos, i, programme['start'], programme['end'], tagrec]
             #if self.lcid = 0:
             #    self.lcid = ctrl.getId()
             self.epgButtons[nRow].append(ctrl)
             nPosX = nRightX + self.epgColGap
             if nRightX == nMaxX:
 #                "Samed you know"
-                break;
+                break
 
     ###################################################################################################################
     # Delete a row of programs (for one channel)

@@ -53,14 +53,14 @@
             <posx>320</posx>
             <posy>135</posy>
             <itemgap>32</itemgap>
-            <control type="label"><description>title</description><label>$ADDON[script.kodi.knew4v5 30011]</label></control>
-            <control type="label"><description>air date</description><label>$ADDON[script.kodi.knew4v5 30009]</label></control>
-            <control type="label"><description>channel</description><label>$ADDON[script.kodi.knew4v5 30012]</label></control>
-            <control type="label"><description>episode</description><label>$ADDON[script.kodi.knew4v5 30040]</label></control>
+            <control type="label"><description>title</description><label>$ADDON[script.kodi.knewc 30011]</label></control>
+            <control type="label"><description>air date</description><label>$ADDON[script.kodi.knewc 30009]</label></control>
+            <control type="label"><description>channel</description><label>$ADDON[script.kodi.knewc 30012]</label></control>
+            <control type="label"><description>episode</description><label>$ADDON[script.kodi.knewc 30040]</label></control>
             <!--
             <control type="label"><description>category</description><label>SCRIPT614</label></control>
             -->
-            <control type="label"><description>description</description><label>$ADDON[script.kodi.knew4v5 30041]</label></control>
+            <control type="label"><description>description</description><label>$ADDON[script.kodi.knewc 30041]</label></control>
         </control>
 
         <!-- ============================================= -->
@@ -85,7 +85,7 @@
             <control type="label">
                 <description>Air Date</description>
                 <textcolor>0xffddddff</textcolor>
-                <label>$INFO[Control.GetLabel(316)] $INFO[Control.GetLabel(314)] - $INFO[Control.GetLabel(315)] ($INFO[Control.GetLabel(318)] $ADDON[script.kodi.knew4v5 30029])</label>
+                <label>$INFO[Control.GetLabel(316)] $INFO[Control.GetLabel(314)] - $INFO[Control.GetLabel(315)] ($INFO[Control.GetLabel(318)] $ADDON[script.kodi.knewc 30029])</label>
             </control>
 
             <control type="label" id="304">
@@ -278,7 +278,7 @@
 
         <control type="button" id="253">
             <description>Close button</description>
-            <label>$ADDON[script.kodi.knew4v5 30031]</label>
+            <label>$ADDON[script.kodi.knewc 30031]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -292,7 +292,7 @@
         <control type="button" id="258">
             <description>Resume button</description>
             <height>40</height>
-            <label>$ADDON[script.kodi.knew4v5 30032]</label>
+            <label>$ADDON[script.kodi.knewc 30032]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -306,7 +306,7 @@
         <control type="button" id="259">
             <description>Unwatch button</description>
             <height>40</height>
-            <label>$ADDON[script.kodi.knew4v5 30033]</label>
+            <label>$ADDON[script.kodi.knewc 30033]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -320,7 +320,7 @@
         <control type="button" id="252">
             <description>Quick Record button</description>
             <height>40</height>
-            <label>$ADDON[script.kodi.knew4v5 30035] $ADDON[script.kodi.knew4v5 30034]</label>
+            <label>$ADDON[script.kodi.knewc 30035] $ADDON[script.kodi.knewc 30034]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -332,7 +332,7 @@
         <control type="button" id="260">
             <description>Record button</description>
             <height>40</height>
-            <label>$ADDON[script.kodi.knew4v5 30034]</label>
+            <label>$ADDON[script.kodi.knewc 30034]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -344,7 +344,7 @@
         <control type="button" id="254">
             <description>Play button</description>
             <height>40</height>
-            <label>$ADDON[script.kodi.knew4v5 30036]</label>
+            <label>$ADDON[script.kodi.knewc 30036]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -359,7 +359,7 @@
 
         <control type="button" id="251">
             <description>Delete button</description>
-            <label>$ADDON[script.kodi.knew4v5 30038]</label>
+            <label>$ADDON[script.kodi.knewc 30038]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -373,7 +373,7 @@
 
         <control type="button" id="257">
             <description>Archive or Cancel button</description>
-            <label>$ADDON[script.kodi.knew4v5 30039]</label>
+            <label>$ADDON[script.kodi.knewc 30039]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>
@@ -390,7 +390,7 @@
 
         <control type="button" id="255">
             <description>Refresh button</description>
-            <label>$ADDON[script.kodi.knew4v5 30024]</label>
+            <label>$ADDON[script.kodi.knewc 30024]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
             <align>left</align>

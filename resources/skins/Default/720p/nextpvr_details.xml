@@ -383,10 +383,12 @@
             </control>
 
             <control type="button" id="208">
-                <label>$ADDON[script.kodi.knew4v5 30042]</label>
+                <label></label>
+                <!--label>$ADDON[script.kodi.knewc 30042]</label-->
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
-                <label2>$ADDON[script.kodi.knew4v5 30049]</label2>
+                <!--label2>$ADDON[script.kodi.knewc 30049]</label2-->
+                <label2></label2>
                 <width>650</width>
                 <height>35</height>
                 <align>left</align>
@@ -408,7 +410,7 @@
             <onup>2000</onup>
 
             <control type="button" id="250">
-                <label>$ADDON[script.kodi.knew4v5 30053]</label>
+                <label>$ADDON[script.kodi.knewc 30053]</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
@@ -419,7 +421,7 @@
             </control>
 
             <control type="button" id="251">
-                <label>$ADDON[script.kodi.knew4v5 30054]</label>
+                <label>$ADDON[script.kodi.knewc 30054]</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
@@ -430,7 +432,7 @@
             </control>
 
             <control type="button" id="252">
-                <label>$ADDON[script.kodi.knew4v5 30034]</label>
+                <label>$ADDON[script.kodi.knewc 30034]</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
@@ -441,7 +443,7 @@
             </control>
 
             <control type="button" id="253">
-                <label>$ADDON[script.kodi.knew4v5 30031]</label>
+                <label>$ADDON[script.kodi.knewc 30031]</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>
@@ -452,7 +454,7 @@
             </control>
 
             <control type="button" id="254">
-                <label>$ADDON[script.kodi.knew4v5 30036]</label>
+                <label>$ADDON[script.kodi.knewc 30036]</label>
                 <textcolor name="white">FFFFFFFF</textcolor>
                 <focusedcolor name="white">FFFFFFFF</focusedcolor>
                 <width>120</width>

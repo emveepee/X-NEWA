@@ -27,7 +27,7 @@ from XNEWAGlobals import *
 from xbmcaddon import Addon
 from fix_utf8 import smartUTF8
 
-__language__ = Addon('script.kodi.knew4v5').getLocalizedString
+__language__ = Addon('script.kodi.knewc').getLocalizedString
 
 programsListBoxId = 600
 refreshButtonId = 251
@@ -54,7 +54,6 @@ class ConflictedRecordingsWindow(xbmcgui.WindowXML):
         elif controlId == programsListBoxId:
             self.goEditSchedule()
         else:
-            print(self.conflictedData[self.programsListBox.getSelectedPosition()])
             from . import details
             if self.conflictedData[self.programsListBox.getSelectedPosition()]['start'] > datetime.datetime.now():
                 oid = self.conflictedData[self.programsListBox.getSelectedPosition()]['program_oid']

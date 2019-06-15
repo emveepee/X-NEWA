@@ -77,7 +77,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30011][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30011][/B]</label>
         </control>
 
         <control type="label">
@@ -90,7 +90,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30042][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30042][/B]</label>
         </control>
 
         <control type="label">
@@ -103,7 +103,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30043][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30043][/B]</label>
         </control>
 
         <control type="label">
@@ -116,7 +116,7 @@
             <selectedcolor>FFe2ff43</selectedcolor>
             <align>left</align>
             <aligny>center</aligny>
-            <label>[B]$ADDON[script.kodi.knew4v5 30012][/B]</label>
+            <label>[B]$ADDON[script.kodi.knewc 30012][/B]</label>
         </control>
 
 
@@ -325,7 +325,7 @@
         <align>left</align>
         <aligny>center</aligny>
         <textcolor>ffffffff</textcolor>
-        <label>$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002]</label>
+        <label>$ADDON[script.kodi.knewc 30007] $ADDON[script.kodi.knewc 30002]</label>
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
         <visible>false</visible>
@@ -340,7 +340,7 @@
         <align>right</align>
         <aligny>center</aligny>
         <textcolor>ffddddff</textcolor>
-        <label>[B]$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002][/B]</label>
+        <label>[B]$ADDON[script.kodi.knewc 30007] $ADDON[script.kodi.knewc 30002][/B]</label>
         <animation effect="fade" time="200">WindowOpen</animation>
         <animation effect="fade" time="200">WindowClose</animation>
     </control>
@@ -381,7 +381,7 @@
 
         <control type="button" id="250">
             <description>Refresh button</description>
-            <label>$ADDON[script.kodi.knew4v5 30024]</label>
+            <label>$ADDON[script.kodi.knewc 30024]</label>
             <width>285</width>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>
@@ -394,7 +394,7 @@
         </control>
         <control type="button" id="253">
             <description>Refresh button</description>
-            <label>$ADDON[script.kodi.knew4v5 30122]</label>
+            <label>$ADDON[script.kodi.knewc 30122]</label>
             <width>285</width>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>

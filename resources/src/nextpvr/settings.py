@@ -127,7 +127,7 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
         elif self.xnewa_postbuffer == source:
             self._getText(self.xnewa_postbuffer, "XNEWA_POSTBUFFER")
         elif self.xnewa_interface == source:
-            choices = ['NextPVR', 'XML', 'JSON',  'Short' ]
+            choices = ['NextPVR', 'XML', 'JSON']
             setting =  xbmcgui.Dialog().select("Interface Option", choices)
             self.settings.set("XNEWA_INTERFACE", choices[setting])
             self.xnewa_interface.setLabel(self.xnewa_interface.getLabel(), label2=choices[setting])
@@ -226,12 +226,12 @@ class settingsDialog(xbmcgui.WindowXMLDialog):
             self.xnewa_prebuffer.setLabel( "Timeshift Pre-buffer:", label2=str(self.settings.XNEWA_PREBUFFER*4) )
             self.xnewa_postbuffer.setLabel( "Timeshift Post-buffer:", label2=str(self.settings.XNEWA_POSTBUFFER*4) )
             self.xnewa_interface.setLabel( "Interface", label2=str(self.settings.XNEWA_INTERFACE) )
-            self.xnewa_client_size.setLabel( "Web Client Size:", label2=str(self.settings.XNEWA_CLIENT_SIZE) )
+            self.xnewa_client_size.setLabel( "UI Client Size:", label2=str(self.settings.XNEWA_CLIENT_SIZE) )
 
             if self.settings.XNEWA_CLIENT_QUALITY == True:
-                self.xnewa_client_quality.setLabel( "Web Client Quality:", label2='High' )
+                self.xnewa_client_quality.setLabel( "UI Client Quality:", label2='High' )
             else:
-                self.xnewa_client_quality.setLabel( "Web Client Quality:", label2='Normal')
+                self.xnewa_client_quality.setLabel( "UI Client Quality:", label2='Normal')
 
             self.epgscrollint.setLabel( "Scroll Interval (min.):", label2=str(self.settings.EPG_SCROLL_INT) )
             self.epgdispint.setLabel( "Display Interval (min.):", label2=str(self.settings.EPG_DISP_INT) )

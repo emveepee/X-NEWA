@@ -11,7 +11,7 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knewc 30000]" />
 			<param name="breadcrumbs_icon" value="icons/home/tv.png" />
 		</include>
 		<include content="BottomBar">
@@ -33,7 +33,7 @@
 					<font>font24_title</font>
 					<align>left</align>
 					<valign>bottom</valign>
-					<label>$ADDON[script.kodi.knew4v5 30007] $ADDON[script.kodi.knew4v5 30002]</label>
+					<label>$ADDON[script.kodi.knewc 30007] $ADDON[script.kodi.knewc 30002]</label>
 				</control>
 				<control type="group">
 					<description>Recurring Recordings Header</description>
@@ -44,7 +44,7 @@
 						<width>500</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30011]</label>
+						<label>$ADDON[script.kodi.knewc 30011]</label>
 					</control>
 					<control type="label">
 						<description>Priority</description>
@@ -52,7 +52,7 @@
 						<width>150</width>
 						<font>font13_title</font>
 						<align>center</align>
-						<label>$ADDON[script.kodi.knew4v5 30042]</label>
+						<label>$ADDON[script.kodi.knewc 30042]</label>
 					</control>
 					<control type="label">
 						<description>Type</description>
@@ -60,7 +60,7 @@
 						<width>150</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30043]</label>
+						<label>$ADDON[script.kodi.knewc 30043]</label>
 					</control>
 					<control type="label">
 						<description>Channel</description>
@@ -68,7 +68,7 @@
 						<width>230</width>
 						<font>font13_title</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30012]</label>
+						<label>$ADDON[script.kodi.knewc 30012]</label>
 					</control>
 				</control>
 <!-- ############ End Recordings Header ############ -->
@@ -193,24 +193,24 @@
 				<control type="label" id="200">
 					<description>NextPVR Options</description>
 					<include>MediaMenuLabelCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30000] $ADDON[script.kodi.knew4v5 30018]</label>
+					<label>$ADDON[script.kodi.knewc 30000] $ADDON[script.kodi.knewc 30018]</label>
 				</control>
 				<control type="button" id="250">
 					<description>Refresh</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30024]</label>
+					<label>$ADDON[script.kodi.knewc 30024]</label>
 					<enable>!substring(Window.Property(busy),true)+!substring(Window.Property(offline),true)</enable>
 				</control>
 				<control type="button" id="253">
 					<description>Sort Order</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30122]</label>
+					<label>$ADDON[script.kodi.knewc 30122]</label>
 					<enable>!substring(Window.Property(busy),true)</enable>
 				</control>
 				<control type="button" id="270">
 					<description>Fullscreen</description>
 					<include>MediaMenuItemsCommon</include>
-					<label>$ADDON[script.kodi.knew4v5 30044]</label>
+					<label>$ADDON[script.kodi.knewc 30044]</label>
 					<onclick>fullscreen</onclick>
 					<enable>!substring(Window.Property(busy),true)</enable>
 					<visible>Player.HasVideo</visible>

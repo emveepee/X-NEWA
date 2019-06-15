@@ -11,7 +11,7 @@
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knew4v5 30000]" />
+			<param name="breadcrumbs_label" value="$ADDON[script.kodi.knewc 30000]" />
 			<param name="breadcrumbs_icon" value="icons/home/tv.png" />
 		</include>
 		<include content="BottomBar">

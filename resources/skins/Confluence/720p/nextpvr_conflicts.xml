@@ -75,7 +75,7 @@
 			<itemgap>5</itemgap>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<label>$ADDON[script.kodi.knew4v5 30000] [COLOR=blue] - [/COLOR] $ADDON[script.kodi.knew4v5 30048] $ADDON[script.kodi.knew4v5 30008]</label>
+				<label>$ADDON[script.kodi.knewc 30000] [COLOR=blue] - [/COLOR] $ADDON[script.kodi.knewc 30048] $ADDON[script.kodi.knewc 30008]</label>
 			</control>
 		</control>
 		<include>Clock</include>
@@ -94,7 +94,7 @@
 					<font>font24_title</font>
 					<align>left</align>
 					<valign>bottom</valign>
-					<label>$ADDON[script.kodi.knew4v5 30048] $ADDON[script.kodi.knew4v5 30008]</label>
+					<label>$ADDON[script.kodi.knewc 30048] $ADDON[script.kodi.knewc 30008]</label>
 				</control>
 				<control type="group">
 					<description>Header for list of shows</description>
@@ -124,7 +124,7 @@
 						<height>35</height>
 						<font>font13</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30009]</label>
+						<label>$ADDON[script.kodi.knewc 30009]</label>
 					</control>
 					<control type="label">
 						<description>Title</description>
@@ -133,7 +133,7 @@
 						<height>35</height>
 						<font>font13</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30011]</label>
+						<label>$ADDON[script.kodi.knewc 30011]</label>
 					</control>
 					<control type="label">
 						<description>Start Time</description>
@@ -142,7 +142,7 @@
 						<height>35</height>
 						<font>font13</font>
 						<align>left</align>
-						<label>$ADDON[script.kodi.knew4v5 30028]</label>
+						<label>$ADDON[script.kodi.knewc 30028]</label>
 					</control>
 				</control>
 <!-- ############ End Recordings Header ############ -->
@@ -193,7 +193,7 @@
 							<height>30</height>
 							<font>font12</font>
 							<align>left</align>
-							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
+							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knewc 30029])</label>
 							<scroll>true</scroll>
 							<scrollspeed>30</scrollspeed>
 						</control>
@@ -248,7 +248,7 @@
 							<height>30</height>
 							<font>font12</font>
 							<align>left</align>
-							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
+							<label>$INFO[ListItem.Property(start)] ($INFO[ListItem.Property(duration)] $ADDON[script.kodi.knewc 30029])</label>
 							<scroll>true</scroll>
 							<scrollspeed>30</scrollspeed>
 						</control>
@@ -308,7 +308,7 @@
 								<height>25</height>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.kodi.knew4v5 30012]:</label>
+								<label>$ADDON[script.kodi.knewc 30012]:</label>
 							</control>
 							<control type="label">
 								<posx>100</posx>
@@ -328,7 +328,7 @@
 								<height>25</height>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.kodi.knew4v5 30010]:</label>
+								<label>$ADDON[script.kodi.knewc 30010]:</label>
 							</control>
 							<control type="label">
 								<posx>100</posx>
@@ -336,7 +336,7 @@
 								<height>25</height>
 								<font>font12</font>
 								<align>left</align>
-								<label>$INFO[Container(600).ListItem.Property(start)] ($INFO[Container(600).ListItem.Property(duration)] $ADDON[script.kodi.knew4v5 30029])</label>
+								<label>$INFO[Container(600).ListItem.Property(start)] ($INFO[Container(600).ListItem.Property(duration)] $ADDON[script.kodi.knewc 30029])</label>
 							</control>
 						</control>
 						<control type="group">
@@ -348,7 +348,7 @@
 								<height>25</height>
 								<font>font12_title</font>
 								<align>left</align>
-								<label>$ADDON[script.kodi.knew4v5 30041]</label>
+								<label>$ADDON[script.kodi.knewc 30041]</label>
 							</control>
 							<control type="textbox">
 								<visible>!IsEmpty(Container(600).ListItem.Property(description_short))</visible>
@@ -371,7 +371,7 @@
 								<height>490</height>
 								<font>font12</font>
 								<align>left</align>
-								<label>$ADDON[script.kodi.knew4v5 30045].</label>
+								<label>$ADDON[script.kodi.knewc 30045].</label>
 								<scroll>true</scroll>
 								<wrapmultiline>true</wrapmultiline>
 								<autoscroll time="2000" delay="10000" repeat="5000"></autoscroll>
@@ -461,14 +461,14 @@
 					<width>250</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>$ADDON[script.kodi.knew4v5 30000] $ADDON[script.kodi.knew4v5 30018]</label>
+					<label>$ADDON[script.kodi.knewc 30000] $ADDON[script.kodi.knewc 30018]</label>
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
 				<control type="button" id="251">
 					<description>Refresh</description>
-					<label>$ADDON[script.kodi.knew4v5 30024]</label>
+					<label>$ADDON[script.kodi.knewc 30024]</label>
 					<left>0</left>
 					<top>0</top>
 					<textwidth>235</textwidth>
@@ -477,7 +477,7 @@
 				</control>
 				<control type="button" id="270">
 					<description>Fullscreen</description>
-					<label>$ADDON[script.kodi.knew4v5 30044]</label>
+					<label>$ADDON[script.kodi.knewc 30044]</label>
 					<left>0</left>
 					<top>0</top>
 					<textwidth>235</textwidth>

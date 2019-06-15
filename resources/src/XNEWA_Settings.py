@@ -5,8 +5,8 @@ from __future__ import division
 # Usage: Instantiate a new class and use properties to retrieve global settings...
 #          I.e. mysettings= xnewa_settings()
 #        Then, use properties
-#          I.e. print mysettings.NextPVR_HOST
-#               print mysettings.NextPVR_PORT
+#          I.e. print (mysettings.NextPVR_HOST)
+#               print (mysettings.NextPVR_PORT)
 ######################################################################################################
 
 from future import standard_library
@@ -29,7 +29,6 @@ class XNEWA_Settings(object):
     def __init__(self):
 
         xbmc.log("Reading Settings.xml")
-
         if  int(xbmc.getInfoLabel('System.BuildVersion')[:2]) < 18:
             XBMC_DIALOG_BUSY_OPEN = "ActivateWindow(busydialog)"
             XBMC_DIALOG_BUSY_CLOSE = "Dialog.Close(busydialog)"
