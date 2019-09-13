@@ -580,7 +580,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 isTimeShifted = True
                 self.player.setTimeShift(True)
                 xbmc.sleep(500)
-                for x in range(0, 20):
+                for x in range(0, 40):
                     xbmc.sleep(500)
                     if self.xnewa.getTranscodeStatus()==100:
                         break
@@ -755,7 +755,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         if isVlc == True:
             self.xnewa.stopVlcStreamProcess(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
 
-        if self.settings.NextPVR_STREAM == 'Transcode' and self.detailData['recording_oid'] != 0:
+        if self.settings.NextPVR_STREAM == 'Transcode':
             self.xnewa.sendTranscodeStop()
 
         xbmc.log("play ended")

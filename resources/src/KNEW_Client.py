@@ -558,7 +558,7 @@ def getGuideInfo_v5(self,start,channelId=None):
             progs = []
             for program in listing['channel']['listings']:
                 dic = {}
-                dic['title'] = program['name']
+                dic['title'] = py2_decode(program['name'])
                 if 'description' in program:
                     dic['desc'] = py2_decode(program['description'])
                 else:

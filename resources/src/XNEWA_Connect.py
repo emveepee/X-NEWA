@@ -76,33 +76,31 @@ class XNEWA_Connect(object):
     def __init__(self, *args, **kwargs):
         self.settings = kwargs['settings']
         self.port = self.settings.NextPVR_PORT
-        self.ip = self.settings.NextPVR_HOST
-        xbmc.log(self.ip)
+        self.ip = unquote(self.settings.NextPVR_HOST)
         import re
-        m = re.search('(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)', self.ip )
+        m = re.search(r'(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)', self.ip )
         if m == None:
-            m = re.search('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', self.ip )
+            m = re.search(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', self.ip )
             if m != None:
                 xbmc.log ('Using Internet IPv4 restrictions on non-local IP')
                 self.LOCAL_NEWA = False
                 self.NextPVR_USEWOL = False
             else:
                 try:
-                    debug("Resolving hostname of: " + self.ip)
                     from socket import getaddrinfo
                     temp = getaddrinfo(self.ip, self.port)
                     ipv6 = temp[0][4][0]
-                    m = re.search('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', ipv6 )
+                    m = re.search(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', ipv6 )
                     if m != None:
                         #IPv4
-                        m = re.search('(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)', ipv6 )
+                        m = re.search(r'(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)', ipv6 )
                         if m == None:
                             xbmc.log ('Using Internet IPv4 restrictions')
                             self.LOCAL_NEWA = False
                             self.NextPVR_USEWOL = False
                     else:
                         if ipv6 == self.ip:
-                            self.ip = '[' + unquote(self.ip) + ']'
+                            self.ip = '[' + self.ip + ']'
                         xbmc.log (self.ip)
                         if ipv6.startswith ('fd') or ipv6.startswith ('fe80') or ipv6.replace(':','') == '1':
                             xbmc.log ('Local IPv6')
@@ -368,7 +366,7 @@ class XNEWA_Connect(object):
     def startTranscodeLiveStreamByChannelNumber(self, channelNum):
         self.methodTranscode = 'channel'
         self.getTranscodeStatus()
-        url = "http://" + self.ip + ":" + str(self.port) + '/services/services?method=channel.transcode.initiate&format=json&profile=' + self.settings.TRANSCODE_PROFILE + '&channel=' + str(channelNum) + '&sid=' + self.sid
+        url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=channel.transcode.initiate&format=json&profile=' + self.settings.TRANSCODE_PROFILE + '&channel=' + str(channelNum) + '&sid=' + self.sid
         xbmc.log(url)
         try:
             xml_file = urlopen(url)
@@ -381,7 +379,7 @@ class XNEWA_Connect(object):
     def startTranscodeRecording(self, recording_oid):
         self.methodTranscode = 'recording'
         self.getTranscodeStatus()
-        url = "http://" + self.ip + ":" + str(self.port) + '/services/services?method=recording.transcode.initiate&profile=' + self.settings.TRANSCODE_PROFILE + '&recording_id=' + str(recording_oid) + '&sid=' + self.sid
+        url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=recording.transcode.initiate&profile=' + self.settings.TRANSCODE_PROFILE + '&recording_id=' + str(recording_oid) + '&sid=' + self.sid
         xbmc.log(url)
         try:
             xml_file = urlopen(url)
@@ -393,7 +391,7 @@ class XNEWA_Connect(object):
 
 
     def sendTranscodeHeartbeat(self):
-        url = "http://" + self.ip + ":" + str(self.port) + '/services/services?method=' + self.methodTranscode + '.transcode.lease&sid=' + self.sid
+        url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=' + self.methodTranscode + '.transcode.lease&sid=' + self.sid
         xbmc.log(url)
         try:
             request = Request(url)
@@ -407,7 +405,7 @@ class XNEWA_Connect(object):
 
 
     def sendTranscodeStop(self):
-        url = "http://" + self.ip + ":" + str(self.port) + '/services/services?method=' + self.methodTranscode + '.transcode.stop&sid=' + self.sid
+        url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=' + self.methodTranscode + '.transcode.stop&sid=' + self.sid
         xbmc.log(url)
         try:
             xml_file = urlopen(url)
@@ -419,7 +417,7 @@ class XNEWA_Connect(object):
 
 
     def getTranscodeStatus(self):
-        url = "http://" + self.ip + ":" + str(self.port) + '/services/services?method=' + self.methodTranscode + '.transcode.status&format=json&sid=' + self.sid
+        url = "http://" + self.ip + ":" + str(self.port) + '/services/service?method=' + self.methodTranscode + '.transcode.status&format=json&sid=' + self.sid
         xbmc.log(url)
         retval = 0
         try:
@@ -2477,7 +2475,7 @@ class XNEWA_Connect(object):
                 d = d - self.my_offset
             except Exception as e:
                 d = dateutil.parser.parse(dateStr)#.astimezone(dateutil.tz.tzlocal())
-        return datetime.datetime(d.year, d.month, d.day, d.hour, d.minute, d.second)
+        return datetime(d.year, d.month, d.day, d.hour, d.minute, d.second)
 ######################################################################################################
 # Creating a guid (string) for authenthication
 ######################################################################################################

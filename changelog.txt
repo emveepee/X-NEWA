@@ -1,3 +1,10 @@
+[B]2.7.2[/B]
+- fixed transcoding API calls
+
+[B]2.7.1[/B]
+- did not update datetime function for v4 connections
+- improve hostname handling
+
 [B]2.7.0[/B]
 - most knewc python functions work with new api
 UI Client
