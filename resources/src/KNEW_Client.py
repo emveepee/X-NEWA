@@ -44,7 +44,10 @@ except ImportError:
     from urlparse import urlparse
     from urllib import quote, unquote, urlretrieve
 
-from httplib import HTTPException
+try:
+    from httplib import HTTPException
+except
+    from http.client import HTTPException
 
 def doRequest5(self, method, isJSON = True):
     retval = False
