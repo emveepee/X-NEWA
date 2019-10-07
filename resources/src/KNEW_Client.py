@@ -46,7 +46,7 @@ except ImportError:
 
 try:
     from httplib import HTTPException
-except
+except:
     from http.client import HTTPException
 
 def doRequest5(self, method, isJSON = True):
