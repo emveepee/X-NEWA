@@ -1,3 +1,7 @@
+[B]2.7.4[/B]
+- fixed missing colon from initial 2.7.3 upload
+- fixed group selection
+
 [B]2.7.3[/B]
 - fixed httplib call in python3
 

@@ -833,7 +833,7 @@ class XNEWA_Connect(object):
                         break
 
         if values != None:
-            groups = '|'.join(str(self.channelGroups))
+            groups = '|'.join(self.channelGroups)
             if values != groups:
                 setting.set('values',groups)
                 tree.write(settings_file)
