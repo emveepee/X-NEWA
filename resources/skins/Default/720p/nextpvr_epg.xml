@@ -252,24 +252,32 @@
 		</control>
 	</control>
 
-            <control type="image" id="1301">
+            <control type="button" id="1301">
                   <description>up_arrow</description>
-                  <posx>110</posx>
-                  <posy>125</posy>
-                  <width>40</width>
-                  <height>20</height>
-                  <texture>up_arrow.png</texture>
-            </control>
+                  <posx>30</posx>
+                  <posy>625</posy>
+                  <width>80</width>
+                  <height>40</height>
+                  <texturefocus>arrow_up_focus.png</texturefocus>
+                  <texturenofocus>arrow_up_nofocus.png</texturenofocus>
+                  <textcolor name="white">FFFFFFFF</textcolor>
+                  <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                  <colordiffuse>FFCCCC33</colordiffuse>
+           </control>
 
-            <control type="image" id="1302">
+            <control type="button" id="1302">
                   <description>down_arrow</description>
-                  <posx>110</posx>
-                  <posy>590</posy>
-                  <width>40</width>
-                  <height>20</height>
-                  <texture>down_arrow.png</texture>
+                  <posx>130</posx>
+                  <posy>625</posy>
+                  <width>80</width>
+                  <height>40</height>
                   <visible>!Player.HasVideo</visible>                  
-            </control>
+                  <textcolor name="white">FFFFFFFF</textcolor>
+                  <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                  <texturefocus>arrow_down_focus.png</texturefocus>
+                  <texturenofocus>arrow_down_nofocus.png</texturenofocus>
+                  <colordiffuse>FFCCCC33</colordiffuse>
+          </control>
 
             <!-- ============================================= -->
             <!-- H E A D E R -->

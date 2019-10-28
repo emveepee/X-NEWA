@@ -40,6 +40,9 @@ DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
 DIR_PIC = os.path.join( DIR_RESOURCES, "src", "images" )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
+scrollUpButtonId 		= 1301
+scrollDownButtonId 	= 1302
+
 #################################################################################################################
 # MAIN
 #################################################################################################################
@@ -104,8 +107,8 @@ class EpgWindow(xbmcgui.WindowXML):
     #################################################################################################################
     def onInit( self ):
         debug("> onInit() isStartup=%s" % self.isStartup)
-        self.upArrow = self.getControl(1301)
-        self.downArrow = self.getControl(1302)
+        self.upArrow = self.getControl(scrollUpButtonId)
+        self.downArrow = self.getControl(scrollDownButtonId)
 
         if self.isStartup:
             self.ready = False
@@ -119,8 +122,8 @@ class EpgWindow(xbmcgui.WindowXML):
 
             self.updateTimeBars(0)
             self.updateChannels(0)
-            self.upArrow = self.getControl(1301)
-            self.downArrow = self.getControl(1302)
+            self.upArrow = self.getControl(scrollUpButtonId)
+            self.downArrow = self.getControl(scrollDownButtonId)
             # debug("Trying setfocus...")
             self.setFocus(0, 0,True)
             self.getControl(self.CLBL_PROG_TITLE).setVisible(True)
@@ -580,16 +583,6 @@ class EpgWindow(xbmcgui.WindowXML):
             # debug("<-- updateChannels() newTop[=%s]" %(newTop))
             return
 
-        if (newTop + self.MaxDisplayChannels < self.channelCount):
-            self.downArrow.setVisible(True)
-        else:
-            self.downArrow.setVisible(False)
-
-        if newTop > 0:
-            self.upArrow.setVisible(True)
-        else:
-            self.upArrow.setVisible(False)
-
         if (newTop + self.MaxDisplayChannels > self.channelCount):
             # debug("Cannot move down...")
             # debug("<-- updateChannels() newTop[=%s]" %(newTop))
@@ -679,12 +672,50 @@ class EpgWindow(xbmcgui.WindowXML):
         except:
             pass
 
+
+    def scrollUp (self):
+        #xbmc.log ("Scroll Up")
+        if self.channelTop == 0:
+            i = self.channelCount - self.MaxDisplayChannels
+        else: 
+            i = self.channelTop - self.MaxDisplayChannels + 1
+            if i < 0:
+                i = 0
+        self.idxRow = 0
+        self.idxButt = 0
+        self.updateChannels(i)
+        self.setFocus(0, 0,True)
+        return
+
+    def scrollDown(self):
+        #xbmc.log ("Scroll Down")
+        if self.channelTop == self.channelCount - self.MaxDisplayChannels:
+            i=0
+        else:
+            i = self.channelTop + self.MaxDisplayChannels - 1
+            if i > (self.channelCount - self.MaxDisplayChannels):
+                i = self.channelCount - self.MaxDisplayChannels
+        self.idxRow = 0
+        self.idxButt = 0
+        self.updateChannels(i)
+        self.setFocus(0, 0,True)
+        return
+
     ###############################################################################################################
     def onClick(self, controlID):
+        #xbmc.log ("onClick Action" + str(controlID))
         if not self.ready:
             return
         elif self.xnewa.offline == True and self.settings.NextPVR_STREAM == 'Direct':
             self.quickPlayer()
+            return
+
+        if controlID == scrollUpButtonId:
+            self.scrollUp()
+            return
+
+        if controlID == scrollDownButtonId:
+            self.scrollDown()
             return
 
         from . import details
@@ -783,6 +814,7 @@ class EpgWindow(xbmcgui.WindowXML):
             actionID = action.getId()
             buttonID = action.getButtonCode()
         except: return
+        #xbmc.log ("onAction:"+str(actionID)+" "+str(buttonID))
 
         if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
             self.ready = False
@@ -808,20 +840,9 @@ class EpgWindow(xbmcgui.WindowXML):
             self.moveFocus(4)
             #self.updateChannels(self.channelTop-1)
         elif actionID in MOVEMENT_SCROLL_DOWN:
-            i = self.channelTop + self.MaxDisplayChannels -1
-            if i > (self.channelCount - self.MaxDisplayChannels):
-                i = 0
-            self.updateChannels(i)
-            self.setFocus(0, 0,True)
+        	   self.scrollDown ()
         elif actionID in MOVEMENT_SCROLL_UP:
-
-            i = self.channelTop - self.MaxDisplayChannels + 1
-            if i < 0:
-                i = self.channelCount - self.MaxDisplayChannels
-                self.idxRow = 0
-                self.idxButt = 0
-            self.updateChannels(i)
-            self.setFocus(0, 0,True)
+        	   self.scrollUp ()
         elif actionID == ACTION_PLAYER_PLAY:
             self.quickPlayer()
         elif actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
@@ -852,6 +873,9 @@ class EpgWindow(xbmcgui.WindowXML):
 
         self.ready = True
 
+###################################################################################################################
+
+###################################################################################################################
 
 ###################################################################################################################
     def quickPlayer (self):
