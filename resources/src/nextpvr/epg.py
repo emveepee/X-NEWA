@@ -284,7 +284,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.epgTimerBars = []
         FONT12 = 'font13'
 
-        crtl = xbmcgui.ControlLabel(self.epgX, self.epgY, epgChNameW, self.epgTimeBarH, \
+        crtl = xbmcgui.ControlLabel(self.epgProgsX+5, self.epgY-10, epgChNameW, self.epgTimeBarH, \
                                     '', FONT12, '0xFFFFFF00')
 
         #ctrl = xbmcgui.ControlImage(tempX-45, self.epgY, 95, self.epgTimeBarH, 'pstvTimeBar.png')
@@ -294,7 +294,10 @@ class EpgWindow(xbmcgui.WindowXML):
         tempX = self.epgProgsX
 
         for i in range(self.TimeIntervals -1):
-            ctrl = xbmcgui.ControlLabel(tempX-45, self.epgY, 150, self.epgTimeBarH, '', FONT12, '0xFFFFFF66', alignment=0x00000002)
+            ctrlx = tempX-45
+            if i==0: 
+                ctrlx += 14
+            ctrl = xbmcgui.ControlLabel(ctrlx, self.epgY+10, 150, self.epgTimeBarH, '', FONT12, '0xFFFFFF66', alignment=0x00000002)
             self.epgTimerBars.append(ctrl)
             ctrl.setVisible(False)
             self.addControl(ctrl)

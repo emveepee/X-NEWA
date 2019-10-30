@@ -255,7 +255,7 @@
             <control type="button" id="1301">
                   <description>up_arrow</description>
                   <posx>30</posx>
-                  <posy>625</posy>
+                  <posy>85</posy>
                   <width>80</width>
                   <height>40</height>
                   <texturefocus>arrow_up_focus.png</texturefocus>
@@ -268,10 +268,9 @@
             <control type="button" id="1302">
                   <description>down_arrow</description>
                   <posx>130</posx>
-                  <posy>625</posy>
+                  <posy>85</posy>
                   <width>80</width>
                   <height>40</height>
-                  <visible>!Player.HasVideo</visible>                  
                   <textcolor name="white">FFFFFFFF</textcolor>
                   <focusedcolor name="white">FFFFFFFF</focusedcolor>
                   <texturefocus>arrow_down_focus.png</texturefocus>
