@@ -40,7 +40,7 @@ DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
 DIR_PIC = os.path.join( DIR_RESOURCES, "src", "images" )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-scrollUpButtonId 		= 1301
+scrollUpButtonId = 1301
 scrollDownButtonId 	= 1302
 
 #################################################################################################################
@@ -92,7 +92,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.timer = None
         self.moveBar = self.currentTime + timedelta(seconds = 30)
         self.player = None
-
+        
         ret = self.loadNextPVR()
 
         #ret = True
@@ -468,11 +468,14 @@ class EpgWindow(xbmcgui.WindowXML):
         elif direction==2: # Move left
             newIDX = self.idxButt -1
             if newIDX < 0:
-                self.updateTimeBars(-1)
-                oldtop = self.channelTop
-                self.channelTop = -999
-                self.updateChannels(oldtop)
-                self.reFocus()
+                # this is the situation where you try to cursor left in the EPG, but there's nowhere to go
+                # previously, we did all this rebuilding - why? 
+                #self.updateTimeBars(-1)
+                #oldtop = self.channelTop
+                #self.channelTop = -999
+                #self.updateChannels(oldtop)
+                #self.reFocus()
+                xbmcgui.WindowXML.setFocus(self, self.downArrow)
                 return
             try:
                 self.setFocus(self.idxRow, newIDX,False)
@@ -687,7 +690,6 @@ class EpgWindow(xbmcgui.WindowXML):
         self.idxRow = 0
         self.idxButt = 0
         self.updateChannels(i)
-        self.setFocus(0, 0,True)
         return
 
     def scrollDown(self):
@@ -701,7 +703,6 @@ class EpgWindow(xbmcgui.WindowXML):
         self.idxRow = 0
         self.idxButt = 0
         self.updateChannels(i)
-        self.setFocus(0, 0,True)
         return
 
     ###############################################################################################################
@@ -715,10 +716,12 @@ class EpgWindow(xbmcgui.WindowXML):
 
         if controlID == scrollUpButtonId:
             self.scrollUp()
+            xbmcgui.WindowXML.setFocus(self, self.upArrow)
             return
 
         if controlID == scrollDownButtonId:
             self.scrollDown()
+            xbmcgui.WindowXML.setFocus(self, self.downArrow)
             return
 
         from . import details
@@ -828,24 +831,38 @@ class EpgWindow(xbmcgui.WindowXML):
             return
 
         self.ready = False
-        if actionID in MOVEMENT_LEFT:
-            self.moveFocus(2)
-            #self.updateTimeBars(-1)
-            #self.updateChannels(0)
-        elif actionID in MOVEMENT_RIGHT:
-            self.moveFocus(1)
-            #self.updateTimeBars(+1)
-            #self.updateChannels(0)
-        elif actionID in MOVEMENT_DOWN:
-            #self.updateChannels(self.channelTop+1)
-            self.moveFocus(3)
-        elif actionID in MOVEMENT_UP:
-            self.moveFocus(4)
-            #self.updateChannels(self.channelTop-1)
-        elif actionID in MOVEMENT_SCROLL_DOWN:
-        	   self.scrollDown ()
+        focusID = xbmcgui.WindowXML.getFocusId(self)
+        if focusID == scrollDownButtonId or focusID == scrollUpButtonId:
+            if actionID in MOVEMENT_LEFT:
+                if focusID == scrollDownButtonId:
+                    xbmcgui.WindowXML.setFocus(self, self.upArrow)
+            if actionID in MOVEMENT_RIGHT:
+                if focusID == scrollUpButtonId:
+                    xbmcgui.WindowXML.setFocus(self, self.downArrow)
+                if focusID == scrollDownButtonId:
+                    self.reFocus()
+        else:
+            if actionID in MOVEMENT_LEFT:
+                self.moveFocus(2)
+                #self.updateTimeBars(-1)
+                #self.updateChannels(0)
+            elif actionID in MOVEMENT_RIGHT:
+                self.moveFocus(1)
+                #self.updateTimeBars(+1)
+                #self.updateChannels(0)
+            elif actionID in MOVEMENT_DOWN:
+                #self.updateChannels(self.channelTop+1)
+                self.moveFocus(3)
+            elif actionID in MOVEMENT_UP:
+                self.moveFocus(4)
+                #self.updateChannels(self.channelTop-1)
+
+        if actionID in MOVEMENT_SCROLL_DOWN:
+               self.scrollDown ()
+               self.setFocus(0, 0,True)
         elif actionID in MOVEMENT_SCROLL_UP:
-        	   self.scrollUp ()
+               self.scrollUp ()
+               self.setFocus(0, 0,True)
         elif actionID == ACTION_PLAYER_PLAY:
             self.quickPlayer()
         elif actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
@@ -864,7 +881,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 i = 0
                 for a in self.epgData:
                     try:
-                        if value == a['num']:
+                        if value == str(a['num']):
                             self.updateChannels(i)
                             self.setFocus(0, 0,True)
                             break
