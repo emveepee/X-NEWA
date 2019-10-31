@@ -252,11 +252,11 @@
 		</control>
 	</control>
 
-            <control type="button" id="1301">
+           <control type="button" id="1301">
                   <description>up_arrow</description>
-                  <posx>30</posx>
+                  <posx>10</posx>
                   <posy>85</posy>
-                  <width>80</width>
+                  <width>70</width>
                   <height>40</height>
                   <texturefocus>arrow_up_focus.png</texturefocus>
                   <texturenofocus>arrow_up_nofocus.png</texturenofocus>
@@ -265,11 +265,24 @@
                   <colordiffuse>FFCCCC33</colordiffuse>
            </control>
 
+           <control type="button" id="1303">
+                  <description>number_pad</description>
+                  <posx>90</posx>
+                  <posy>85</posy>
+                  <width>60</width>
+                  <height>50</height>
+                  <textcolor name="white">FFFFFFFF</textcolor>
+                  <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                  <texturefocus>dial_focus.png</texturefocus>
+                  <texturenofocus>dial_nofocus.png</texturenofocus>
+                  <colordiffuse>FFCCCC33</colordiffuse>
+          </control>
+
             <control type="button" id="1302">
                   <description>down_arrow</description>
-                  <posx>130</posx>
+                  <posx>160</posx>
                   <posy>85</posy>
-                  <width>80</width>
+                  <width>70</width>
                   <height>40</height>
                   <textcolor name="white">FFFFFFFF</textcolor>
                   <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -277,7 +290,7 @@
                   <texturenofocus>arrow_down_nofocus.png</texturenofocus>
                   <colordiffuse>FFCCCC33</colordiffuse>
           </control>
-
+          
             <!-- ============================================= -->
             <!-- H E A D E R -->
             <!-- ============================================= -->

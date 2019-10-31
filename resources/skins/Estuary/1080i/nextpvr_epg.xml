@@ -40,7 +40,7 @@
 		</control>
        <control type="button" id="1301">
               <description>up_arrow</description>
-              <posx>55</posx>
+              <posx>30</posx>
               <posy>875</posy>
               <width>80</width>
               <height>50</height>
@@ -50,10 +50,21 @@
               <focusedcolor name="white">FFFFFFFF</focusedcolor>
               <colordiffuse>button_focus</colordiffuse>
        </control>
-
+       <control type="button" id="1303">
+               <description>number_pad</description>
+               <posx>120</posx>
+               <posy>875</posy>
+               <width>60</width>
+               <height>50</height>
+               <textcolor name="white">FFFFFFFF</textcolor>
+               <focusedcolor name="white">FFFFFFFF</focusedcolor>
+               <texturefocus>dial_focus.png</texturefocus>
+               <texturenofocus>dial_nofocus.png</texturenofocus>
+               <colordiffuse>button_focus</colordiffuse>
+        </control>
         <control type="button" id="1302">
               <description>down_arrow</description>
-              <posx>170</posx>
+              <posx>190</posx>
               <posy>875</posy>
               <width>80</width>
               <height>50</height>

@@ -42,6 +42,7 @@ sys.path.insert(0, DIR_RESOURCES_LIB)
 
 scrollUpButtonId = 1301
 scrollDownButtonId 	= 1302
+numButtonId = 1303
 
 #################################################################################################################
 # MAIN
@@ -107,8 +108,10 @@ class EpgWindow(xbmcgui.WindowXML):
     #################################################################################################################
     def onInit( self ):
         debug("> onInit() isStartup=%s" % self.isStartup)
+        
         self.upArrow = self.getControl(scrollUpButtonId)
         self.downArrow = self.getControl(scrollDownButtonId)
+        self.numButton = self.getControl(numButtonId)
 
         if self.isStartup:
             self.ready = False
@@ -124,6 +127,7 @@ class EpgWindow(xbmcgui.WindowXML):
             self.updateChannels(0)
             self.upArrow = self.getControl(scrollUpButtonId)
             self.downArrow = self.getControl(scrollDownButtonId)
+            self.numButton = self.getControl(numButtonId)
             # debug("Trying setfocus...")
             self.setFocus(0, 0,True)
             self.getControl(self.CLBL_PROG_TITLE).setVisible(True)
@@ -284,7 +288,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.epgTimerBars = []
         FONT12 = 'font13'
 
-        crtl = xbmcgui.ControlLabel(self.epgProgsX+5, self.epgY-10, epgChNameW, self.epgTimeBarH, \
+        crtl = xbmcgui.ControlLabel(self.epgProgsX+int(epgW/120), self.epgY-10, epgChNameW, self.epgTimeBarH, \
                                     '', FONT12, '0xFFFFFF00')
 
         #ctrl = xbmcgui.ControlImage(tempX-45, self.epgY, 95, self.epgTimeBarH, 'pstvTimeBar.png')
@@ -296,7 +300,7 @@ class EpgWindow(xbmcgui.WindowXML):
         for i in range(self.TimeIntervals -1):
             ctrlx = tempX-45
             if i==0: 
-                ctrlx += 14
+                ctrlx += int(epgW / 65)
             ctrl = xbmcgui.ControlLabel(ctrlx, self.epgY+10, 150, self.epgTimeBarH, '', FONT12, '0xFFFFFF66', alignment=0x00000002)
             self.epgTimerBars.append(ctrl)
             ctrl.setVisible(False)
@@ -466,16 +470,17 @@ class EpgWindow(xbmcgui.WindowXML):
             except:
                 pass
         elif direction==2: # Move left
+            if self.epgStartTime == self.initDate:
+                xbmcgui.WindowXML.setFocus(self, self.downArrow)
+                return
             newIDX = self.idxButt -1
             if newIDX < 0:
-                # this is the situation where you try to cursor left in the EPG, but there's nowhere to go
-                # previously, we did all this rebuilding - why? 
-                #self.updateTimeBars(-1)
-                #oldtop = self.channelTop
-                #self.channelTop = -999
-                #self.updateChannels(oldtop)
-                #self.reFocus()
-                xbmcgui.WindowXML.setFocus(self, self.downArrow)
+                self.updateTimeBars(-1)
+                oldtop = self.channelTop
+                self.channelTop = -999
+                self.updateChannels(oldtop)
+                self.reFocus()
+                #xbmcgui.WindowXML.setFocus(self, self.downArrow)
                 return
             try:
                 self.setFocus(self.idxRow, newIDX,False)
@@ -723,6 +728,10 @@ class EpgWindow(xbmcgui.WindowXML):
             self.scrollDown()
             xbmcgui.WindowXML.setFocus(self, self.downArrow)
             return
+            
+        if controlID == numButtonId:
+            self.ScrollToChannel (self.NumberPadDialog())
+            return
 
         from . import details
 
@@ -820,7 +829,7 @@ class EpgWindow(xbmcgui.WindowXML):
             actionID = action.getId()
             buttonID = action.getButtonCode()
         except: return
-        #xbmc.log ("onAction:"+str(actionID)+" "+str(buttonID))
+        xbmc.log ("onAction:"+str(actionID)+" "+str(buttonID))
 
         if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
             self.ready = False
@@ -832,12 +841,16 @@ class EpgWindow(xbmcgui.WindowXML):
 
         self.ready = False
         focusID = xbmcgui.WindowXML.getFocusId(self)
-        if focusID == scrollDownButtonId or focusID == scrollUpButtonId:
+        if focusID == scrollDownButtonId or focusID == scrollUpButtonId or focusID == numButtonId:
             if actionID in MOVEMENT_LEFT:
                 if focusID == scrollDownButtonId:
+                    xbmcgui.WindowXML.setFocus(self, self.numButton)
+                if focusID == numButtonId:
                     xbmcgui.WindowXML.setFocus(self, self.upArrow)
             if actionID in MOVEMENT_RIGHT:
                 if focusID == scrollUpButtonId:
+                    xbmcgui.WindowXML.setFocus(self, self.numButton)
+                if focusID == numButtonId:
                     xbmcgui.WindowXML.setFocus(self, self.downArrow)
                 if focusID == scrollDownButtonId:
                     self.reFocus()
@@ -870,32 +883,37 @@ class EpgWindow(xbmcgui.WindowXML):
                 self.ready = False
                 self.close()
         elif (actionID >= 58 and actionID <=69) or actionID == ACTION_INFO or (buttonID >= 0xf030 and buttonID <= 0xf039):
-            dialog = xbmcgui.Dialog()
             if buttonID >= 0xf030 and buttonID <= 0xf039:
-                value = dialog.numeric( 0, smartUTF8(__language__(30012)), str(buttonID-0xf030) )
+                self.ScrollToChannel(self.NumberPadDialog(str(buttonID-0xf030)))
             elif actionID >= 58 and actionID <= 69:
-                value = dialog.numeric( 0, smartUTF8(__language__(30012)), str(actionID-58) )
+                self.ScrollToChannel(self.NumberPadDialog(str(actionID-58) ))
             else:
-                value = dialog.numeric( 0, smartUTF8(__language__(30012)))
-            if value is not None:
-                i = 0
-                for a in self.epgData:
-                    try:
-                        if value == str(a['num']):
-                            self.updateChannels(i)
-                            self.setFocus(0, 0,True)
-                            break
-                    except:
-                        print(value)
-                        print(a['num'])
-
-                    i = i + 1
-
+                self.ScrollToChannel(self.NumberPadDialog())
         self.ready = True
 
 ###################################################################################################################
 
+    def NumberPadDialog (self,initial=""):
+        dialog = xbmcgui.Dialog()
+        return dialog.numeric( 0, smartUTF8(__language__(30012)),str(initial))
+
 ###################################################################################################################
+
+    def ScrollToChannel (self,value):
+        if value is not None:
+            i = 0
+            for a in self.epgData:
+                try:
+                    if value == str(a['num']):
+                        self.updateChannels(i)
+                        self.setFocus(0, 0,True)
+                        break
+                except:
+                    print(value)
+                    print(a['num'])
+
+                i = i + 1
+        
 
 ###################################################################################################################
     def quickPlayer (self):
