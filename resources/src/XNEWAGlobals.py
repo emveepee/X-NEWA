@@ -214,10 +214,10 @@ WHERE_AM_I = __addonpath__
 
 # Script doc constants
 __scriptname__ = "knewc"
-__version__ = '2.7.4'
+__version__ = '2.8.0~a1'
 __author__ = 'emveepee'
 __original_author__ = 'Ton van der Poel'
-__date__ = '2019-10-08'
+__date__ = '2019-11-01'
 
 XBMC_DIALOG_BUSY_OPEN = "ActivateWindow(busydialognocancel)"
 XBMC_DIALOG_BUSY_CLOSE = "Dialog.Close(busydialognocancel)"

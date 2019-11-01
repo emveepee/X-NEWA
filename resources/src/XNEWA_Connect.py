@@ -976,34 +976,34 @@ class XNEWA_Connect(object):
         timeStart = dtTimeStart.strftime("%Y-%m-%dT%H:%M:00")
         timeEnd = dtTimeEnd.strftime("%Y-%m-%dT%H:%M:00")
         cachedCount = self.cleanOldCache('guideListing-*.p')
+        if group == None or  group == 'All Channels':
+            group = ''
         if cachedCount > 0:
-            cached = 'guideListing-' + dtTimeStart.strftime("%Y-%m-%dT%H") + '.p'
+            cached = 'guideListing-' + dtTimeStart.strftime("%Y-%m-%dT%H") + group + '.p'
             if self.checkCache(cached):
                 retArr = self.myCachedPickleLoad(cached)
                 xbmc.log("getGuideInfo cached end")
                 return retArr
             lastHour = dtTimeStart - timedelta(hours=1)
-            cached = 'guideListing-' + lastHour.strftime("%Y-%m-%dT%H")  + '.p'
+            cached = 'guideListing-' + lastHour.strftime("%Y-%m-%dT%H")  + group + '.p'
             if self.checkCache(cached):
                 retArr = self.myCachedPickleLoad(cached)
                 xbmc.log("getGuideInfo cached last hour end")
                 return retArr
 
-
-
-        if group is not None:
+        if group != '':
             if group not in self.channelGroups:
                 xbmc.log(group + " group not found")
-                caseGroup = None
+                caseGroup = ''
                 for groups in self.channelGroups:
                     if groups.lower() == group.lower():
                         xbmc.log(groups + " group found")
                         caseGroup = groups
                 group = caseGroup
             elif group == 'All' or group == 'All Channels':
-                group = None
+                group = ''
 
-        cached = 'guideListing-' + dtTimeStart.strftime("%Y-%m-%dT%H") + '.p'
+        cached = 'guideListing-' + dtTimeStart.strftime("%Y-%m-%dT%H") + group + '.p'
 
         if self.settings.XNEWA_INTERFACE != 'JSON' or self.settings.XNEWA_WEBCLIENT == True:
             import calendar
@@ -1013,7 +1013,11 @@ class XNEWA_Connect(object):
                 start = None
             xbmc.log(start)
             #retGuide = self._progs2array_xml(url)
-            retGuide = getGuideInfo_v5(self,start)
+            if group == '':
+                retGuide = getGuideInfo_v5(self,start)
+            else:
+                retGuide = getGroupGuideInfo_v5(self,start,group)
+
         elif self.settings.XNEWA_INTERFACE == 'JSON':
             import calendar
             #url = "http://" + self.ip + ":" + str(self.port) + '/public/guideservice/listing?stime=' + dtTimeStart.strftime("%Y-%m-%dT%H:%M") + '&etime=' + dtTimeEnd.strftime("%Y-%m-%dT%H:%M")
@@ -1022,7 +1026,8 @@ class XNEWA_Connect(object):
                 url = url + '&chnlgroup=' + group.replace(' ','+')
             retGuide = self._progs2array_json(url)
 
-        self.myCachedPickle(retGuide,cached)
+        if retGuide != []:
+            self.myCachedPickle(retGuide,cached)
         xbmc.log("getGuideInfo end")
         return retGuide
 

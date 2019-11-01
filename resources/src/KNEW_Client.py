@@ -554,66 +554,89 @@ def getGuideInfo_v5(self,start,channelId=None):
     ret, listings = doRequest5(self,method)
     if ret:
         for listing in listings:
-            channel = {}
-            channel['name'] = py2_decode(listing['channel']['channel_name'])
-            channel['oid'] = listing['channel']['channel_id']
-            channel['num'] = listing['channel']['channel_formatted_number']
-            progs = []
-            for program in listing['channel']['listings']:
-                dic = {}
-                dic['title'] = py2_decode(program['name'])
-                if 'description' in program:
-                    dic['desc'] = py2_decode(program['description'])
-                else:
-                    dic['desc'] = ''
-                if 'subtitle' in program:
-                    dic['subtitle'] = py2_decode(program['subtitle'])
-                else:
-                    dic['subtitle'] = ''
-                if 'season' in program:
-                    dic['season'] = program['season']
-                else:
-                    dic['season'] = 0
-                if 'episode' in program:
-                    dic['episode'] = program['episode']
-                else:
-                    dic['episode'] = 0
-                dic['start'] = datetime.fromtimestamp(program['start'])
-                dic['end'] = datetime.fromtimestamp(program['end'])
-                if self.miniEPG > dic['end']:
-                   self.miniEPG = dic['end']
-
-                dic['oid'] = program['id']
-                if 'recording_status' in program:
-                    dic['rec'] = True
-                    dic['recording_id'] = program['recording_id']
-                else:
-                    dic['rec'] = False
-
-                dic['genreColour'] = 0
-                if 'genres' in program:
-                    for genre in program['genres']:
-                        dic['genres'] = genre
-                        try:
-                            if self.genresColours[genre] != 0:
-                                dic['genreColour'] = str(hex(self.genresColours[genre]))
-                        except:
-                            pass
-                else:
-                    dic['genres'] = ''
-                if 'firstrun' in program:
-                    dic['firstrun'] = program['firstrun']
-                else:
-                    dic['firstrun'] = False
-                progs.append(dic)
-                dic['significance'] = ''
-            channel['progs'] = progs
-            retArr.append(channel)
+            retArr.append(getGuideData(self,listing))
 
     xbmc.log("getGuideInfo v5 end")
     return retArr
 
+def getGroupGuideInfo_v5(self,start,groupId):
 
+    xbmc.log("getGroupGuideInfo v5 start")
+    retArr = []
+
+    method = 'channel.list&group_id=' + quote(groupId)
+    ret, channels = doRequest5(self,method)
+    if ret:
+        for channel in channels['channels']:
+            method = 'channel.listings.current&channel_id='  + str(channel['channelId'])
+
+            if start != None:
+                method += start
+
+            ret, listings = doRequest5(self,method)
+            if ret:
+                for listing in listings:
+                    retArr.append(getGuideData(self,listing))
+
+    xbmc.log("getGroupGuideInfo v5 end")
+    return retArr
+
+def getGuideData(self,listing):
+    channel = {}
+    channel['name'] = py2_decode(listing['channel']['channel_name'])
+    channel['oid'] = listing['channel']['channel_id']
+    channel['num'] = listing['channel']['channel_formatted_number']
+    progs = []
+    for program in listing['channel']['listings']:
+        dic = {}
+        dic['title'] = py2_decode(program['name'])
+        if 'description' in program:
+            dic['desc'] = py2_decode(program['description'])
+        else:
+            dic['desc'] = ''
+        if 'subtitle' in program:
+            dic['subtitle'] = py2_decode(program['subtitle'])
+        else:
+            dic['subtitle'] = ''
+        if 'season' in program:
+            dic['season'] = program['season']
+        else:
+            dic['season'] = 0
+        if 'episode' in program:
+            dic['episode'] = program['episode']
+        else:
+            dic['episode'] = 0
+        dic['start'] = datetime.fromtimestamp(program['start'])
+        dic['end'] = datetime.fromtimestamp(program['end'])
+        if self.miniEPG > dic['end']:
+            self.miniEPG = dic['end']
+
+        dic['oid'] = program['id']
+        if 'recording_status' in program:
+            dic['rec'] = True
+            dic['recording_id'] = program['recording_id']
+        else:
+            dic['rec'] = False
+
+        dic['genreColour'] = 0
+        if 'genres' in program:
+            for genre in program['genres']:
+                dic['genres'] = genre
+                try:
+                    if self.genresColours[genre] != 0:
+                        dic['genreColour'] = str(hex(self.genresColours[genre]))
+                except:
+                    pass
+        else:
+            dic['genres'] = ''
+        if 'firstrun' in program:
+            dic['firstrun'] = program['firstrun']
+        else:
+            dic['firstrun'] = False
+        progs.append(dic)
+        dic['significance'] = ''
+    channel['progs'] = progs
+    return channel
 
 def getRecordingsSummary_v5(self):
     xbmc.log("getRecordingsSummary v5 start")

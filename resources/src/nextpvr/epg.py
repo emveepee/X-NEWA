@@ -840,7 +840,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 i = 0
                 for a in self.epgData:
                     try:
-                        if value == a['num']:
+                        if value == str(a['num']).split('.')[0]:
                             self.updateChannels(i)
                             self.setFocus(0, 0,True)
                             break
