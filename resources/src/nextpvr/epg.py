@@ -470,11 +470,11 @@ class EpgWindow(xbmcgui.WindowXML):
             except:
                 pass
         elif direction==2: # Move left
-            if self.epgStartTime == self.initDate:
-                xbmcgui.WindowXML.setFocus(self, self.downArrow)
-                return
             newIDX = self.idxButt -1
             if newIDX < 0:
+                if self.epgStartTime == self.initDate:
+                    xbmcgui.WindowXML.setFocus(self, self.downArrow)
+                    return
                 self.updateTimeBars(-1)
                 oldtop = self.channelTop
                 self.channelTop = -999
