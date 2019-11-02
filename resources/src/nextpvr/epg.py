@@ -111,14 +111,28 @@ class EpgWindow(xbmcgui.WindowXML):
     #################################################################################################################
     def onInit( self ):
         debug("> onInit() isStartup=%s" % self.isStartup)
-        
-        self.upArrow = self.getControl(scrollUpButtonId)
-        self.downArrow = self.getControl(scrollDownButtonId)
-        self.numButton = self.getControl(numButtonId)
+
+        # some skins don't have these controls, so it will fail on getControl
+        # I set these to False, and the False condition is used later to 
+        # prevent attempting to access the nonexistent control. 
+
+        try:
+            self.upArrow = self.getControl(scrollUpButtonId)
+        except:
+            self.upArrow = False
+
+        try:
+            self.downArrow = self.getControl(scrollDownButtonId)
+        except:
+            self.downArrow = False
+
+        try:
+            self.numButton = self.getControl(numButtonId)
+        except:
+            self.numButton = False
 
         if self.isStartup:
             self.ready = False
-
 
             # Store resolution
             self.rez = self.getResolution()
@@ -128,9 +142,6 @@ class EpgWindow(xbmcgui.WindowXML):
 
             self.updateTimeBars(0)
             self.updateChannels(0)
-            self.upArrow = self.getControl(scrollUpButtonId)
-            self.downArrow = self.getControl(scrollDownButtonId)
-            self.numButton = self.getControl(numButtonId)
             # debug("Trying setfocus...")
             self.setFocus(0, 0,True)
             self.getControl(self.CLBL_PROG_TITLE).setVisible(True)
@@ -476,14 +487,15 @@ class EpgWindow(xbmcgui.WindowXML):
             newIDX = self.idxButt -1
             if newIDX < 0:
                 if self.epgStartTime == self.initDate:
-                    xbmcgui.WindowXML.setFocus(self, self.downArrow)
+                    # self.downArrow is set to false if there is no such control in the XML
+                    if self.downArrow != False: xbmcgui.WindowXML.setFocus(self, self.downArrow)
+                    # we return anyway, if we're at the left edge of the EPG, rather than redraw for no reason
                     return
                 self.updateTimeBars(-1)
                 oldtop = self.channelTop
                 self.channelTop = -999
                 self.updateChannels(oldtop)
                 self.reFocus()
-                #xbmcgui.WindowXML.setFocus(self, self.downArrow)
                 return
             try:
                 self.setFocus(self.idxRow, newIDX,False)
