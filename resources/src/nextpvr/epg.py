@@ -43,6 +43,9 @@ sys.path.insert(0, DIR_RESOURCES_LIB)
 scrollUpButtonId = 1301
 scrollDownButtonId 	= 1302
 numButtonId = 1303
+passButtonID = 1304
+
+OutsideGridButtons = (scrollUpButtonId,scrollDownButtonId,numButtonId,passButtonID) 
 
 #################################################################################################################
 # MAIN
@@ -728,7 +731,7 @@ class EpgWindow(xbmcgui.WindowXML):
             self.scrollDown()
             xbmcgui.WindowXML.setFocus(self, self.downArrow)
             return
-            
+
         if controlID == numButtonId:
             self.ScrollToChannel (self.NumberPadDialog())
             return
@@ -840,35 +843,28 @@ class EpgWindow(xbmcgui.WindowXML):
             return
 
         self.ready = False
+        
         focusID = xbmcgui.WindowXML.getFocusId(self)
-        if focusID == scrollDownButtonId or focusID == scrollUpButtonId or focusID == numButtonId:
-            if actionID in MOVEMENT_LEFT:
-                if focusID == scrollDownButtonId:
-                    xbmcgui.WindowXML.setFocus(self, self.numButton)
-                if focusID == numButtonId:
-                    xbmcgui.WindowXML.setFocus(self, self.upArrow)
-            if actionID in MOVEMENT_RIGHT:
-                if focusID == scrollUpButtonId:
-                    xbmcgui.WindowXML.setFocus(self, self.numButton)
-                if focusID == numButtonId:
-                    xbmcgui.WindowXML.setFocus(self, self.downArrow)
-                if focusID == scrollDownButtonId:
-                    self.reFocus()
-        else:
+        if (focusID == passButtonID):
+           # passButton is an invisible, unclickable, virtual button. Its purpose is to pass control over to the grid.
+           # When you press 'right' from the scrollDownButton, it passes focus to this button, which passes
+           # focus to the grid. 
+           # It might seem like you could just have a handler from scrollDownButton, which when pressed
+           # right, would pass control to the grid, but this won't work. This is because if there is no <onright>,
+           # the focus remains where it is, and from here you see that you got a MOVEMENT_RIGHT and focus is on
+           # scrollDownButton, which is the same set of inputs that you'd see when moving TO scrollDownButton
+           # with a MOVEMENT_RIGHT, there's no way to tell them apart.
+           # Maybe there's some other way to do it, but I couldn't find one.
+            self.reFocus()
+        if focusID not in OutsideGridButtons:
             if actionID in MOVEMENT_LEFT:
                 self.moveFocus(2)
-                #self.updateTimeBars(-1)
-                #self.updateChannels(0)
             elif actionID in MOVEMENT_RIGHT:
                 self.moveFocus(1)
-                #self.updateTimeBars(+1)
-                #self.updateChannels(0)
             elif actionID in MOVEMENT_DOWN:
-                #self.updateChannels(self.channelTop+1)
                 self.moveFocus(3)
             elif actionID in MOVEMENT_UP:
                 self.moveFocus(4)
-                #self.updateChannels(self.channelTop-1)
 
         if actionID in MOVEMENT_SCROLL_DOWN:
                self.scrollDown ()

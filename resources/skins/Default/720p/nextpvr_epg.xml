@@ -258,6 +258,7 @@
                   <posy>85</posy>
                   <width>70</width>
                   <height>40</height>
+                  <onright>1303</onright>
                   <texturefocus>arrow_up_focus.png</texturefocus>
                   <texturenofocus>arrow_up_nofocus.png</texturenofocus>
                   <textcolor name="white">FFFFFFFF</textcolor>
@@ -271,6 +272,8 @@
                   <posy>85</posy>
                   <width>60</width>
                   <height>50</height>
+                  <onleft>1301</onleft>
+                  <onright>1302</onright>
                   <textcolor name="white">FFFFFFFF</textcolor>
                   <focusedcolor name="white">FFFFFFFF</focusedcolor>
                   <texturefocus>dial_focus.png</texturefocus>
@@ -284,13 +287,25 @@
                   <posy>85</posy>
                   <width>70</width>
                   <height>40</height>
+                  <onleft>1303</onleft>
+                  <onright>1304</onright>
                   <textcolor name="white">FFFFFFFF</textcolor>
                   <focusedcolor name="white">FFFFFFFF</focusedcolor>
                   <texturefocus>arrow_down_focus.png</texturefocus>
                   <texturenofocus>arrow_down_nofocus.png</texturenofocus>
                   <colordiffuse>FFCCCC33</colordiffuse>
           </control>
-          
+
+            <control type="button" id="1304">
+                  <!-- see comments in epg.py onAction() --> 
+                  <description>pass_button</description>
+                  <posx>160</posx>
+                  <posy>85</posy>
+                  <width>1</width>
+                  <height>1</height>
+                  <colordiffuse>00000000</colordiffuse>
+          </control>
+
             <!-- ============================================= -->
             <!-- H E A D E R -->
             <!-- ============================================= -->
