@@ -43,9 +43,11 @@ sys.path.insert(0, DIR_RESOURCES_LIB)
 scrollUpButtonId = 1301
 scrollDownButtonId 	= 1302
 numButtonId = 1303
-passButtonID = 1304
+passButtonId = 1304
 
-OutsideGridButtons = (scrollUpButtonId,scrollDownButtonId,numButtonId,passButtonID) 
+timelineControlId = 12
+
+OutsideGridButtons = (scrollUpButtonId,scrollDownButtonId,numButtonId,passButtonId) 
 
 #################################################################################################################
 # MAIN
@@ -96,7 +98,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.timer = None
         self.moveBar = self.currentTime + timedelta(seconds = 30)
         self.player = None
-        
+
         ret = self.loadNextPVR()
 
         #ret = True
@@ -253,7 +255,11 @@ class EpgWindow(xbmcgui.WindowXML):
         #debug("epgX: %s epgY: %s epgW: %s epgH: %s"  % (self.epgX,self.epgY,epgW,self.epgH))
 
         # Other Stuff
-        self.epgTimeBarH = 35
+        self.epgTimeBarH = self.getControl(timelineControlId).getHeight()
+        self.epgTimeBarW = self.getControl(timelineControlId).getWidth()
+        self.epgTimeBarX, self.epgTimeBarY = self.getControl(timelineControlId).getPosition()
+        self.epgTimeBarBot = self.epgTimeBarY + self.epgTimeBarH
+
         self.epgColGap = 3
         epgChNameW = self.getControl(self.CLBL_CH_NAME).getWidth()
 
@@ -286,7 +292,7 @@ class EpgWindow(xbmcgui.WindowXML):
         sst = "Time Ints: " + str(self.TimeIntervals)
         sst = "TIME DIS: " + str(self.settings.EPG_DISP_INT)
         sst = "TIME SCR: " + str(self.settings.EPG_SCROLL_INT)
-        self.epgTimeIntervalW = self.epgProgsW // self.TimeIntervals
+        self.epgTimeIntervalW = self.epgTimeBarW // self.TimeIntervals
         # Add one for date
         self.TimeIntervals = self.TimeIntervals + 1
         self.epgPixelsPerMin = float(self.epgTimeIntervalW) / float(self.settings.EPG_SCROLL_INT)
@@ -302,8 +308,8 @@ class EpgWindow(xbmcgui.WindowXML):
         self.epgTimerBars = []
         FONT12 = 'font13'
 
-        crtl = xbmcgui.ControlLabel(self.epgProgsX+int(epgW/120), self.epgY-10, epgChNameW, self.epgTimeBarH, \
-                                    '', FONT12, '0xFFFFFF00')
+        crtl = xbmcgui.ControlLabel(self.epgProgsX + int(self.epgProgsW*0.005), int(self.epgTimeBarBot-self.epgTimeBarH*0.8), epgChNameW, self.epgTimeBarH, \
+                                    '', FONT12, '0xFFFFFF00', alignment=XBFONT_LEFT )
 
         #ctrl = xbmcgui.ControlImage(tempX-45, self.epgY, 95, self.epgTimeBarH, 'pstvTimeBar.png')
         self.epgTimerBars.append(crtl)
@@ -312,10 +318,10 @@ class EpgWindow(xbmcgui.WindowXML):
         tempX = self.epgProgsX
 
         for i in range(self.TimeIntervals -1):
-            ctrlx = tempX-45
+            ctrlx = int(tempX - self.epgProgsW*0.01) 
             if i==0: 
-                ctrlx += int(epgW / 65)
-            ctrl = xbmcgui.ControlLabel(ctrlx, self.epgY+10, 150, self.epgTimeBarH, '', FONT12, '0xFFFFFF66', alignment=0x00000002)
+                ctrlx = self.epgProgsX + int(self.epgProgsW*0.005) 
+            ctrl = xbmcgui.ControlLabel(ctrlx, int(self.epgTimeBarBot-self.epgTimeBarH*0.3), self.epgTimeIntervalW, self.epgTimeBarH, '', FONT12, '0xFFFFFF66', alignment=XBFONT_LEFT )
             self.epgTimerBars.append(ctrl)
             ctrl.setVisible(False)
             self.addControl(ctrl)
@@ -857,7 +863,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.ready = False
         
         focusID = xbmcgui.WindowXML.getFocusId(self)
-        if (focusID == passButtonID):
+        if (focusID == passButtonId):
            # passButton is an invisible, unclickable, virtual button. Its purpose is to pass control over to the grid.
            # When you press 'right' from the scrollDownButton, it passes focus to this button, which passes
            # focus to the grid. 

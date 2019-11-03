@@ -32,11 +32,21 @@
                   <!-- C O N T E N T B A C K G R O U N D -->
                   <!-- ============================================= -->
                   <!-- Copy of ContentPanel -->
+
+                  <control type="image" id="12">
+                         <!-- Not a real control; just gives us location and dimensions for the timeline. -->
+                        <description>timeline</description>
+                        <posx>244</posx>
+                        <posy>77</posy>
+                        <width>1036</width>
+                        <height>50</height>
+                  </control>
+
                   <control type="image">
                         <posx>220</posx>
                         <posy>50</posy>
                         <width>1059</width>
-                        <height>560</height>
+                        <height>550</height>
                         <texture border="50,0,0,45">vpanel1.png</texture>
                   </control>                  
                   <!--control type="image">
@@ -45,7 +55,7 @@
                         <width>230</width>
                         <height>590</height>
                         <texture border="50,0,0,50">dialog-panel.png</texture>
-                    </control-->
+                  </control-->
                   <control type="group" id="499">
                         <description>TV Guide</description>
                         <posx>315</posx>
@@ -341,7 +351,7 @@
                   <animation effect="fade" time="200">WindowOpen</animation>
                   <animation effect="fade" time="200">WindowClose</animation>
             </control>
-
+            
 	</controls>
 
 </window>

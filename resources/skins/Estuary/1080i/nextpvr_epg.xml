@@ -20,6 +20,14 @@
 		</include>
 <!-- ############ End Background ############ -->
 <!-- ############ Begin EPG ############ -->
+          <control type="image" id="12">
+                <!-- Not a real control; just gives us location and dimensions for the timeline. -->
+                <description>timeline</description>
+                <posx>244</posx>
+                <posy>90</posy>
+                <width>1676</width>
+                <height>75</height>
+          </control>
           <control type="image">
                 <left>280</left>
                 <top>100</top>
@@ -193,13 +201,5 @@
 			</control>
 		</control-->
 <!-- ############ End Busy Indicator ############ -->
-<!-- ############ Begin unused but required ############ -->
-		<control type="group">
-			<description>Not used but required</description>
-			<visible>false</visible>
-			<control type="image" id="1301"></control>
-			<control type="image" id="1302"></control>
-		</control>
-<!-- ############ End unused but required ############ -->
 	</controls>
 </window>
