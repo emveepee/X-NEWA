@@ -278,7 +278,6 @@
 
         <control type="button" id="253">
             <description>Close button</description>
-            <height>60</height>
             <label>$ADDON[script.kodi.knewc 30031]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -292,7 +291,7 @@
         </control>
         <control type="button" id="258">
             <description>Resume button</description>
-            <height>60</height>
+            <height>40</height>
             <label>$ADDON[script.kodi.knewc 30032]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -306,7 +305,7 @@
         </control>
         <control type="button" id="259">
             <description>Unwatch button</description>
-            <height>60</height>
+            <height>40</height>
             <label>$ADDON[script.kodi.knewc 30033]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -320,7 +319,7 @@
         </control>
         <control type="button" id="252">
             <description>Quick Record button</description>
-            <height>60</height>
+            <height>40</height>
             <label>$ADDON[script.kodi.knewc 30035] $ADDON[script.kodi.knewc 30034]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -332,7 +331,7 @@
         </control>
         <control type="button" id="260">
             <description>Record button</description>
-            <height>60</height>
+            <height>40</height>
             <label>$ADDON[script.kodi.knewc 30034]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -344,7 +343,7 @@
         </control>
         <control type="button" id="254">
             <description>Play button</description>
-            <height>60</height>
+            <height>40</height>
             <label>$ADDON[script.kodi.knewc 30036]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -360,7 +359,6 @@
 
         <control type="button" id="251">
             <description>Delete button</description>
-            <height>60</height>
             <label>$ADDON[script.kodi.knewc 30038]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -375,7 +373,6 @@
 
         <control type="button" id="257">
             <description>Archive or Cancel button</description>
-            <height>60</height>
             <label>$ADDON[script.kodi.knewc 30039]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -393,7 +390,6 @@
 
         <control type="button" id="255">
             <description>Refresh button</description>
-            <height>60</height>
             <label>$ADDON[script.kodi.knewc 30024]</label>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>

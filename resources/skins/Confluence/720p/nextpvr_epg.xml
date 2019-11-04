@@ -31,16 +31,6 @@
 			<aspectratio>keep</aspectratio>
 			<texture>icon_video.png</texture>
 		</control>
-		
-        <control type="image" id="12">
-             <!-- Not a real control; just gives us location and dimensions for the timeline. -->
-            <description>timeline</description>
-            <posx>244</posx>
-            <posy>57</posy>
-            <width>1036</width>
-            <height>50</height>
-        </control>
-
 		<control type="grouplist">
 			<left>65</left>
 			<top>5</top>
@@ -111,5 +101,13 @@
 			</control>
 		</control>
 <!-- ############ End Program Details ############ -->
+<!-- ############ Begin unused but required ############ -->
+		<control type="group">
+			<description>Not used but required</description>
+			<visible>false</visible>
+			<control type="image" id="1301"></control>
+			<control type="image" id="1302"></control>
+		</control>
+<!-- ############ End unused but required ############ -->
 	</controls>
 </window>

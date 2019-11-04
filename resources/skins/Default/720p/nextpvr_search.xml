@@ -522,7 +522,6 @@
             <description>Search button</description>
             <label>$ADDON[script.kodi.knewc 30023] ...</label>
             <width>285</width>
-            <height>60</height>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
@@ -534,7 +533,6 @@
             <description>Properties button</description>
             <label>$ADDON[script.kodi.knewc 32007]: $ADDON[script.kodi.knewc 30011]</label>
             <width>285</width>
-            <height>60</height>
             <align>left</align>
             <textoffsetx>40</textoffsetx>
             <texturefocus>button_focus.png</texturefocus>
