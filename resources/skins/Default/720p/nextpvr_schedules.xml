@@ -383,6 +383,7 @@
             <description>Refresh button</description>
             <label>$ADDON[script.kodi.knewc 30024]</label>
             <width>285</width>
+            <height>60</height>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -396,6 +397,7 @@
             <description>Refresh button</description>
             <label>$ADDON[script.kodi.knewc 30122]</label>
             <width>285</width>
+            <height>60</height>
             <align>left</align>
             <textcolor name="white">FFFFFFFF</textcolor>
             <focusedcolor name="white">FFFFFFFF</focusedcolor>
