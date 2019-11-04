@@ -457,13 +457,13 @@
 			<description>Free space background</description>
 			<posx>315</posx>
 			<posy>150</posy>
-			<width>270</width>
-			<height>105</height>
+			<width>390</width>
+			<height>110</height>
 			<colordiffuse>66FFFFFF</colordiffuse>
 			<texture border="5">black-back.png</texture>
 		</control>
 		<control type="label">
-			<posx>325</posx>
+			<posx>335</posx>
 			<posy>150</posy>
 			<width>300</width>
 			<height>35</height>
@@ -475,27 +475,29 @@
 			<label>[B]$ADDON[script.kodi.knewc 30015][/B]</label>
 		</control>
 		<control type="image" id="247">
-			<posx>325</posx>
+			<posx>335</posx>
 			<posy>180</posy>
 			<width>10</width>
 			<height>50</height>
 			<aspectratio>scale</aspectratio>
+			<colordiffuse>8800FF00</colordiffuse>
 			<texture>green.png</texture>
 			<animation effect="slide" start="0,0" end="5,5" time="200">Focus</animation>
 			<animation effect="slide" end="0,0" start="5,5" time="200">UnFocus</animation>
 		</control>
 		<control type="image" id="246">
-			<posx>525</posx>
+			<posx>635</posx>
 			<posy>180</posy>
 			<width>50</width>
 			<height>50</height>
 			<aspectratio>scale</aspectratio>
 			<texture>red.png</texture>
+			<colordiffuse>33FF0000</colordiffuse>
 			<animation effect="slide" start="0,0" end="5,5" time="200">Focus</animation>
 			<animation effect="slide" end="0,0" start="5,5" time="200">UnFocus</animation>
 		</control>
 		<control type="label" id="245">
-			<posx>325</posx>
+			<posx>335</posx>
 			<posy>225</posy>
 			<width>195</width>
 			<height>35</height>
@@ -507,7 +509,7 @@
 			<label>$ADDON[script.kodi.knewc 30016]</label>
 		</control>
 		<control type="label" id="244">
-			<posx>575</posx>
+			<posx>675</posx>
 			<posy>225</posy>
 			<width>200</width>
 			<height>35</height>
@@ -741,6 +743,7 @@
                   <control type="button" id="251">
                         <label>$ADDON[script.kodi.knewc 30019]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -753,6 +756,7 @@
                   <control type="button" id="258">
                         <label>$ADDON[script.kodi.knewc 30002]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -765,6 +769,7 @@
                   <control type="button" id="253">
                         <label>$ADDON[script.kodi.knewc 30003] $ADDON[script.kodi.knewc 30002]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -777,6 +782,7 @@
                   <control type="button" id="260" >
                         <label>$ADDON[script.kodi.knewc 30021]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -790,6 +796,7 @@
                   <control type="button" id="252">
                         <label>$ADDON[script.kodi.knewc 30007] $ADDON[script.kodi.knewc 30002]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -802,6 +809,7 @@
                   <control type="button" id="250" >
                         <label>$ADDON[script.kodi.knewc 30022]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -815,6 +823,7 @@
                   <control type="button" id="254">
                         <label>$ADDON[script.kodi.knewc 30023]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -827,6 +836,7 @@
                   <control type="button" id="256">
                         <label>$ADDON[script.kodi.knewc 30024]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -840,6 +850,7 @@
                   <control type="button" id="259">
                         <label>$ADDON[script.kodi.knewc 30025]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
@@ -854,6 +865,7 @@
                   <control type="button" id="257">
                         <label>$ADDON[script.kodi.knewc 30026]</label>
                         <width>285</width>
+                        <height>60</height>
                         <align>left</align>
                         <textcolor name="white">FFFFFFFF</textcolor>
                         <focusedcolor name="white">FFFFFFFF</focusedcolor>
