@@ -1,3 +1,7 @@
+[B]2.8.0~a1[/B]
+- test channels numbers as strings in EPG, find approx ATSC
+- allow channel groups for listings
+
 [B]2.7.4[/B]
 - fixed missing colon from initial 2.7.3 upload
 - fixed group selection
