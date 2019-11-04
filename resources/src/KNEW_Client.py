@@ -121,9 +121,9 @@ def setClient5(self):
             self.defaultSchedule['post_padding_min'] = int(settings['postPadding'])
             self.defaultSchedule['days_to_keep'] = 0
 
-    import random
-    self.client = self.strClient + "-" + self.settings.XNEWA_MAC + "-" + str(int(round(random.random()*1000))) + '&sid=' + self.sid
-    xbmc.log("Client ID: "+self.client)
+
+    self.client = self.strClient + self.settings.XNEWA_MAC + '&sid=' + self.sid
+
 
 def getRecDirList_v5(self):
 
