@@ -32,11 +32,21 @@
                   <!-- C O N T E N T B A C K G R O U N D -->
                   <!-- ============================================= -->
                   <!-- Copy of ContentPanel -->
+
+                  <control type="image" id="12">
+                         <!-- Not a real control; just gives us location and dimensions for the timeline. -->
+                        <description>timeline</description>
+                        <posx>244</posx>
+                        <posy>77</posy>
+                        <width>1036</width>
+                        <height>50</height>
+                  </control>
+
                   <control type="image">
                         <posx>220</posx>
                         <posy>50</posy>
                         <width>1059</width>
-                        <height>560</height>
+                        <height>550</height>
                         <texture border="50,0,0,45">vpanel1.png</texture>
                   </control>                  
                   <!--control type="image">
@@ -45,7 +55,7 @@
                         <width>230</width>
                         <height>590</height>
                         <texture border="50,0,0,50">dialog-panel.png</texture>
-                    </control-->
+                  </control-->
                   <control type="group" id="499">
                         <description>TV Guide</description>
                         <posx>315</posx>
@@ -252,24 +262,59 @@
 		</control>
 	</control>
 
-            <control type="image" id="1301">
+           <control type="button" id="1301">
                   <description>up_arrow</description>
-                  <posx>110</posx>
-                  <posy>125</posy>
-                  <width>40</width>
-                  <height>20</height>
-                  <texture>up_arrow.png</texture>
-            </control>
+                  <posx>10</posx>
+                  <posy>85</posy>
+                  <width>70</width>
+                  <height>40</height>
+                  <onright>1303</onright>
+                  <texturefocus>arrow_up_focus.png</texturefocus>
+                  <texturenofocus>arrow_up_nofocus.png</texturenofocus>
+                  <textcolor name="white">FFFFFFFF</textcolor>
+                  <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                  <colordiffuse>FFCCCC33</colordiffuse>
+           </control>
 
-            <control type="image" id="1302">
+           <control type="button" id="1303">
+                  <description>number_pad</description>
+                  <posx>90</posx>
+                  <posy>85</posy>
+                  <width>60</width>
+                  <height>50</height>
+                  <onleft>1301</onleft>
+                  <onright>1302</onright>
+                  <textcolor name="white">FFFFFFFF</textcolor>
+                  <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                  <texturefocus>dial_focus.png</texturefocus>
+                  <texturenofocus>dial_nofocus.png</texturenofocus>
+                  <colordiffuse>FFCCCC33</colordiffuse>
+          </control>
+
+            <control type="button" id="1302">
                   <description>down_arrow</description>
-                  <posx>110</posx>
-                  <posy>590</posy>
-                  <width>40</width>
-                  <height>20</height>
-                  <texture>down_arrow.png</texture>
-                  <visible>!Player.HasVideo</visible>                  
-            </control>
+                  <posx>160</posx>
+                  <posy>85</posy>
+                  <width>70</width>
+                  <height>40</height>
+                  <onleft>1303</onleft>
+                  <onright>1304</onright>
+                  <textcolor name="white">FFFFFFFF</textcolor>
+                  <focusedcolor name="white">FFFFFFFF</focusedcolor>
+                  <texturefocus>arrow_down_focus.png</texturefocus>
+                  <texturenofocus>arrow_down_nofocus.png</texturenofocus>
+                  <colordiffuse>FFCCCC33</colordiffuse>
+          </control>
+
+            <control type="button" id="1304">
+                  <!-- see comments in epg.py onAction() --> 
+                  <description>pass_button</description>
+                  <posx>160</posx>
+                  <posy>85</posy>
+                  <width>1</width>
+                  <height>1</height>
+                  <colordiffuse>00000000</colordiffuse>
+          </control>
 
             <!-- ============================================= -->
             <!-- H E A D E R -->
@@ -306,7 +351,7 @@
                   <animation effect="fade" time="200">WindowOpen</animation>
                   <animation effect="fade" time="200">WindowClose</animation>
             </control>
-
+            
 	</controls>
 
 </window>
