@@ -23,6 +23,7 @@ from fix_utf8 import smartUTF8
 from XNEWAGlobals import *
 import http.client
 import re
+import random
 
 if sys.version_info >=  (2, 7):
     import json as _json
@@ -122,8 +123,12 @@ def setClient5(self):
             self.defaultSchedule['days_to_keep'] = 0
 
 
-    self.client = self.strClient + self.settings.XNEWA_MAC + '&sid=' + self.sid
-
+    self.client = self.strClient + self.settings.XNEWA_MAC
+    # if according to hidden setting, add random number to Client ID
+    # see settings.xml for the implications of this
+    if xbmcaddon.Addon().getSetting("randomizeClientId") == "true": self.client += "-" + str(int(round(random.random()*1000))) 
+    self.client += '&sid=' + self.sid
+    xbmc.log("Client ID: "+self.client)
 
 def getRecDirList_v5(self):
 

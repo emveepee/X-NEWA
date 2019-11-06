@@ -52,7 +52,12 @@
     <setting default="60" id="displayInterval" label="30253" option="int" range="30,15,480" type="slider" />
     <setting default="2" id="epgCache" label="30254" option="int" range="1,1,5" type="slider" />
     <setting default="55" id="epgRowHeight" label="30255" option="int" range="55,5,90" type="slider" />
-
+    <!-- Setting randomizeClientId to true will add a 3-digit random number to the client ID, to prevent NextPVR from knowing it's the same client.
+         This is only useful when running multiple clients on the same platform simultaneously, which will confuse the NextPVR server (if this is the
+         default 'false') because NextPVR thinks a client can only be doing one thing at a time, and for example, will not serve two videos to
+         the same client simultaneously. A 'true' value may also have undesirable side effects, as NextPVR uses the client ID for such purposes
+         as storing client preferences, and freeing tuners when a crashed client reboots. -->
+    <setting default="false" id="randomizeClientId" type="bool" visible="false"/>
   </category>
 
 </settings>
