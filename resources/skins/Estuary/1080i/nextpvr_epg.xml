@@ -8,6 +8,7 @@
 		<left>0</left>
 		<top>0</top>
 	</coordinates>
+    <onload>SetProperty(TouchButtonId,1302)</onload>
 	<controls>
 <!-- ############ Begin Background ############ -->
 		<include>DefaultBackground</include>
@@ -54,6 +55,8 @@
               <width>80</width>
               <height>50</height>
               <onright>1303</onright>
+              <onleft>Menu</onleft>
+			  <onclick>PageUp</onclick>
               <texturefocus>arrow_up_focus.png</texturefocus>
               <texturenofocus>arrow_up_nofocus.png</texturenofocus>
               <textcolor name="white">FFFFFFFF</textcolor>
@@ -68,6 +71,7 @@
                <height>50</height>
                <onleft>1301</onleft>
                <onright>1302</onright>
+			   <onclick>Info</onclick>
                <textcolor name="white">FFFFFFFF</textcolor>
                <focusedcolor name="white">FFFFFFFF</focusedcolor>
                <texturefocus>dial_focus.png</texturefocus>
@@ -81,7 +85,8 @@
               <width>80</width>
               <height>50</height>
               <onleft>1303</onleft>
-              <onright>1304</onright>
+              <onright>Menu</onright>
+			  <onclick>PageDown</onclick>
               <textcolor name="white">FFFFFFFF</textcolor>
               <focusedcolor name="white">FFFFFFFF</focusedcolor>
               <texturefocus>arrow_down_focus.png</texturefocus>

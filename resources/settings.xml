@@ -16,7 +16,7 @@
   </category>
 
   <category label="30220">
-    <setting default="Confluence" id="skin" label="30226" type="labelenum" values="Confluence|Classic|Estuary|Estuary-classic" />
+    <setting default="Confluence" id="skin" label="30226" type="labelenum" values="Confluence|Classic|Estuary" />
     <setting default="JSON" id="interface" label="30221" type="labelenum" values="JSON|XML" />
     <setting default="false" id="syncXBMC" label="30222" type="bool" />
     <setting default="false" id="fetchFanart" label="30223" type="bool" />

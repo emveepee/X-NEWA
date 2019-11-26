@@ -7,8 +7,8 @@
             <posx>0</posx>
             <posy>0</posy>
       </coordinates>
+      <onload>SetProperty(TouchButtonId,1302)</onload>
       <controls>
-
             <!-- ============================================= -->
             <!-- S C R E E N B A C K G R O U N D -->
             <!-- ============================================= -->
@@ -21,7 +21,7 @@
                   <height>720</height>
                   <texture>bg.png</texture>
             </control-->
-            <control type="group">
+            <control type="group" id="5000">
                   <description>Content Group</description>
                   <!-- Copy Window_OpenClose_Right_Panel_Animation -->
                   <!--animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
@@ -43,10 +43,10 @@
                   </control>
 
                   <control type="image">
-                        <posx>220</posx>
+                        <posx>212</posx>
                         <posy>50</posy>
                         <width>1059</width>
-                        <height>550</height>
+                        <height>570</height>
                         <texture border="50,0,0,45">vpanel1.png</texture>
                   </control>                  
                   <!--control type="image">
@@ -268,7 +268,9 @@
                   <posy>85</posy>
                   <width>70</width>
                   <height>40</height>
+                  <onleft>Menu</onleft>
                   <onright>1303</onright>
+                  <onclick>PageUp</onclick>
                   <texturefocus>arrow_up_focus.png</texturefocus>
                   <texturenofocus>arrow_up_nofocus.png</texturenofocus>
                   <textcolor name="white">FFFFFFFF</textcolor>
@@ -284,6 +286,7 @@
                   <height>50</height>
                   <onleft>1301</onleft>
                   <onright>1302</onright>
+                  <onclick>Info</onclick>
                   <textcolor name="white">FFFFFFFF</textcolor>
                   <focusedcolor name="white">FFFFFFFF</focusedcolor>
                   <texturefocus>dial_focus.png</texturefocus>
@@ -298,7 +301,8 @@
                   <width>70</width>
                   <height>40</height>
                   <onleft>1303</onleft>
-                  <onright>1304</onright>
+                  <onright>Menu</onright>
+                  <onclick>PageDown</onclick>
                   <textcolor name="white">FFFFFFFF</textcolor>
                   <focusedcolor name="white">FFFFFFFF</focusedcolor>
                   <texturefocus>arrow_down_focus.png</texturefocus>
@@ -306,15 +310,7 @@
                   <colordiffuse>FFCCCC33</colordiffuse>
           </control>
 
-            <control type="button" id="1304">
-                  <!-- see comments in epg.py onAction() --> 
-                  <description>pass_button</description>
-                  <posx>160</posx>
-                  <posy>85</posy>
-                  <width>1</width>
-                  <height>1</height>
-                  <colordiffuse>00000000</colordiffuse>
-          </control>
+
 
             <!-- ============================================= -->
             <!-- H E A D E R -->

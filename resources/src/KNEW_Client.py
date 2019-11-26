@@ -122,7 +122,7 @@ def setClient5(self):
             self.defaultSchedule['days_to_keep'] = 0
 
 
-    self.client = self.strClient + self.settings.XNEWA_MAC + '&sid=' + self.sid
+    self.client = self.strClient + self.settings.XNEWA_CLIENT + '&sid=' + self.sid
 
 
 def getRecDirList_v5(self):

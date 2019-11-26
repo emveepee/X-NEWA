@@ -2,12 +2,12 @@
 # -*- coding: UTF-8 -*-
 
 """
-    knew4v5
+    knewc
 
-    Controlling NextPVR from within XBMC.
+    Controlling NextPVR from within Kodi.
 
     Written By Ton van der Poel
-    Updated by emveepee
+    Updated by emveepee and crackulator
 
     THANKS:
     To everyone who's ever helped in anyway, or if I've used code from your own scripts, MUCH APPRECIATED!
@@ -20,7 +20,8 @@ from __future__ import absolute_import
 
 from builtins import str
 from builtins import range
-import xbmc, xbmcgui
+
+import xbmcgui
 import sys, re, time, os
 from os import path, listdir
 #from string import replace, split, upper, lower, capwords, join,zfill
@@ -40,14 +41,7 @@ DIR_RESOURCES_LIB = os.path.join( DIR_RESOURCES , "lib" )
 DIR_PIC = os.path.join( DIR_RESOURCES, "src", "images" )
 sys.path.insert(0, DIR_RESOURCES_LIB)
 
-scrollUpButtonId = 1301
-scrollDownButtonId 	= 1302
-numButtonId = 1303
-passButtonId = 1304
-
 timelineControlId = 12
-
-OutsideGridButtons = (scrollUpButtonId,scrollDownButtonId,numButtonId,passButtonId) 
 
 #################################################################################################################
 # MAIN
@@ -86,6 +80,7 @@ class EpgWindow(xbmcgui.WindowXML):
         self.epgButtons = []
         self.epgTagData = {}
         self.channelTop = -999
+        self.idxRow = 0
         self.channelCount = 0
         self.MaxDisplayChannels = 0
         self.isdst = 0
@@ -98,6 +93,8 @@ class EpgWindow(xbmcgui.WindowXML):
         self.timer = None
         self.moveBar = self.currentTime + timedelta(seconds = 30)
         self.player = None
+        self.lastFocusId = 0
+        self.touchButtonId 	= 0
 
         ret = self.loadNextPVR()
 
@@ -109,29 +106,10 @@ class EpgWindow(xbmcgui.WindowXML):
         else:
             self.ready = True
         debug("<-- xnewa()__init__")
-
     #################################################################################################################
     def onInit( self ):
         debug("> onInit() isStartup=%s" % self.isStartup)
 
-        # some skins don't have these controls, so it will fail on getControl
-        # I set these to False, and the False condition is used later to 
-        # prevent attempting to access the nonexistent control. 
-
-        try:
-            self.upArrow = self.getControl(scrollUpButtonId)
-        except:
-            self.upArrow = False
-
-        try:
-            self.downArrow = self.getControl(scrollDownButtonId)
-        except:
-            self.downArrow = False
-
-        try:
-            self.numButton = self.getControl(numButtonId)
-        except:
-            self.numButton = False
 
         if self.isStartup:
             self.ready = False
@@ -139,7 +117,6 @@ class EpgWindow(xbmcgui.WindowXML):
             # Store resolution
             self.rez = self.getResolution()
             # debug("onInit() resolution=%s" % self.rez)
-
             self.epgSetup()
 
             self.updateTimeBars(0)
@@ -153,9 +130,12 @@ class EpgWindow(xbmcgui.WindowXML):
             self.removeControl(self.nowTimeCI)
             self.addControl(self.nowTimeCI)
             # debug("Done setfocus...")
-
+            if self.getProperty('TouchButtonId'):
+                self.touchButtonId = int(self.getProperty('TouchButtonId'))
+            print (self.touchButtonId)
             self.isStartup = False
             self.ready = True
+            self.setProperty('Grid', 'True')
         debug("< onInit()")
 
     #################################################################################################################
@@ -476,6 +456,11 @@ class EpgWindow(xbmcgui.WindowXML):
     ###############################################################################################################
     def moveFocus(self, direction):
         #Todo: Fix for partially filled channel-data
+        if self.idxButt==999:
+            if direction==2:
+                self.idxButt = 1
+            else:
+                self.idxButt = -1
         if direction==1: # Move right
             newIDX = self.idxButt +1
             if newIDX > len(self.epgButtons[self.idxRow])-1:
@@ -492,10 +477,10 @@ class EpgWindow(xbmcgui.WindowXML):
         elif direction==2: # Move left
             newIDX = self.idxButt -1
             if newIDX < 0:
+                if self.touchButtonId != 0:
                 if self.epgStartTime == self.initDate:
-                    # self.downArrow is set to false if there is no such control in the XML
-                    if self.downArrow != False: xbmcgui.WindowXML.setFocus(self, self.downArrow)
-                    # we return anyway, if we're at the left edge of the EPG, rather than redraw for no reason
+                        self.setProperty('Grid', 'False')
+                        self.setFocusId(self.touchButtonId)
                     return
                 self.updateTimeBars(-1)
                 oldtop = self.channelTop
@@ -605,21 +590,20 @@ class EpgWindow(xbmcgui.WindowXML):
 
         # debug("newTop: %s, channelTop: %s" %(newTop, self.channelTop) )
         # debug("Channels: %s, maxchdisp: %s" %(self.channelCount, self.MaxDisplayChannels) )
-
+        oldTop = newTop
         if (newTop + self.MaxDisplayChannels > self.channelCount):
+            newTop = self.channelCount - self.MaxDisplayChannels
             # debug("Cannot move down...")
             # debug("<-- updateChannels() newTop[=%s]" %(newTop))
-            return
         if newTop <0:
             # debug("Cannot move up...")
             # debug("<-- updateChannels() newTop[=%s]" %(newTop))
             return
-
-        if (newTop + self.MaxDisplayChannels > self.channelCount):
-            # debug("Cannot move down...")
-            # debug("<-- updateChannels() newTop[=%s]" %(newTop))
-            return
-        self.lcid = 0;
+        if  self.channelTop != -999 and abs(self.channelTop + self.idxRow - oldTop)  < self.MaxDisplayChannels:
+            #navigate in page and oldTop + self.MaxDisplayChannels != self.channelCount
+            if  oldTop >= self.channelTop  and self.idxRow + self.channelTop < self.MaxDisplayChannels:
+                pass
+        self.lcid = 0
         if (newTop == self.channelTop+1):
             # Move one row down...
             self.deleteChannel(0)
@@ -707,12 +691,12 @@ class EpgWindow(xbmcgui.WindowXML):
 
     def scrollUp (self):
         #xbmc.log ("Scroll Up")
-        if self.channelTop == 0:
-            i = self.channelCount - self.MaxDisplayChannels
-        else: 
-            i = self.channelTop - self.MaxDisplayChannels + 1
+        i = self.channelTop - self.MaxDisplayChannels
             if i < 0:
+            if self.channelTop !=0:
                 i = 0
+            else:
+                i = self.channelCount - self.MaxDisplayChannels
         self.idxRow = 0
         self.idxButt = 0
         self.updateChannels(i)
@@ -720,38 +704,24 @@ class EpgWindow(xbmcgui.WindowXML):
 
     def scrollDown(self):
         #xbmc.log ("Scroll Down")
-        if self.channelTop == self.channelCount - self.MaxDisplayChannels:
+        i = self.channelTop + self.MaxDisplayChannels
+        if i > self.channelCount:
+            i = self.channelCount - i
+        elif i == self.channelCount:
             i=0
-        else:
-            i = self.channelTop + self.MaxDisplayChannels - 1
-            if i > (self.channelCount - self.MaxDisplayChannels):
-                i = self.channelCount - self.MaxDisplayChannels
-        self.idxRow = 0
-        self.idxButt = 0
         self.updateChannels(i)
         return
 
     ###############################################################################################################
     def onClick(self, controlID):
-        #xbmc.log ("onClick Action" + str(controlID))
+        xbmc.log ("onClick Action " + str(controlID))
         if not self.ready:
             return
         elif self.xnewa.offline == True and self.settings.NextPVR_STREAM == 'Direct':
             self.quickPlayer()
             return
-
-        if controlID == scrollUpButtonId:
-            self.scrollUp()
-            xbmcgui.WindowXML.setFocus(self, self.upArrow)
-            return
-
-        if controlID == scrollDownButtonId:
-            self.scrollDown()
-            xbmcgui.WindowXML.setFocus(self, self.downArrow)
-            return
-
-        if controlID == numButtonId:
-            self.ScrollToChannel (self.NumberPadDialog())
+        elif self.getProperty('Grid') == 'False':
+            # handle by action
             return
 
         from . import details
@@ -801,6 +771,7 @@ class EpgWindow(xbmcgui.WindowXML):
             self.nowTimeCI.setVisible(True)
             self.addControl(self.nowTimeCI)
         self.showDescription(controlID)
+        if self.getProperty('Grid') == 'True':
         self.lcid = controlID
 
 ##############################################################################################################
@@ -848,8 +819,10 @@ class EpgWindow(xbmcgui.WindowXML):
     def onAction(self, action):
         try:
             actionID = action.getId()
+            if actionID == 107:
+                # mouse moves
+                return
             buttonID = action.getButtonCode()
-        except: return
         xbmc.log ("onAction:"+str(actionID)+" "+str(buttonID))
 
         if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
@@ -860,21 +833,25 @@ class EpgWindow(xbmcgui.WindowXML):
         elif not self.ready:
             return
 
+            if self.getFocusId() == 0:
+                #click off buttons
+                return
+
+
+        except: return
+
         self.ready = False
         
-        focusID = xbmcgui.WindowXML.getFocusId(self)
-        if (focusID == passButtonId):
-           # passButton is an invisible, unclickable, virtual button. Its purpose is to pass control over to the grid.
-           # When you press 'right' from the scrollDownButton, it passes focus to this button, which passes
-           # focus to the grid. 
-           # It might seem like you could just have a handler from scrollDownButton, which when pressed
-           # right, would pass control to the grid, but this won't work. This is because if there is no <onright>,
-           # the focus remains where it is, and from here you see that you got a MOVEMENT_RIGHT and focus is on
-           # scrollDownButton, which is the same set of inputs that you'd see when moving TO scrollDownButton
-           # with a MOVEMENT_RIGHT, there's no way to tell them apart.
-           # Maybe there's some other way to do it, but I couldn't find one.
+        if  self.getProperty('Grid') == 'False':
+            if actionID in MOVEMENT_SCROLL_DOWN:
+                self.scrollDown ()
+            elif actionID in MOVEMENT_SCROLL_UP:
+                self.scrollUp ()
+            elif actionID == ACTION_MENU or buttonID == 61584 or actionID in MOVEMENT_UP or actionID in MOVEMENT_DOWN:
+                self.setProperty('Grid','True')
             self.reFocus()
-        if focusID not in OutsideGridButtons:
+                self.idxButt = 999
+        else:
             if actionID in MOVEMENT_LEFT:
                 self.moveFocus(2)
             elif actionID in MOVEMENT_RIGHT:
@@ -883,8 +860,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 self.moveFocus(3)
             elif actionID in MOVEMENT_UP:
                 self.moveFocus(4)
-
-        if actionID in MOVEMENT_SCROLL_DOWN:
+            elif actionID in MOVEMENT_SCROLL_DOWN:
                self.scrollDown ()
                self.setFocus(0, 0,True)
         elif actionID in MOVEMENT_SCROLL_UP:
@@ -892,17 +868,23 @@ class EpgWindow(xbmcgui.WindowXML):
                self.setFocus(0, 0,True)
         elif actionID == ACTION_PLAYER_PLAY:
             self.quickPlayer()
-        elif actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
+
+        if actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
             if self._goToDate() == -1:
                 self.ready = False
                 self.close()
         elif (actionID >= 58 and actionID <=69) or actionID == ACTION_INFO or (buttonID >= 0xf030 and buttonID <= 0xf039):
+            self.setProperty('Grid','True')
             if buttonID >= 0xf030 and buttonID <= 0xf039:
                 self.ScrollToChannel(self.NumberPadDialog(str(buttonID-0xf030)))
             elif actionID >= 58 and actionID <= 69:
                 self.ScrollToChannel(self.NumberPadDialog(str(actionID-58) ))
             else:
                 self.ScrollToChannel(self.NumberPadDialog())
+        elif buttonID == 61584:
+            self.setProperty('Grid','True')
+            self.updateChannels(0)
+            self.setFocus(0, 0,False)
         self.ready = True
 
 ###################################################################################################################
@@ -918,9 +900,9 @@ class EpgWindow(xbmcgui.WindowXML):
             i = 0
             for a in self.epgData:
                 try:
-                    if value == str(a['num']):
+                    if value == str(a['num']).split('.')[0]:
                         self.updateChannels(i)
-                        self.setFocus(0, 0,True)
+                        self.setFocus(i-self.channelTop, 0, False )
                         break
                 except:
                     print(value)

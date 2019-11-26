@@ -89,9 +89,6 @@ class XNEWA_Settings(object):
         if addon.getSetting('skin') != 'Classic':
             try:
                 if xbmc.getSkinDir() == 'skin.estuary':
-                    if addon.getSetting('skin') == 'Estuary-classic':
-                        self.XNEWA_SKIN = 'Estuary-classic'
-                    else:
                         self.XNEWA_SKIN = 'Estuary'
                 elif xbmc.getSkinDir() == 'skin.confluence':
                     self.XNEWA_SKIN = 'Confluence'
@@ -106,6 +103,13 @@ class XNEWA_Settings(object):
         self.XNEWA_WEBCLIENT = addon.getSetting('webclient') == 'true'
         self.XNEWA_CLIENT_SIZE = addon.getSetting('client_size')
         self.XNEWA_CLIENT_QUALITY = addon.getSetting('client_quality') == 'true'
+        self.XNEWA_CLIENT = addon.getSetting("client")
+        if  self.XNEWA_CLIENT ==  '':
+            addon.setSetting("client",self.XNEWA_MAC)
+        elif  self.XNEWA_CLIENT ==  'multi-kodis':
+            import random
+            self.XNEWA_CLIENT = str(int(round(random.random()*1000)))
+
         self.XNEWA_LIVE_SKIN = addon.getSetting('liveSkin') == 'true'
         self.XNEWA_CONTEXT_STOP = addon.getSetting('stopContext') == 'true'
         self.XNEWA_CONTEXT_POP = addon.getSetting('popContext') == 'true'

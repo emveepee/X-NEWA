@@ -380,12 +380,8 @@ class EmulateWindow(xbmcgui.WindowXML):
                 self.close()
             except Exception as err:
                 print (err)
-                if err.errno != 104 and err.errno != 10054:
-                    print(err)
                     self.exit = True
                     self.close()
-                else:
-                    xbmc.log('ignoring known error')
             if pauseActivity:
                 self.getActivity()
         self.renderstop = False
@@ -496,6 +492,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                             if self.sdlmode != SDL.disabled:
                                 if self.skipStop == False:
                                     try:
+                                        print("Stop state",self.state)
                                         url = self.base + '/control?media=stop'
                                         if self.state == videoState.error:
                                             url += '&message=Player%20error'

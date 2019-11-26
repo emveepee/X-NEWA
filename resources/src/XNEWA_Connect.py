@@ -2620,7 +2620,7 @@ class XNEWA_Connect(object):
                     if setting['value'] > '161029' and self.settings.XNEWA_LIVE_SKIN:
                         self.strClient = '&client=sdl-KNEW5'
 
-        self.client = self.strClient + self.settings.XNEWA_MAC + '&sid=' + self.sid
+        self.client = self.strClient + self.settings.XNEWA_CLIENT + '&sid=' + self.sid
 
 
     def getSettingJson (self, key):
