@@ -1,3 +1,9 @@
+[B]2.8.0~rc1[/B]
+- major EPG improvements by crackulator
+- fixed several scrolling errors in EPG listings
+- removed obsolete Estuary-classic skin
+- allow modification of client reported to NextPVR
+
 [B]2.8.0~a1[/B]
 - test channels numbers as strings in EPG, find approx ATSC
 - allow channel groups for listings
