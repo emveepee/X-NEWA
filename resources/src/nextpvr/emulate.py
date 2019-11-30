@@ -28,6 +28,16 @@ from builtins import str
 from builtins import range
 from builtins import object
 
+try:
+    from ctypes import windll, Structure, c_long, byref  # wintypes
+
+except Exception as e:
+    windll = None
+    Structure = ''
+    c_long= None
+    byref = None
+    print (str(e))
+
 import os
 from kodi_six import xbmc, xbmcaddon, xbmcplugin, xbmcgui, xbmcvfs
 from kodi_six.utils import py2_encode, py2_decode
@@ -55,7 +65,24 @@ class videoState(object):
 class SDL(object):
     disabled, inactive, lite, full = list(range(4))
 
+if windll != None:
+    class POINT(Structure):
+        _fields_ = [("x", c_long), ("y", c_long)]
 
+    class RECT(Structure):
+        _fields_ = [("left", c_long),
+                ("top", c_long),
+                ("right", c_long),
+                ("bottom", c_long)]
+else:
+    class POINT(Structure):
+        _fields_ = [("x", 0), ("y", 0)]
+
+    class RECT(Structure):
+        _fields_ = [("left", 0),
+            ("top", 0),
+            ("right", 0),
+            ("bottom", 0)]
 
 # ==============================================================================
 class EmulateWindow(xbmcgui.WindowXML):
@@ -87,7 +114,6 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.state = videoState.inactive
         self.osdMode = False
 
-
     def onInit(self):
         if not self.win:
             xbmc.executebuiltin(XBMC_DIALOG_BUSY_OPEN)
@@ -114,7 +140,6 @@ class EmulateWindow(xbmcgui.WindowXML):
 
 
     def onClick(self, controlId):
-        #print controlId.getButtonCode()
         pass
 
     def exitCleanUp(self):
@@ -145,6 +170,22 @@ class EmulateWindow(xbmcgui.WindowXML):
                 self.osdMode = False
                 self.win.setProperty('showosd', 'false')
 
+    def callback(self,hwnd, extra):
+        return
+
+    def queryMousePosition(self):
+        r = RECT()
+        pt = POINT()
+        windll.user32.GetCursorPos(byref(pt))
+        hwnd = windll.user32.GetForegroundWindow()
+        windll.user32.GetClientRect(hwnd, byref(r))
+        windll.user32.ScreenToClient(hwnd, byref(pt))
+        print ('{0} {1} {2} {3} click {4} {5}'.format(r.left, r.right, r.top,r.bottom, pt.x, pt.y))
+        x = int( ((pt.x - r.left) / (r.right-r.left)) * 100.0 )
+        y = int( ((pt.y - r.top ) / (r.bottom-r.top)) * 100.0 )
+        return { "x": x, "y": y}
+
+
     def onAction(self, action):
         try:
             actionID = action.getId()
@@ -154,9 +195,10 @@ class EmulateWindow(xbmcgui.WindowXML):
             #these are long presses
             if actionID not in CONTEXT_MENU and buttonID not in CONTEXT_MENU:
                 return
-
         if actionID == ACTION_MOUSE_MOVE:
             return
+
+
         ignoreKeys = ( 61650, 61651, 127184, 127185, 323749, 323796 )
         if buttonID in ignoreKeys:
             return
@@ -217,6 +259,19 @@ class EmulateWindow(xbmcgui.WindowXML):
             pauseActivity = False
         elif buttonID >= 0x2f041 and buttonID <= 0x2f05a:
             url = keyBase + str(buttonID&0xff)
+        elif actionID == ACTION_MOUSE_LEFT_CLICK or actionID == ACTION_MOUSE_DOUBLE_CLICK:
+            if os.name == 'nt' and windll != None:
+                try:
+                    pos = self.queryMousePosition()
+                    if actionID == ACTION_MOUSE_DOUBLE_CLICK:
+                        action = '&dbl'
+                    else:
+                        action = '&'
+                    action += 'click='
+                    url = self.base + '/control?time=' + str(now) +  action + str(pos['x']) + 'x' + str(pos['y'])
+                    pauseActivity = True
+                except Exception as e:
+                    print (e)
         elif buttonID & 0x10000:
             ctrl = buttonID&0xff
             if ctrl == 0x50:
@@ -290,7 +345,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             url = keyBase + '8'
         elif actionID in EXIT_SCRIPT:
             url = keyBase + '27'
-        elif actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU or actionID == ACTION_MOUSE_DOUBLE_CLICK:
+        elif actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
             myKey = self.getContext()
             if myKey != None:
                 url = keyBase + myKey
@@ -949,5 +1004,4 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.t1 = Thread(target=detailDialog._myPlayer, args=(dd,None,windowed,Audio, self.sdlmode == SDL.disabled))
         self.t1.start()
         self.state = videoState.started
-
         return

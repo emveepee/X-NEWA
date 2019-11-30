@@ -2541,39 +2541,6 @@ class XNEWA_Connect(object):
             self.settings.XNEWA_INTERFACE = "Version5"
             #self.settings.XNEWA_WEBCLIENT = True
         return
-        #don't fall through anymore
-        if self.sid != 'xnewa':
-            return
-
-        import xml.etree.ElementTree as ET
-        import codecs
-        url = "http://" + self.ip + ":" + str(self.port) + '/service?method=session.initiate&ver=1.0&device=xbmc'
-        xbmc.log(url)
-        try:
-            request = Request(url, headers={"Accept" : "application/xml"})
-            u = urlopen(request)
-            tree = ET.parse(u)
-            root = tree.getroot()
-            if root.attrib['stat'] == 'ok':
-                sid =  root.find('sid').text
-                salt = root.find('salt').text
-                url = "http://" + self.ip + ":" + str(self.port) + '/service?method=session.login&sid=' + sid + '&md5='+ self._hashMe(':' + self._hashMe(self.settings.NextPVR_PIN) + ':' + salt)
-                xbmc.log(url)
-                request = Request(url, headers={"Accept" : "application/xml"})
-                u = urlopen(request)
-                tree = ET.parse(u)
-                root = tree.getroot()
-                if root.attrib['stat'] == 'ok':
-                    self.sid =  root.find('sid').text
-                    xbmc.log(self.sid)
-                    self.setClient()
-                    self.offline = False
-
-        except Exception as err:
-            xbmc.log(str(err))
-            self.offline = True
-            self.settings.XNEWA_INTERFACE = 'JSON'
-
 
     def sidLogin_json (self):
         url = "http://" + self.ip + ":" + str(self.port) + '/public/Util/NPVR/Client/Instantiate'
