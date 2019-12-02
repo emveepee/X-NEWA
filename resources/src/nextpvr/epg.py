@@ -298,9 +298,9 @@ class EpgWindow(xbmcgui.WindowXML):
         tempX = self.epgProgsX
 
         for i in range(self.TimeIntervals -1):
-            ctrlx = int(tempX - self.epgProgsW*0.01) 
-            if i==0: 
-                ctrlx = self.epgProgsX + int(self.epgProgsW*0.005) 
+            ctrlx = int(tempX - self.epgProgsW*0.01)
+            if i==0:
+                ctrlx = self.epgProgsX + int(self.epgProgsW*0.005)
             ctrl = xbmcgui.ControlLabel(ctrlx, int(self.epgTimeBarBot-self.epgTimeBarH*0.3), self.epgTimeIntervalW, self.epgTimeBarH, '', FONT12, '0xFFFFFF66', alignment=XBFONT_LEFT )
             self.epgTimerBars.append(ctrl)
             ctrl.setVisible(False)
@@ -478,10 +478,10 @@ class EpgWindow(xbmcgui.WindowXML):
             newIDX = self.idxButt -1
             if newIDX < 0:
                 if self.touchButtonId != 0:
-                if self.epgStartTime == self.initDate:
+                    if self.epgStartTime == self.initDate:
                         self.setProperty('Grid', 'False')
                         self.setFocusId(self.touchButtonId)
-                    return
+                        return
                 self.updateTimeBars(-1)
                 oldtop = self.channelTop
                 self.channelTop = -999
@@ -692,13 +692,13 @@ class EpgWindow(xbmcgui.WindowXML):
     def scrollUp (self):
         #xbmc.log ("Scroll Up")
         i = self.channelTop - self.MaxDisplayChannels
-            if i < 0:
+        if i < 0:
             if self.channelTop !=0:
                 i = 0
             else:
                 i = self.channelCount - self.MaxDisplayChannels
-        self.idxRow = 0
-        self.idxButt = 0
+            self.idxRow = 0
+            self.idxButt = 0
         self.updateChannels(i)
         return
 
@@ -708,7 +708,7 @@ class EpgWindow(xbmcgui.WindowXML):
         if i > self.channelCount:
             i = self.channelCount - i
         elif i == self.channelCount:
-            i=0
+            i = 0
         self.updateChannels(i)
         return
 
@@ -772,7 +772,7 @@ class EpgWindow(xbmcgui.WindowXML):
             self.addControl(self.nowTimeCI)
         self.showDescription(controlID)
         if self.getProperty('Grid') == 'True':
-        self.lcid = controlID
+            self.lcid = controlID
 
 ##############################################################################################################
     def _goToDate(self):
@@ -823,15 +823,15 @@ class EpgWindow(xbmcgui.WindowXML):
                 # mouse moves
                 return
             buttonID = action.getButtonCode()
-        xbmc.log ("onAction:"+str(actionID)+" "+str(buttonID))
+            xbmc.log ("onAction:"+str(actionID)+" "+str(buttonID))
 
-        if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
-            self.ready = False
-            #self.cleanup()
-            self.close()
-            return
-        elif not self.ready:
-            return
+            if actionID in EXIT_SCRIPT or buttonID in EXIT_SCRIPT:
+                self.ready = False
+                #self.cleanup()
+                self.close()
+                return
+            elif not self.ready:
+                return
 
             if self.getFocusId() == 0:
                 #click off buttons
@@ -841,7 +841,7 @@ class EpgWindow(xbmcgui.WindowXML):
         except: return
 
         self.ready = False
-        
+
         if  self.getProperty('Grid') == 'False':
             if actionID in MOVEMENT_SCROLL_DOWN:
                 self.scrollDown ()
@@ -849,7 +849,7 @@ class EpgWindow(xbmcgui.WindowXML):
                 self.scrollUp ()
             elif actionID == ACTION_MENU or buttonID == 61584 or actionID in MOVEMENT_UP or actionID in MOVEMENT_DOWN:
                 self.setProperty('Grid','True')
-            self.reFocus()
+                self.reFocus()
                 self.idxButt = 999
         else:
             if actionID in MOVEMENT_LEFT:
@@ -861,13 +861,13 @@ class EpgWindow(xbmcgui.WindowXML):
             elif actionID in MOVEMENT_UP:
                 self.moveFocus(4)
             elif actionID in MOVEMENT_SCROLL_DOWN:
-               self.scrollDown ()
-               self.setFocus(0, 0,True)
-        elif actionID in MOVEMENT_SCROLL_UP:
-               self.scrollUp ()
-               self.setFocus(0, 0,True)
-        elif actionID == ACTION_PLAYER_PLAY:
-            self.quickPlayer()
+                self.scrollDown ()
+                self.setFocus(0, 0,True)
+            elif actionID in MOVEMENT_SCROLL_UP:
+                self.scrollUp ()
+                self.setFocus(0, 0,True)
+            elif actionID == ACTION_PLAYER_PLAY:
+                self.quickPlayer()
 
         if actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
             if self._goToDate() == -1:
@@ -909,7 +909,7 @@ class EpgWindow(xbmcgui.WindowXML):
                     print(a['num'])
 
                 i = i + 1
-        
+
 
 ###################################################################################################################
     def quickPlayer (self):

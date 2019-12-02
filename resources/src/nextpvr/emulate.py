@@ -28,16 +28,6 @@ from builtins import str
 from builtins import range
 from builtins import object
 
-try:
-    from ctypes import windll, Structure, c_long, byref  # wintypes
-
-except Exception as e:
-    windll = None
-    Structure = ''
-    c_long= None
-    byref = None
-    print (str(e))
-
 import os
 from kodi_six import xbmc, xbmcaddon, xbmcplugin, xbmcgui, xbmcvfs
 from kodi_six.utils import py2_encode, py2_decode
@@ -65,25 +55,19 @@ class videoState(object):
 class SDL(object):
     disabled, inactive, lite, full = list(range(4))
 
-if windll != None:
+try :
+    from ctypes import windll, Structure, c_long, byref  # wintypes
     class POINT(Structure):
         _fields_ = [("x", c_long), ("y", c_long)]
 
     class RECT(Structure):
         _fields_ = [("left", c_long),
-                ("top", c_long),
-                ("right", c_long),
-                ("bottom", c_long)]
-else:
-    class POINT(Structure):
-        _fields_ = [("x", 0), ("y", 0)]
-
-    class RECT(Structure):
-        _fields_ = [("left", 0),
-            ("top", 0),
-            ("right", 0),
-            ("bottom", 0)]
-
+            ("top", c_long),
+            ("right", c_long),
+            ("bottom", c_long)]
+except Exception as err:
+    windll = None
+    print (err)
 # ==============================================================================
 class EmulateWindow(xbmcgui.WindowXML):
 
@@ -435,8 +419,8 @@ class EmulateWindow(xbmcgui.WindowXML):
                 self.close()
             except Exception as err:
                 print (err)
-                    self.exit = True
-                    self.close()
+                self.exit = True
+                self.close()
             if pauseActivity:
                 self.getActivity()
         self.renderstop = False

@@ -89,7 +89,7 @@ class XNEWA_Settings(object):
         if addon.getSetting('skin') != 'Classic':
             try:
                 if xbmc.getSkinDir() == 'skin.estuary':
-                        self.XNEWA_SKIN = 'Estuary'
+                    self.XNEWA_SKIN = 'Estuary'
                 elif xbmc.getSkinDir() == 'skin.confluence':
                     self.XNEWA_SKIN = 'Confluence'
                 else:
