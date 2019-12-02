@@ -56,18 +56,24 @@ class SDL(object):
     disabled, inactive, lite, full = list(range(4))
 
 try :
-    from ctypes import windll, Structure, c_long, byref  # wintypes
-    class POINT(Structure):
-        _fields_ = [("x", c_long), ("y", c_long)]
+    if os.name == 'nt':
+        from ctypes import windll, Structure, c_long, byref  # wintypes
+        class POINT(Structure):
+            _fields_ = [("x", c_long), ("y", c_long)]
 
-    class RECT(Structure):
-        _fields_ = [("left", c_long),
-            ("top", c_long),
-            ("right", c_long),
-            ("bottom", c_long)]
+        class RECT(Structure):
+            _fields_ = [("left", c_long),
+                ("top", c_long),
+                ("right", c_long),
+                ("bottom", c_long)]
+    else:
+        from xdo import Xdo
+        xdo = Xdo()
 except Exception as err:
     windll = None
+    xdo = None
     print (err)
+
 # ==============================================================================
 class EmulateWindow(xbmcgui.WindowXML):
 
@@ -169,6 +175,23 @@ class EmulateWindow(xbmcgui.WindowXML):
         y = int( ((pt.y - r.top ) / (r.bottom-r.top)) * 100.0 )
         return { "x": x, "y": y}
 
+    def xdoqueryMousePosition(self):
+        kodi =  xdo.get_active_window()
+        wl = xdo.get_window_location(kodi)
+        ws = xdo.get_window_size(kodi)
+        mouse = xdo.get_mouse_location()
+        left = wl.x
+        right = left + ws.width
+        if wl.y == 0:
+            top = 0
+        else:
+            top = wl.y - self.XNEWA_TITLE_BAR_SIZE
+        bottom = top + ws.height
+        print ('{0} {1} {2} {3} click {4} {5}'.format(left, right, top,bottom, mouse.x, mouse.y))
+        x = int( ((mouse.x - left) / (right-left)) * 100.0 )
+        y = int( ((mouse.y - top ) / (bottom-top)) * 100.0 )
+        return { "x": x, "y": y}
+
 
     def onAction(self, action):
         try:
@@ -181,8 +204,6 @@ class EmulateWindow(xbmcgui.WindowXML):
                 return
         if actionID == ACTION_MOUSE_MOVE:
             return
-
-
         ignoreKeys = ( 61650, 61651, 127184, 127185, 323749, 323796 )
         if buttonID in ignoreKeys:
             return
@@ -244,18 +265,26 @@ class EmulateWindow(xbmcgui.WindowXML):
         elif buttonID >= 0x2f041 and buttonID <= 0x2f05a:
             url = keyBase + str(buttonID&0xff)
         elif actionID == ACTION_MOUSE_LEFT_CLICK or actionID == ACTION_MOUSE_DOUBLE_CLICK:
+            pos = None
             if os.name == 'nt' and windll != None:
                 try:
                     pos = self.queryMousePosition()
-                    if actionID == ACTION_MOUSE_DOUBLE_CLICK:
-                        action = '&dbl'
-                    else:
-                        action = '&'
-                    action += 'click='
-                    url = self.base + '/control?time=' + str(now) +  action + str(pos['x']) + 'x' + str(pos['y'])
-                    pauseActivity = True
                 except Exception as e:
                     print (e)
+            elif os.name != 'nt' and xdo != None:
+                try:
+                    pos = self.xdoqueryMousePosition()
+                except Exception as e:
+                    print (e)
+            if pos is not None:
+                if actionID == ACTION_MOUSE_DOUBLE_CLICK:
+                    action = '&dbl'
+                else:
+                    action = '&'
+                action += 'click='
+                url = self.base + '/control?time=' + str(now) +  action + str(pos['x']) + 'x' + str(pos['y'])
+                pauseActivity = True
+
         elif buttonID & 0x10000:
             ctrl = buttonID&0xff
             if ctrl == 0x50:

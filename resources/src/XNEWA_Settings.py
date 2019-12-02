@@ -113,6 +113,7 @@ class XNEWA_Settings(object):
         self.XNEWA_LIVE_SKIN = addon.getSetting('liveSkin') == 'true'
         self.XNEWA_CONTEXT_STOP = addon.getSetting('stopContext') == 'true'
         self.XNEWA_CONTEXT_POP = addon.getSetting('popContext') == 'true'
+        self.XNEWA_TITLE_BAR_SIZE = addon.getSetting('titleBarSize')
 
         self.VLC_VIDEO_SIZE = int(addon.getSetting("strmVideoSize"))
         self.VLC_VIDEO_BITRATE = addon.getSetting("strmBitRate")

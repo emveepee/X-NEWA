@@ -1,3 +1,6 @@
+[B]2.8.0~rc4[/B]
+- Added linux mouse support (via xdo)
+
 [B]2.8.0~rc3[/B]
 - Fix odd indentation in last build
 

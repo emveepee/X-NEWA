@@ -655,3 +655,7 @@ msgstr ""
 msgctxt "#32008"
 msgid "Cast"
 msgstr ""
+
+msgctxt "#32009"
+msgid "Title Bar Offset"
+msgstr "Use for mouse positioning"

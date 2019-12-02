@@ -25,9 +25,11 @@
     <setting label="30270" type="lsep" />
     <setting default="1280x720" id="client_size" label="30224" type="labelenum" values="1920x1080|1600x900|1366x768|1280x720|1024x576|960x540|854x480|720x480|800x600" />
     <setting default="false" id="client_quality" label="30225" type="bool" />
+    <setting default="" enabled="false" id="client" label="client" type="text" visible="false" />
     <setting default="true" id="liveSkin" label="30227" type="bool" />
     <setting default="false" id="stopContext" label="30228" type="bool" />
     <setting default="true" id="popContext" label="30229" type="bool" />
+    <setting default="30" id="titleBarSize" label="32009" option="int" range="0,1,40" type="slider" />
   </category>
 
   <category label="30240">
