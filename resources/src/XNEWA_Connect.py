@@ -398,7 +398,7 @@ class XNEWA_Connect(object):
             xml_file = urlopen(request, timeout=4)
             xml_return = xml_file.read()
             if 'stat="ok"' not in xml_return:
-                xbmc.player.stop()
+                xbmc.Player.stop()
                 xbmc.log(xml_return)
         except Exception as err:
             xbmc.log(str(err))

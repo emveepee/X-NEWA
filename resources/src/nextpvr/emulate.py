@@ -103,6 +103,7 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.t1 = None
         self.state = videoState.inactive
         self.osdMode = False
+        self.lastMouseMove = 0
 
     def onInit(self):
         if not self.win:
@@ -202,8 +203,17 @@ class EmulateWindow(xbmcgui.WindowXML):
             #these are long presses
             if actionID not in CONTEXT_MENU and buttonID not in CONTEXT_MENU:
                 return
+        url = None
         if actionID == ACTION_MOUSE_MOVE:
-            return
+            ms = datetime.datetime.now().microsecond
+            ms = int(round(time.time() * 1000))
+
+            if self.lastMouseMove + 250 < ms:
+                url = self.base + '/control?move=49x57'  + self.xnewa.client
+                self.lastMouseMove = ms + 2000
+            else:
+                self.lastMouseMove = ms
+                return
         ignoreKeys = ( 61650, 61651, 127184, 127185, 323749, 323796 )
         if buttonID in ignoreKeys:
             return
@@ -228,7 +238,6 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.inControl = True
         screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
         keyBase = self.base + '/control?time=' + str(now) + '&key='
-        url = None
         pauseActivity = True
         if actionID == ACTION_PLAYER_PLAY:
             url = keyBase + str(80|0x20000)
@@ -526,7 +535,8 @@ class EmulateWindow(xbmcgui.WindowXML):
         return retval
     def render(self):
         fullRefresh = 0
-        while xbmc.abortRequested == False and self.exit == False:
+        monitor = xbmc.Monitor()
+        while monitor.abortRequested() == False and self.exit == False:
             if not xbmc.Player().isPlayingVideo():
                 if self.state == videoState.started:
                     if isinstance(self.t1, Thread):

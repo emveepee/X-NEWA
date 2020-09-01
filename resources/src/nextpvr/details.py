@@ -428,7 +428,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 self.channelIcon = self.xnewa.getChannelIcon(self.detailData['channel'][0])
 
             if self.channelIcon is not None:
-                listitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
+                listitem = xbmcgui.ListItem(self.detailData["title"])
+                listitem.setArt({'thumb' : self.channelIcon})
             else:
                 listitem = xbmcgui.ListItem(self.detailData['title'])
             #v5
@@ -472,7 +473,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         xbmc.PlayList(0).clear()
                         for durl in durls:
                             if self.channelIcon is not None:
-                                newlistitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
+                                newlistitem = xbmcgui.ListItem(self.detailData["title"])
+                                newlistitem.setArt({ 'thumb' : self.channelIcon })
                             else:
                                 newlistitem = xbmcgui.ListItem(self.detailData['title'])
                             newlistitem.setInfo( type="video", infoLabels=infolabels )
@@ -592,7 +594,8 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             except:
                 self.showIcon = None
             if self.showIcon is not None:
-                listitem = xbmcgui.ListItem(self.detailData['title'], thumbnailImage=self.showIcon)
+                listitem = xbmcgui.ListItem(self.detailData['title'])
+                listitem.setArt({ 'thumb' : self.showIcon })
             else:
                 listitem = xbmcgui.ListItem(self.detailData['title'])
 
@@ -603,6 +606,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             else:
                 infolabels={"Title": self.detailData['title'],'plot': self.detailData['desc']}
             listitem.setInfo( type="Video", infoLabels=infolabels )
+            listitem.setProperty("IsPlayable", "true")
             #listitem.setInfo('video',{'Genre':'Comedy','title':'ttvvv','tagline':'dddmedy'})
             if self.settings.NextPVR_STREAM != 'Transcode':
                 bookmarkSecs = 0

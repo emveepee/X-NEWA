@@ -1,3 +1,6 @@
+[B]3.0.0[/B]
+- Changes for Matrix
+
 [B]2.8.0[/B]
 - Added linux mouse support (via xdo)
 - This is rc4 with no other changes
