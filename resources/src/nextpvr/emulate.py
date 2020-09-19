@@ -140,7 +140,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             while self.state == videoState.playing:
                 xbmc.sleep(100)
         import glob
-        fileNames = glob.glob(xbmc.translatePath('special://temp') + 'knew5/emulate*.png' )
+        fileNames = glob.glob(xbmcvfs.translatePath('special://temp') + 'knew5/emulate*.png' )
         for file in fileNames:
             try:
                 os.remove(file)
@@ -236,7 +236,7 @@ class EmulateWindow(xbmcgui.WindowXML):
 
         self.renderstop = True
         self.inControl = True
-        screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+        screenFile = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
         keyBase = self.base + '/control?time=' + str(now) + '&key='
         pauseActivity = True
         if actionID == ACTION_PLAYER_PLAY:
@@ -559,7 +559,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     else:
                         fullRefresh = 0
                         import glob
-                        fileNames = glob.glob(xbmc.translatePath('special://temp') + 'knew5/emulate*.png' )
+                        fileNames = glob.glob(xbmcvfs.translatePath('special://temp') + 'knew5/emulate*.png' )
                         for file in fileNames:
                             try:
                                 os.remove(file)
@@ -575,7 +575,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                                         if self.state == videoState.error:
                                             url += '&message=Player%20error'
                                         url += self.xnewa.client
-                                        screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                                        screenFile1 = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
                                         xbmc.log(url)
                                         pngfile = urlopen(url)
                                         pngfile.close()
@@ -589,7 +589,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                                 xbmc.log(url)
                                 try:
                                     jpgfile = urlopen(url)
-                                    screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                                    screenFile = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
                                     output = open(screenFile,'wb')
                                     output.write(jpgfile.read())
                                     output.close()
@@ -607,7 +607,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                             xbmc.log(url)
                             try:
                                 jpgfile = urlopen(url)
-                                screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                                screenFile = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
                                 output = open(screenFile,'wb')
                                 output.write(jpgfile.read())
                                 output.close()
@@ -625,7 +625,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                         if xbmc.getCondVisibility('videoplayer.isfullscreen') == 0:
                             self.wasFullScreen = False
                             url = self.base + '/control?move=49x57'  + self.xnewa.client
-                            screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-a'+ str(time.time()) + '.png'
+                            screenFile1 = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-a'+ str(time.time()) + '.png'
                             xbmc.log(url)
                             try:
                                 pngfile = urlopen(url)
@@ -643,7 +643,7 @@ class EmulateWindow(xbmcgui.WindowXML):
 
                     try:
                         url = self.base + '/control?media=' + str(xbmc.Player().getTime())  + self.xnewa.client
-                        screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                        screenFile1 = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
                         xbmc.log(url)
                         request = Request(url)
                         pngfile = urlopen(request)
@@ -777,7 +777,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     return False
 
 
-            screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+            screenFile = xbmcvfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
 
             url = self.base + '/control?format=json' + self.xnewa.client
             #xbmc.log(url)
@@ -814,13 +814,12 @@ class EmulateWindow(xbmcgui.WindowXML):
         else:
             url = self.base + '/activity?format=json' + self.xnewa.client
         import json
-        print (url)
+        xbmc.log(url)
         try:
             json_file = urlopen(url)
             jsonActivity = json.load(json_file)
             json_file.close()
-            print(jsonActivity)
-            #xbmc.log(jsonActivity)
+            xbmc.log(str(jsonActivity))
             if 'url' in jsonActivity:
                 import re
                 if jsonActivity['url'] != '':
@@ -846,7 +845,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     self.exit = True
                     xbmc.sleep(250)
                     import glob
-                    fileNames = glob.glob(xbmc.translatePath('special://temp') + 'knew5/emulate*.png' )
+                    fileNames = glob.glob(xbmcvfs.translatePath('special://temp') + 'knew5/emulate*.png' )
                     for file in fileNames:
                         try:
                             os.remove(file)
@@ -1001,8 +1000,13 @@ class EmulateWindow(xbmcgui.WindowXML):
             if 'recording_id' in activity:
                 dd['recording_oid'] = activity['recording_id']
                 dd['nextUrl'] = '/live?recording=' + dd['recording_oid']
-                if self.settings.NextPVR_ICON_DL == 'Yes' and self.xnewa.getShowIcon(dd['title']) is None:
-                    self.xnewa.getDetails(self.settings.NextPVR_USER,self.settings.NextPVR_PW,dd['recording_oid'],'R','Yes')
+                # if self.settings.NextPVR_ICON_DL == 'Yes' and self.xnewa.getShowIcon(dd['title']) is None:
+                recdata = self.xnewa.getDetails(self.settings.NextPVR_USER,self.settings.NextPVR_PW,dd['recording_oid'],'R','Yes')
+                dd['season'] = recdata['season']
+                dd['episode'] = recdata['episode']
+                dd['channel'] = recdata['channel']
+                dd['start'] = recdata['start']
+                dd['end'] = recdata['end']
             else:
                 dd['recording_oid'] = 0
 

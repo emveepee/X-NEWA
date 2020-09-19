@@ -567,10 +567,10 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     xbmc.log(url)
                     pvr = []
                     pvr.append(PVRChannel(
-                        uniqueId = 1,
+                        uniqueId = chnum,
                         isRadio = False,
-                        channelNumber = 2,
-                        channelName = 'TVO',
+                        channelNumber = 0,
+                        channelName = self.detailData['channel'][0],
                         streamURL = None,
                         encryptionSystem = 0,
                         iconPath =  None))
@@ -619,18 +619,34 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     listitem.setProperty('startoffset',str(bookmarkSecs))
 
             #listitem.setProperty('startoffset',str(bookmarkSecs))
-            url = self.detailData['filename']
-            url = url.replace('\\bdmv\\','\\BDMV\\')
-            if url[0:2]=='\\\\':
-                url = 'smb:'+self.detailData['filename'].replace('\\','/')
-            elif os.name != 'nt':
-                url = py2_encode(url).replace('\\','/')
-            try:
-                url = py2_encode(url)
-            except:
-                pass
+            if self.settings.NextPVR_STREAM == 'PVR' and xbmc.getCondVisibility('System.HasPVRAddon') and self.detailData['end'] > datetime.now():
+                subtitleWithSpace = self.detailData['subtitle']
+                if subtitleWithSpace == None:
+                    subtitleWithSpace = ''
+                elif  subtitleWithSpace != '':
+                    subtitleWithSpace = self.myQuote(' ' + subtitleWithSpace)
+
+                season = ''
+                if self.detailData['season'] != 0:
+                    season = ' s{:02d}e{:02d}'.format(self.detailData['season'], self.detailData['episode'])
+
+                timestr = datetime.utcfromtimestamp(self.detailData['start'].timestamp()).strftime("%Y%m%d_%H%M%S")
+
+                pvr = 'pvr://recordings/tv/active/{}/{}{}{}, TV%20({}), {}, {}.pvr'
+                url = pvr.format(self.detailData['title'], self.myQuote(self.detailData['title']), season, subtitleWithSpace, self.myQuote(self.detailData['channel'][0]), timestr, self.detailData['recording_oid'])
+            else:
+                url = self.detailData['filename']
+                url = url.replace('\\bdmv\\','\\BDMV\\')
+                if url[0:2]=='\\\\':
+                    url = 'smb:'+self.detailData['filename'].replace('\\','/')
+                elif os.name != 'nt':
+                    url = py2_encode(url).replace('\\','/')
+                try:
+                    url = py2_encode(url)
+                except:
+                    pass
             xbmc.log(url)
-            if url.startswith('plugin') == False and url.startswith('http') == False and url.startswith('rtmp') == False and url.startswith('mms') == False and (not xbmcvfs.exists(url)  or self.settings.NextPVR_STREAM == 'VLC') :
+            if url.startswith('pvr') == False and url.startswith('plugin') == False and url.startswith('http') == False and url.startswith('rtmp') == False and url.startswith('mms') == False and (not xbmcvfs.exists(url)  or self.settings.NextPVR_STREAM == 'VLC') :
                 xbmc.log("not found")
 
                 if self.xnewa.offline == True:
@@ -647,6 +663,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     myFile += self.xnewa.client
                     xbmc.log(myFile)
                     url = self.urly + myFile
+
                 if self.settings.NextPVR_STREAM == 'Direct':
                     #url = your url here
                     f1 = urllib.parse.quote(url)
@@ -763,6 +780,17 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             self.xnewa.sendTranscodeStop()
 
         xbmc.log("play ended")
+
+    def myQuote(self, mystr):
+        retval = ''
+        for v in mystr:
+            a = urllib.parse.quote(v)
+            if a == v:
+                retval += v
+            else:
+                retval += a.lower()
+        return retval
+
 
     def _getDetails(self):
         self.win.setProperty('busy', 'true')

@@ -1,3 +1,8 @@
+[B]3.1.0~a1[/B]
+- PVR mode for in progress recordings
+- Save SID state on rentry
+- Deprecated API change
+
 [B]3.0.0[/B]
 - Changes for Matrix
 

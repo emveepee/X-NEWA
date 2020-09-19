@@ -65,8 +65,8 @@ except ImportError:
 
 
 __language__ = xbmcaddon.Addon().getLocalizedString
-DATAROOT = xbmc.translatePath( 'special://profile/addon_data/%s' % xbmcaddon.Addon().getAddonInfo('id') )
-CACHEROOT = os.path.join(xbmc.translatePath('special://temp'), 'knew5')
+DATAROOT = xbmcvfs.translatePath( 'special://profile/addon_data/%s' % xbmcaddon.Addon().getAddonInfo('id') )
+CACHEROOT = os.path.join(xbmcvfs.translatePath('special://temp'), 'knew5')
 
 class XNEWA_Connect(object):
 
@@ -153,6 +153,7 @@ class XNEWA_Connect(object):
         self.sid = None
         self.client = None
         self.strClient = None
+        self.mycache = CACHEROOT
 
     ######################################################################################################
     # checking to see if NEWA is responding
@@ -163,8 +164,6 @@ class XNEWA_Connect(object):
             self.sidLogin()
             if self.sid == None:
                 self.offline = True
-
-        self.mycache = CACHEROOT
 
     ######################################################################################################
     # Setting up fanart defaults
@@ -471,6 +470,9 @@ class XNEWA_Connect(object):
                         dic['log'] = dict
             else:
                 dic = GetNextPVRInfo_v5 (self)
+        else:
+            self.channels = self.getChannelList()
+
         if channels == True:
             # We also get, and cache, the channel data
             self.channels = self.getChannelList()
@@ -683,7 +685,7 @@ class XNEWA_Connect(object):
                 chan = channel['channel']
                 if chan['channelIcon'] != '':
                     cnt= cnt+1
-            if cnt > 0:
+            if cnt > 0 and self.NextPVR_STREAM != 'PVR':
                 icons = glob.glob(os.path.join(self.cached_channelPath,'*.*'))
                 if cnt > len(icons) + 20:
                     myDlg = xbmcgui.DialogProgress()
@@ -2328,7 +2330,7 @@ class XNEWA_Connect(object):
             else:
                 dict['subtitle'] = ""
 
-            if detail['OID'] is not 0:
+            if detail['OID'] != 0:
                 dict['channel_oid'] = detail['ChannelOid']
             else:
                 dict['channel_oid'] = rec.OID

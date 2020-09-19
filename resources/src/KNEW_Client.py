@@ -84,6 +84,14 @@ def doRequest5(self, method, isJSON = True):
 def  sidLogin5(self):
     self.settings.XNEWA_INTERFACE = "Version5"
     #self.settings.XNEWA_WEBCLIENT = True
+    cached = 'sid.p'
+    if self.checkCache(cached):
+        login = self.myCachedPickleLoad(cached)
+        self.sid =  login['sid']
+        xbmc.log(self.sid)
+        setClient5(self)
+        self.offline = False
+        return
 
     method = 'session.initiate&ver=1.0&device=emby'
     ret, keys = doRequest5(self,method)
@@ -100,6 +108,7 @@ def  sidLogin5(self):
             xbmc.log(self.sid)
             setClient5(self)
             self.offline = False
+            self.myCachedPickle(keys,cached)
         else:
             self.sid = 'xnewa'
     else:
