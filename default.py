@@ -70,6 +70,8 @@ if __name__ == '__main__':
                 else:
                     HomeWindow('nextpvr_home.xml', WHERE_AM_I,my_settings.XNEWA_SKIN, settings=my_settings, xnewa=my_xnewa).doModal()
             else:
+                if my_settings.NextPVR_STREAM == 'PVR':
+                    my_xnewa.GetNextPVRInfo(my_settings.NextPVR_USER, my_settings.NextPVR_PW, False)
                 ew = EmulateWindow("nextpvr_emulate.xml", WHERE_AM_I,my_settings.XNEWA_SKIN, settings=my_settings, xnewa=my_xnewa)
                 ew.doModal()
         else:

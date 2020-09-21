@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.kodi.knewc" name="NextPVR New Client" version="2.8.0" provider-name="emveepee">
+<addon id="script.kodi.knewc" name="NextPVR New Client" version="2.9.0~a1" provider-name="emveepee">
     <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
+        <!--import addon="xbmc.python" version="2.1.0"/-->
         <import addon="script.module.future" version="0.16.0.4"/>
         <import addon="script.module.dateutil" version="2.7.3"/>
         <import addon="script.module.kodi-six" />
@@ -14,5 +14,9 @@
         <minversion>28764</minversion>
         <summary lang="en">Python script to access NextPVR v4 or v5 using NEWA or v5 API</summary>
         <description lang="en">Supplement NextPVR PVR Addon with additional functionality Compatible with python 2.7 or python 3</description>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
     </extension>
 </addon>

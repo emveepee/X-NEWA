@@ -1,3 +1,11 @@
+[B]2.9.0~a1[/B]
+- Matrix and Leia comnpatibility for repo
+- PVR mode for in progress recordings using JSON RPC
+- Improved PVR mode for live tv
+- Save SID state on rentry
+- Deprecated API change
+- Timeout http calls
+
 [B]2.8.0[/B]
 - Added linux mouse support (via xdo)
 - This is rc4 with no other changes

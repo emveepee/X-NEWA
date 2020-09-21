@@ -46,6 +46,11 @@ from fix_utf8 import smartUTF8
 from XNEWAGlobals import *
 import http.client
 
+if sys.version_info[0] >=  3:
+    pseudovfs = xbmcvfs
+else:
+    pseudovfs = xbmc
+
 if sys.version_info >=  (2, 7):
     import json as _json
 else:
@@ -65,8 +70,8 @@ except ImportError:
 
 
 __language__ = xbmcaddon.Addon().getLocalizedString
-DATAROOT = xbmc.translatePath( 'special://profile/addon_data/%s' % xbmcaddon.Addon().getAddonInfo('id') )
-CACHEROOT = os.path.join(xbmc.translatePath('special://temp'), 'knew5')
+DATAROOT = pseudovfs.translatePath( 'special://profile/addon_data/%s' % xbmcaddon.Addon().getAddonInfo('id') )
+CACHEROOT = os.path.join(pseudovfs.translatePath('special://temp'), 'knew5')
 
 class XNEWA_Connect(object):
 
@@ -121,6 +126,8 @@ class XNEWA_Connect(object):
         self.channels = None
         self.update_time = 9223372036854775807
         self.isdst = time.localtime(time.time()).tm_isdst
+        self.PVRRecordings = {}
+
         if self.isdst == 1:
             xbmc.log ('atz ' + str(time.altzone))
             self.my_offset = timedelta(seconds=time.altzone)
@@ -153,6 +160,7 @@ class XNEWA_Connect(object):
         self.sid = None
         self.client = None
         self.strClient = None
+        self.mycache = CACHEROOT
 
     ######################################################################################################
     # checking to see if NEWA is responding
@@ -163,8 +171,6 @@ class XNEWA_Connect(object):
             self.sidLogin()
             if self.sid == None:
                 self.offline = True
-
-        self.mycache = CACHEROOT
 
     ######################################################################################################
     # Setting up fanart defaults
@@ -262,6 +268,29 @@ class XNEWA_Connect(object):
         else:
              channels = None
         return channels
+
+#################################################################################################################
+    def GetPVRRecordings(self):
+        self.PVRRecordings = {}
+        from nextpvr.XBMCJSON import XBMCJSON
+        myJSON = XBMCJSON()
+        param = {}
+        param['properties'] = [ 'file' ]
+        param['limits'] = {'start': 0}
+        response = myJSON.PVR.GetRecordings(param)
+        if 'result' in response:
+            for recording in response['result']['recordings']:
+                m = re.search('.+ (.+?).pvr', recording['file'])
+                if m != None:
+                    self.PVRRecordings[m.group(1)] = recording['file']
+
+#################################################################################################################
+    def GetPVRRecording(self, recid):
+        pvr = self.PVRRecordings.get(recid)
+        if pvr == None:
+            self.GetPVRRecordings()
+            pvr = self.PVRRecordings.get(recid)
+        return pvr
 
 ######################################################################################################
 # Starting streaming by vlc schedule oid
@@ -398,7 +427,7 @@ class XNEWA_Connect(object):
             xml_file = urlopen(request, timeout=4)
             xml_return = xml_file.read()
             if 'stat="ok"' not in xml_return:
-                xbmc.player.stop()
+                xbmc.Player.stop()
                 xbmc.log(xml_return)
         except Exception as err:
             xbmc.log(str(err))
@@ -471,6 +500,9 @@ class XNEWA_Connect(object):
                         dic['log'] = dict
             else:
                 dic = GetNextPVRInfo_v5 (self)
+        else:
+            self.channels = self.getChannelList()
+
         if channels == True:
             # We also get, and cache, the channel data
             self.channels = self.getChannelList()
@@ -506,15 +538,17 @@ class XNEWA_Connect(object):
 
     def checkCache(self,cached):
         if os.path.isfile(os.path.join(self.mycache,cached)) == True:
-            if self.offline == True:
-                return True
-            if self.update_time != 9223372036854775807:
-                update_time = self.update_time
-                self.getRecordingUpdate()
-                if update_time == self.update_time:
-                    if self.update_time <= int(os.path.getmtime(os.path.join(self.mycache,cached))):
-                        return True
-                return False
+            if not cached.endswith('sid.p'):
+                if self.offline == True:
+                    return True
+                if self.update_time != 9223372036854775807:
+                    update_time = self.update_time
+                    self.getRecordingUpdate()
+                    if update_time == self.update_time:
+                        if self.update_time <= int(os.path.getmtime(os.path.join(self.mycache,cached))):
+                            return True
+                    return False
+
             ft =  datetime.fromtimestamp(os.path.getmtime(os.path.join(self.mycache,cached)))
             if ft + timedelta(hours=2) > datetime.now():
                 return True
@@ -683,7 +717,7 @@ class XNEWA_Connect(object):
                 chan = channel['channel']
                 if chan['channelIcon'] != '':
                     cnt= cnt+1
-            if cnt > 0:
+            if cnt > 0 and self.settings.NextPVR_STREAM != 'PVR':
                 icons = glob.glob(os.path.join(self.cached_channelPath,'*.*'))
                 if cnt > len(icons) + 20:
                     myDlg = xbmcgui.DialogProgress()
@@ -2328,7 +2362,7 @@ class XNEWA_Connect(object):
             else:
                 dict['subtitle'] = ""
 
-            if detail['OID'] is not 0:
+            if detail['OID'] != 0:
                 dict['channel_oid'] = detail['ChannelOid']
             else:
                 dict['channel_oid'] = rec.OID

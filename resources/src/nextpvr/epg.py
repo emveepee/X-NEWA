@@ -115,7 +115,6 @@ class EpgWindow(xbmcgui.WindowXML):
             self.ready = False
 
             # Store resolution
-            self.rez = self.getResolution()
             # debug("onInit() resolution=%s" % self.rez)
             self.epgSetup()
 
