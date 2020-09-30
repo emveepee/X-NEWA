@@ -151,7 +151,7 @@ def getRecDirList_v5(self):
                     try:
                         dirs[extras[i]] = extras[i+1]
                     except:
-                        xbmc.log('Duplicate of ' + dirs[extras[i]])
+                        xbmc.log('Setting error ' + setting['value'])
 
     xbmc.log("getRecDirList v5 end")
     return dirs
@@ -172,7 +172,7 @@ def getChannelList_v5(self):
         for channel in channels['channels']:
             if (channel['channelIcon']):
                 cnt= cnt+1
-        if cnt > 0:
+        if cnt > 0 and my_settings.XNEWA_WEBCLIENT == False:
             icons = glob.glob(os.path.join(self.cached_channelPath,'*.*'))
             if cnt > len(icons) + 20:
                 myDlg = xbmcgui.DialogProgress()
@@ -219,7 +219,8 @@ def getChannelList_v5(self):
                 pass
     except Exception as err:
         xbmc.log(str(err))
-
+    if myDlg != None:
+        myDlg.close()
     xbmc.log("getChannelList v5 end")
     return dic
 

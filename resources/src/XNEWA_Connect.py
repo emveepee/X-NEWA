@@ -283,6 +283,7 @@ class XNEWA_Connect(object):
                 m = re.search('.+ (.+?).pvr', recording['file'])
                 if m != None:
                     self.PVRRecordings[m.group(1)] = recording['file']
+        xbmc.log('Number of recordings: {}'.format(len(self.PVRRecordings)))
 
 #################################################################################################################
     def GetPVRRecording(self, recid):

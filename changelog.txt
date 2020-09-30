@@ -1,3 +1,11 @@
+[B]2.9.0~a2[/B]
+- Fix error handling of ExtraDirectory call
+- Extra logging for debugging PVR mode
+- Don't open window when loading channel icons in PVR mode
+UI Client
+- Handle unhandled timeout exception
+- Fix regression in ~a1 on context menu popup
+
 [B]2.9.0~a1[/B]
 - Matrix and Leia comnpatibility for repo
 - PVR mode for in progress recordings using JSON RPC

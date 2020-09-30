@@ -618,7 +618,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             return
         url = None
         keyBase = ''
-        dialog = xbmcgui.Dialog
+        dialog = xbmcgui.Dialog()
         value = dialog.select( 'Enter selection', [  'Remote Keys', 'Recordings',  'TV Guide',  'Main Menu', 'Exit UI Client', '0', '1', '2', '3', '4', '5','6', '7', '8', '9'])
         xbmc.log(str(value))
 
@@ -730,9 +730,14 @@ class EmulateWindow(xbmcgui.WindowXML):
         except Exception as err:
             print (err)
             code = -1
-            self.exit = True
-            self.close()
-
+            leave = True
+            if str(err) == 'timeout':
+                self.timeout += 1
+                leave = xbmcgui.Dialog().yesno('NextPVR timeout', 'Do you want to exit UI client?', autoclose=10000)
+                xbmc.sleep(250)
+            if leave == True:
+                self.exit = True
+                self.close()
         return code
 
 
