@@ -408,9 +408,12 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         self.urly = self.xnewa.getURL()
         isVlc = False
         myDlg = None
-        from uuid import getnode as get_mac
-        mac = get_mac()
         #self.player = XBMCPlayer(xbmc.PLAYER_CORE_AUTO,settings=self.settings, xnewa=self.xnewa)
+        cached = 'sid.p'
+        if self.xnewa.checkCache(cached):
+            keys = self.xnewa.myCachedPickleLoad(cached)
+            self.xnewa.myCachedPickle(keys,cached)
+
         self.player = XBMCPlayer(settings=self.settings, xnewa=self.xnewa)
         if self.player.isPlaying():
             isMin = True

@@ -83,15 +83,17 @@ def doRequest5(self, method, isJSON = True):
 
 def  sidLogin5(self):
     self.settings.XNEWA_INTERFACE = "Version5"
-    #self.settings.XNEWA_WEBCLIENT = True
     cached = 'sid.p'
     if self.checkCache(cached):
         login = self.myCachedPickleLoad(cached)
         self.sid =  login['sid']
-        xbmc.log(self.sid)
-        setClient5(self)
-        self.offline = False
-        return
+        method = 'session.valid'
+        ret, keys = doRequest5(self,method)
+        if ret == True:
+            xbmc.log(self.sid)
+            setClient5(self)
+            self.offline = False
+            return
 
     method = 'session.initiate&ver=1.0&device=emby'
     ret, keys = doRequest5(self,method)
@@ -172,7 +174,7 @@ def getChannelList_v5(self):
         for channel in channels['channels']:
             if (channel['channelIcon']):
                 cnt= cnt+1
-        if cnt > 0 and my_settings.XNEWA_WEBCLIENT == False:
+        if cnt > 0 and self.settings.XNEWA_WEBCLIENT == False:
             icons = glob.glob(os.path.join(self.cached_channelPath,'*.*'))
             if cnt > len(icons) + 20:
                 myDlg = xbmcgui.DialogProgress()

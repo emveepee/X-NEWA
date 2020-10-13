@@ -731,7 +731,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             print (err)
             code = -1
             leave = True
-            if str(err) == 'timeout':
+            if str(err) == 'timed out':
                 self.timeout += 1
                 leave = xbmcgui.Dialog().yesno('NextPVR timeout', 'Do you want to exit UI client?', autoclose=10000)
                 xbmc.sleep(250)

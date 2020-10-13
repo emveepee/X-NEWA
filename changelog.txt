@@ -1,10 +1,16 @@
+[B]2.9.0~a3[/B]
+- Validate sid cache
+- Fix EPG regression in ~a2
+- Remove dialog on no data in EPG
+UI Client
+- Handle "timed out" message
+
 [B]2.9.0~a2[/B]
 - Fix error handling of ExtraDirectory call
 - Extra logging for debugging PVR mode
-- Don't open window when loading channel icons in PVR mode
 UI Client
-- Handle unhandled timeout exception
-- Fix regression in ~a1 on context menu popup
+- Don't open window when loading channel icons
+- Handle stray timeout message
 
 [B]2.9.0~a1[/B]
 - Matrix and Leia comnpatibility for repo
