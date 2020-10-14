@@ -1,23 +1,13 @@
-[B]2.9.0~a3[/B]
-- Validate sid cache
-- Fix EPG regression in ~a2
-- Remove dialog on no data in EPG
-UI Client
-- Handle "timed out" message
-
-[B]2.9.0~a2[/B]
-- Fix error handling of ExtraDirectory call
-- Extra logging for debugging PVR mode
-UI Client
-- Don't open window when loading channel icons
-- Handle stray timeout message
-
-[B]2.9.0~a1[/B]
+[B]2.9.0[/B]
+- Remove warning on no data in EPG
 - Matrix and Leia comnpatibility for repo
 - PVR mode for in progress recordings using JSON RPC
 - Improved PVR mode for live tv
 - Save SID state on rentry
 - Deprecated API change
+- Fix error handling of ExtraDirectory call
+UI Client
+- Don't open window when loading channel icons
 - Timeout http calls
 
 [B]2.8.0[/B]

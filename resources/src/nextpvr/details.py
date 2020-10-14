@@ -632,7 +632,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     listitem.setProperty('startoffset',str(bookmarkSecs))
 
             #listitem.setProperty('startoffset',str(bookmarkSecs))
-            if self.settings.NextPVR_STREAM == 'PVR' and xbmc.getCondVisibility('System.HasPVRAddon') and self.detailData['end'] != datetime.now():
+            if self.settings.NextPVR_STREAM == 'PVR' and xbmc.getCondVisibility('System.HasPVRAddon'):
                 url = self.xnewa.GetPVRRecording(self.detailData['recording_oid'])
             if url == None:
                 url = self.detailData['filename']
