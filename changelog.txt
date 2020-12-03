@@ -1,3 +1,9 @@
+[B]2.9.1[/B]
+- Improved login logic
+- Relogin on session change
+UI Client
+ - Logic change for Back key stopping video
+
 [B]2.9.0[/B]
 - Remove warning on no data in EPG
 - Matrix and Leia comnpatibility for repo

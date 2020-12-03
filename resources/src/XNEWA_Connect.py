@@ -533,6 +533,7 @@ class XNEWA_Connect(object):
                 if err.attrib['code'] == '8':
                     xbmc.log(err.attrib['msg'])
                     self.sid = None
+                    self.sidLogin()
         except Exception as err:
             xbmc.log(str(err))
         return self.update_time

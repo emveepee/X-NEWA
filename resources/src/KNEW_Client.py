@@ -62,11 +62,18 @@ def doRequest5(self, method, isJSON = True):
             json_file = urlopen(request)
             getResult = _json.load(json_file)
             json_file.close()
+            if 'stat' in getResult and getResult['stat'] != 'ok':
+                if getResult['code'] == 8 and not method.startswith('session'):
+                    sidLogin5(self)
+                    if self.offline == False:
+                        return doRequest5(self, method)
+            else:
+                retval = True
         else:
             response = urlopen(url)
             getResult = response.read()
             response.close()
-        retval = True
+            retval = True
     except HTTPError as e:
         print (e)
         xbmc.log("HTTPError")
@@ -89,13 +96,12 @@ def  sidLogin5(self):
         self.sid =  login['sid']
         method = 'session.valid'
         ret, keys = doRequest5(self,method)
-        if ret == True:
+        if ret == True and keys['stat'] == 'ok':
             xbmc.log(self.sid)
             setClient5(self)
             self.offline = False
             return
-
-    method = 'session.initiate&ver=1.0&device=emby'
+    method = 'session.initiate&ver=1.0&device=jellyfin'
     ret, keys = doRequest5(self,method)
     if ret == True:
         self.sid =  keys['sid']

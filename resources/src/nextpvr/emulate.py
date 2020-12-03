@@ -157,7 +157,8 @@ class EmulateWindow(xbmcgui.WindowXML):
                 os.remove(file)
             except:
                 xbmc.log('Error deleting ' + file)
-        self.xnewa.cleanCache('sid.p')
+        if sidDelete:
+            self.xnewa.cleanCache('sid.p')
         self.exit = True
         self.close()
 
@@ -471,11 +472,13 @@ class EmulateWindow(xbmcgui.WindowXML):
                     xbmc.executebuiltin('Action( NextSubtitle )')
                     retval = True
                 elif actionID == REMOTE_BACK or actionID == ACTION_BACK or actionID == ACTION_SHOW_GUI:
-                    if self.osdMode == False:
+                    if xbmcgui.getCurrentWindowId() == 12005:
                         xbmc.executebuiltin('ActivateWindow(fullscreenvideo)')
                         self.wasFullScreen = True
                         self.setOSDMode(True)
-                        retval = True
+                    else:
+                        xbmc.Player().stop()
+                    retval = True
                 elif actionID == ACTION_PLAYER_FORWARD:
                     xbmc.executebuiltin('PlayerControl(tempoup)')
                     retval = True
@@ -919,7 +922,7 @@ class EmulateWindow(xbmcgui.WindowXML):
 
             if 'recording_id' in activity:
                 dd['recording_oid'] = activity['recording_id']
-                dd['nextUrl'] = '/live?recording=' + dd['recording_oid']
+                dd['nextUrl'] = '/live?recording_id=' + dd['recording_oid']
                 #if self.settings.NextPVR_ICON_DL == 'Yes' and self.xnewa.getShowIcon(dd['title']) is None:
                 recdata = self.xnewa.getDetails(self.settings.NextPVR_USER,self.settings.NextPVR_PW,dd['recording_oid'],'R','Yes')
                 dd['season'] = recdata['season']
