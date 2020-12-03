@@ -62,11 +62,18 @@ def doRequest5(self, method, isJSON = True):
             json_file = urlopen(request)
             getResult = _json.load(json_file)
             json_file.close()
+            if 'stat' in getResult and getResult['stat'] != 'ok':
+                if getResult['code'] == 8 and not method.startswith('session'):
+                    sidLogin5(self)
+                    if self.offline == False:
+                        return doRequest5(self, method)
+            else:
+                retval = True
         else:
             response = urlopen(url)
             getResult = response.read()
             response.close()
-        retval = True
+            retval = True
     except HTTPError as e:
         print (e)
         xbmc.log("HTTPError")
@@ -83,9 +90,18 @@ def doRequest5(self, method, isJSON = True):
 
 def  sidLogin5(self):
     self.settings.XNEWA_INTERFACE = "Version5"
-    #self.settings.XNEWA_WEBCLIENT = True
-
-    method = 'session.initiate&ver=1.0&device=emby'
+    cached = 'sid.p'
+    if self.checkCache(cached):
+        login = self.myCachedPickleLoad(cached)
+        self.sid =  login['sid']
+        method = 'session.valid'
+        ret, keys = doRequest5(self,method)
+        if ret == True and keys['stat'] == 'ok':
+            xbmc.log(self.sid)
+            setClient5(self)
+            self.offline = False
+            return
+    method = 'session.initiate&ver=1.0&device=jellyfin'
     ret, keys = doRequest5(self,method)
     if ret == True:
         self.sid =  keys['sid']
@@ -100,6 +116,7 @@ def  sidLogin5(self):
             xbmc.log(self.sid)
             setClient5(self)
             self.offline = False
+            self.myCachedPickle(keys,cached)
         else:
             self.sid = 'xnewa'
     else:
@@ -142,7 +159,7 @@ def getRecDirList_v5(self):
                     try:
                         dirs[extras[i]] = extras[i+1]
                     except:
-                        xbmc.log('Duplicate of ' + dirs[extras[i]])
+                        xbmc.log('Setting error ' + setting['value'])
 
     xbmc.log("getRecDirList v5 end")
     return dirs
@@ -163,7 +180,7 @@ def getChannelList_v5(self):
         for channel in channels['channels']:
             if (channel['channelIcon']):
                 cnt= cnt+1
-        if cnt > 0:
+        if cnt > 0 and self.settings.XNEWA_WEBCLIENT == False:
             icons = glob.glob(os.path.join(self.cached_channelPath,'*.*'))
             if cnt > len(icons) + 20:
                 myDlg = xbmcgui.DialogProgress()
@@ -210,7 +227,8 @@ def getChannelList_v5(self):
                 pass
     except Exception as err:
         xbmc.log(str(err))
-
+    if myDlg != None:
+        myDlg.close()
     xbmc.log("getChannelList v5 end")
     return dic
 

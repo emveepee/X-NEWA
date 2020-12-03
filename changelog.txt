@@ -1,3 +1,21 @@
+[B]2.9.1[/B]
+- Improved login logic
+- Relogin on session change
+UI Client
+ - Logic change for Back key stopping video
+
+[B]2.9.0[/B]
+- Remove warning on no data in EPG
+- Matrix and Leia comnpatibility for repo
+- PVR mode for in progress recordings using JSON RPC
+- Improved PVR mode for live tv
+- Save SID state on rentry
+- Deprecated API change
+- Fix error handling of ExtraDirectory call
+UI Client
+- Don't open window when loading channel icons
+- Timeout http calls
+
 [B]2.8.0[/B]
 - Added linux mouse support (via xdo)
 - This is rc4 with no other changes
