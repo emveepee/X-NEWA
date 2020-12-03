@@ -408,9 +408,12 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
         self.urly = self.xnewa.getURL()
         isVlc = False
         myDlg = None
-        from uuid import getnode as get_mac
-        mac = get_mac()
         #self.player = XBMCPlayer(xbmc.PLAYER_CORE_AUTO,settings=self.settings, xnewa=self.xnewa)
+        cached = 'sid.p'
+        if self.xnewa.checkCache(cached):
+            keys = self.xnewa.myCachedPickleLoad(cached)
+            self.xnewa.myCachedPickle(keys,cached)
+
         self.player = XBMCPlayer(settings=self.settings, xnewa=self.xnewa)
         if self.player.isPlaying():
             isMin = True
@@ -428,7 +431,11 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 self.channelIcon = self.xnewa.getChannelIcon(self.detailData['channel'][0])
 
             if self.channelIcon is not None:
-                listitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
+                if sys.version_info[0] >=  3:
+                    listitem = xbmcgui.ListItem(self.detailData["title"])
+                    listitem.setArt({'thumb' : self.channelIcon})
+                else:
+                    listitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
             else:
                 listitem = xbmcgui.ListItem(self.detailData['title'])
             #v5
@@ -472,7 +479,11 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                         xbmc.PlayList(0).clear()
                         for durl in durls:
                             if self.channelIcon is not None:
-                                newlistitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
+                                if sys.version_info[0] >=  3:
+                                    newlistitem = xbmcgui.ListItem(self.detailData["title"])
+                                    newlistitem.setArt({ 'thumb' : self.channelIcon })
+                                else:
+                                    newlistitem = xbmcgui.ListItem(self.detailData["title"], thumbnailImage=self.channelIcon)
                             else:
                                 newlistitem = xbmcgui.ListItem(self.detailData['title'])
                             newlistitem.setInfo( type="video", infoLabels=infolabels )
@@ -565,10 +576,10 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     xbmc.log(url)
                     pvr = []
                     pvr.append(PVRChannel(
-                        uniqueId = 1,
+                        uniqueId = chnum,
                         isRadio = False,
-                        channelNumber = 2,
-                        channelName = 'TVO',
+                        channelNumber = 0,
+                        channelName = self.detailData['channel'][0],
                         streamURL = None,
                         encryptionSystem = 0,
                         iconPath =  None))
@@ -587,12 +598,17 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
 
         else:
+            url = None
             try:
                 self.showIcon = self.xnewa.getShowIcon(self.detailData['title'])
             except:
                 self.showIcon = None
             if self.showIcon is not None:
-                listitem = xbmcgui.ListItem(self.detailData['title'], thumbnailImage=self.showIcon)
+                if sys.version_info[0] >=  3:
+                    listitem = xbmcgui.ListItem(self.detailData['title'])
+                    listitem.setArt({ 'thumb' : self.showIcon })
+                else:
+                    listitem = xbmcgui.ListItem(self.detailData['title'], thumbnailImage=self.showIcon)
             else:
                 listitem = xbmcgui.ListItem(self.detailData['title'])
 
@@ -603,6 +619,7 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
             else:
                 infolabels={"Title": self.detailData['title'],'plot': self.detailData['desc']}
             listitem.setInfo( type="Video", infoLabels=infolabels )
+            listitem.setProperty("IsPlayable", "true")
             #listitem.setInfo('video',{'Genre':'Comedy','title':'ttvvv','tagline':'dddmedy'})
             if self.settings.NextPVR_STREAM != 'Transcode':
                 bookmarkSecs = 0
@@ -615,18 +632,21 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                     listitem.setProperty('startoffset',str(bookmarkSecs))
 
             #listitem.setProperty('startoffset',str(bookmarkSecs))
-            url = self.detailData['filename']
-            url = url.replace('\\bdmv\\','\\BDMV\\')
-            if url[0:2]=='\\\\':
-                url = 'smb:'+self.detailData['filename'].replace('\\','/')
-            elif os.name != 'nt':
-                url = py2_encode(url).replace('\\','/')
-            try:
-                url = py2_encode(url)
-            except:
-                pass
+            if self.settings.NextPVR_STREAM == 'PVR' and xbmc.getCondVisibility('System.HasPVRAddon'):
+                url = self.xnewa.GetPVRRecording(self.detailData['recording_oid'])
+            if url == None:
+                url = self.detailData['filename']
+                url = url.replace('\\bdmv\\','\\BDMV\\')
+                if url[0:2]=='\\\\':
+                    url = 'smb:'+self.detailData['filename'].replace('\\','/')
+                elif os.name != 'nt':
+                    url = py2_encode(url).replace('\\','/')
+                try:
+                    url = py2_encode(url)
+                except:
+                    pass
             xbmc.log(url)
-            if url.startswith('plugin') == False and url.startswith('http') == False and url.startswith('rtmp') == False and url.startswith('mms') == False and (not xbmcvfs.exists(url)  or self.settings.NextPVR_STREAM == 'VLC') :
+            if url.startswith('pvr') == False and url.startswith('plugin') == False and url.startswith('http') == False and url.startswith('rtmp') == False and url.startswith('mms') == False and (not xbmcvfs.exists(url)  or self.settings.NextPVR_STREAM == 'VLC') :
                 xbmc.log("not found")
 
                 if self.xnewa.offline == True:

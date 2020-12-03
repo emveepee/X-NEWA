@@ -75,6 +75,7 @@ class XNEWA_Settings(object):
         self.XNEWA_SORT_RECORDING = int(addon.getSetting("recordingSort"))
         self.XNEWA_SORT_EPISODE = int(addon.getSetting("episodeSort"))
         self.NextPVR_STREAM = addon.getSetting("stream")
+        xbmc.log('Streaming mode: ' + self.NextPVR_STREAM)
 
         self.XNEWA_PREBUFFER = int(addon.getSetting("prebuffer")) // 4
         self.XNEWA_POSTBUFFER = int(addon.getSetting("postbuffer")) // 4

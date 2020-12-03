@@ -115,7 +115,6 @@ class EpgWindow(xbmcgui.WindowXML):
             self.ready = False
 
             # Store resolution
-            self.rez = self.getResolution()
             # debug("onInit() resolution=%s" % self.rez)
             self.epgSetup()
 
@@ -443,12 +442,15 @@ class EpgWindow(xbmcgui.WindowXML):
     ###############################################################################################
     def reFocus(self):
         try:
+            if len(self.epgButtons[self.idxRow]) <= self.idxButt:
+                self.idxButt = len(self.epgButtons[self.idxRow]) - 1
             ctrl = self.epgButtons[self.idxRow][self.idxButt]
             xbmcgui.WindowXML.setFocus(self, ctrl)
         except:
-            handleException()
             if self.idxButt == 0:
                 return
+            print (len(self.epgButtons[self.idxRow]), self.idxButt)
+            handleException()
             self.idxButt = self.idxButt - 1
             self.reFocus()
             pass

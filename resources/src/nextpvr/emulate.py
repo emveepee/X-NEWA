@@ -30,6 +30,12 @@ from builtins import object
 
 import os
 from kodi_six import xbmc, xbmcaddon, xbmcplugin, xbmcgui, xbmcvfs
+
+import sys
+if sys.version_info[0] >=  3:
+    pseudovfs = xbmcvfs
+else:
+    pseudovfs = xbmc
 from kodi_six.utils import py2_encode, py2_decode
 import operator
 import datetime
@@ -48,6 +54,9 @@ from xbmcaddon import Addon
 __language__ = Addon('script.kodi.knewc').getLocalizedString
 
 from XNEWAGlobals import *
+
+import socket
+import json
 
 class videoState(object):
     started, stopped, playing, error, inactive = list(range(5))
@@ -103,6 +112,9 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.t1 = None
         self.state = videoState.inactive
         self.osdMode = False
+        self.lastMouseMove = 0
+        self.timeout = 0
+        self.pauseActivity = False
 
     def onInit(self):
         if not self.win:
@@ -122,7 +134,7 @@ class EmulateWindow(xbmcgui.WindowXML):
 
             #self.status = self.getControl(120)
             #self.status.setImage('NextPVR.png')
-            self.getScreen(True)
+            self.getForcedScreen()
             self.ready = True
             xbmc.executebuiltin(XBMC_DIALOG_BUSY_CLOSE)
             t = Thread(target=self.render)
@@ -132,19 +144,21 @@ class EmulateWindow(xbmcgui.WindowXML):
     def onClick(self, controlId):
         pass
 
-    def exitCleanUp(self):
+    def exitCleanUp(self, sidDelete=False):
         if xbmc.Player().isPlayingVideo():
             xbmc.Player().stop()
             self.renderstop = False
             while self.state == videoState.playing:
                 xbmc.sleep(100)
         import glob
-        fileNames = glob.glob(xbmc.translatePath('special://temp') + 'knew5/emulate*.png' )
+        fileNames = glob.glob(pseudovfs.translatePath('special://temp') + 'knew5/emulate*.png' )
         for file in fileNames:
             try:
                 os.remove(file)
             except:
                 xbmc.log('Error deleting ' + file)
+        if sidDelete:
+            self.xnewa.cleanCache('sid.p')
         self.exit = True
         self.close()
 
@@ -202,8 +216,17 @@ class EmulateWindow(xbmcgui.WindowXML):
             #these are long presses
             if actionID not in CONTEXT_MENU and buttonID not in CONTEXT_MENU:
                 return
+        url = None
         if actionID == ACTION_MOUSE_MOVE:
-            return
+            ms = datetime.datetime.now().microsecond
+            ms = int(round(time.time() * 1000))
+
+            if self.lastMouseMove + 250 < ms:
+                url = self.base + '/control?move=49x57'  + self.xnewa.client
+                self.lastMouseMove = ms + 2000
+            else:
+                self.lastMouseMove = ms
+                return
         ignoreKeys = ( 61650, 61651, 127184, 127185, 323749, 323796 )
         if buttonID in ignoreKeys:
             return
@@ -219,17 +242,14 @@ class EmulateWindow(xbmcgui.WindowXML):
         else:
             self.recent[0] = now
             self.recent[1] = 0
-        retval = self.onLiveAction(actionID,buttonID)
-        xbmc.log(str(retval))
-        if retval == True:
+
+        if self.onLiveAction(actionID,buttonID) == True:
             return
 
         self.renderstop = True
         self.inControl = True
-        screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
         keyBase = self.base + '/control?time=' + str(now) + '&key='
-        url = None
-        pauseActivity = True
+        self.pauseActivity = True
         if actionID == ACTION_PLAYER_PLAY:
             url = keyBase + str(80|0x20000)
         elif actionID == ACTION_STOP:
@@ -261,7 +281,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 url = keyBase + str(66|0x20000)
             else:
                 url = keyBase + '36'
-            pauseActivity = False
+            self.pauseActivity = False
         elif buttonID >= 0x2f041 and buttonID <= 0x2f05a:
             url = keyBase + str(buttonID&0xff)
         elif actionID == ACTION_MOUSE_LEFT_CLICK or actionID == ACTION_MOUSE_DOUBLE_CLICK:
@@ -283,7 +303,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     action = '&'
                 action += 'click='
                 url = self.base + '/control?time=' + str(now) +  action + str(pos['x']) + 'x' + str(pos['y'])
-                pauseActivity = True
+                self.pauseActivity = True
 
         elif buttonID & 0x10000:
             ctrl = buttonID&0xff
@@ -334,7 +354,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
                     url = keyBase + str(70|0x20000)
             else:
-                pauseActivity = False
+                self.pauseActivity = False
         elif actionID in MOVEMENT_RIGHT:
             url = keyBase + '39'
         elif actionID in MOVEMENT_DOWN or buttonID == 0xf064:
@@ -343,7 +363,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
                     url = keyBase + str(82|0x20000)
             else:
-                pauseActivity = False
+                self.pauseActivity = False
         elif actionID in MOVEMENT_SCROLL_UP:
             url = keyBase + '33'
         elif actionID in MOVEMENT_SCROLL_DOWN:
@@ -380,7 +400,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             url = keyBase + str((buttonID&0xff)-32)
         elif buttonID == 0xf09b:
             #F12 exit
-            self.exitCleanUp()
+            self.exitCleanUp(True)
         elif buttonID == 0x4f092:
             #alt-f4'
             url = keyBase + str(0x40073)
@@ -429,29 +449,9 @@ class EmulateWindow(xbmcgui.WindowXML):
             url = url + self.xnewa.client
             #while self.rendering:
             #    time.sleep(0.1)
-            xbmc.log(url)
-            try:
-                jpgfile = urlopen(url)
-                output = open(screenFile,'wb')
-                output.write(jpgfile.read())
-                output.close()
-                jpgfile.close()
-                self.setOSDMode(True)
-                self.image.setImage(screenFile,False)
+            if self.getControlEx(url, True) == 200:
                 xbmc.sleep(25)
-            except HTTPError as err:
-                xbmc.log(str(err.code))
-                print(err)
-            except URLError as err:
-                print(err)
-                self.exit = True
-                self.close()
-            except Exception as err:
-                print (err)
-                self.exit = True
-                self.close()
-            if pauseActivity:
-                self.getActivity()
+
         self.renderstop = False
         self.inControl = False
         self.ready = True
@@ -472,11 +472,13 @@ class EmulateWindow(xbmcgui.WindowXML):
                     xbmc.executebuiltin('Action( NextSubtitle )')
                     retval = True
                 elif actionID == REMOTE_BACK or actionID == ACTION_BACK or actionID == ACTION_SHOW_GUI:
-                    if self.osdMode == False:
+                    if xbmcgui.getCurrentWindowId() == 12005:
                         xbmc.executebuiltin('ActivateWindow(fullscreenvideo)')
                         self.wasFullScreen = True
                         self.setOSDMode(True)
-                        retval = True
+                    else:
+                        xbmc.Player().stop()
+                    retval = True
                 elif actionID == ACTION_PLAYER_FORWARD:
                     xbmc.executebuiltin('PlayerControl(tempoup)')
                     retval = True
@@ -526,7 +528,8 @@ class EmulateWindow(xbmcgui.WindowXML):
         return retval
     def render(self):
         fullRefresh = 0
-        while xbmc.abortRequested == False and self.exit == False:
+        monitor = xbmc.Monitor()
+        while monitor.abortRequested() == False and self.exit == False:
             if not xbmc.Player().isPlayingVideo():
                 if self.state == videoState.started:
                     if isinstance(self.t1, Thread):
@@ -543,13 +546,12 @@ class EmulateWindow(xbmcgui.WindowXML):
                             self.getActivity(True)
                             if self.renderstop == True:
                                 self.renderstop = False
-                                self.getScreen()
-                                self.getActivity()
+                                self.getControlEx(showImage=True)
 
                     else:
                         fullRefresh = 0
                         import glob
-                        fileNames = glob.glob(xbmc.translatePath('special://temp') + 'knew5/emulate*.png' )
+                        fileNames = glob.glob(pseudovfs.translatePath('special://temp') + 'knew5/emulate*.png' )
                         for file in fileNames:
                             try:
                                 os.remove(file)
@@ -559,34 +561,18 @@ class EmulateWindow(xbmcgui.WindowXML):
                         if self.state == videoState.playing or self.state == videoState.error or self.state == videoState.stopped:
                             if self.sdlmode != SDL.disabled:
                                 if self.skipStop == False:
-                                    try:
-                                        print("Stop state",self.state)
-                                        url = self.base + '/control?media=stop'
-                                        if self.state == videoState.error:
-                                            url += '&message=Player%20error'
-                                        url += self.xnewa.client
-                                        screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
-                                        xbmc.log(url)
-                                        pngfile = urlopen(url)
-                                        pngfile.close()
-                                    except Exception as err:
-                                        print(err)
+                                    xbmc.log('Stop state : {}',self.state)
+                                    url = self.base + '/control?media=stop'
+                                    if self.state == videoState.error:
+                                        url += '&message=Player%20error'
+                                    url += self.xnewa.client
+                                    self.getControlEx(url, False)
                                 else:
                                     self.skipStop = False
                             else:
                                 #url = self.base + '/control?key=131155' + self.xnewa.client
                                 url = self.base + '/control?key=' + str(83|0x20000) + self.xnewa.client
-                                xbmc.log(url)
-                                try:
-                                    jpgfile = urlopen(url)
-                                    screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
-                                    output = open(screenFile,'wb')
-                                    output.write(jpgfile.read())
-                                    output.close()
-                                    self.image.setImage(screenFile,False)
-                                    self.getActivity()
-                                except Exception as err:
-                                    print(err)
+                                self.getControlEx(url, True)
 
                             self.setOSDMode(True)
                             self.sidUpdate()
@@ -594,61 +580,26 @@ class EmulateWindow(xbmcgui.WindowXML):
                             self.xnewa.logMessage('Stopped playback')
 
                             url = self.base + '/control?key=131188' + self.xnewa.client
-                            xbmc.log(url)
-                            try:
-                                jpgfile = urlopen(url)
-                                screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
-                                output = open(screenFile,'wb')
-                                output.write(jpgfile.read())
-                                output.close()
-                                self.image.setImage(screenFile,False)
-                                self.getActivity()
-                            except Exception as err:
-                                print(err)
-
+                            self.getControlEx(url, True)
                 xbmc.sleep(1000)
 
             else:
                 self.state = videoState.playing
                 if self.sdlmode == SDL.full:
                     if self.wasFullScreen:
-                        if xbmc.getCondVisibility('videoplayer.isfullscreen') == 0:
+                        if xbmc.getCondVisibility('videoplayer.isfullscreen') == False:
                             self.wasFullScreen = False
                             url = self.base + '/control?move=49x57'  + self.xnewa.client
-                            screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-a'+ str(time.time()) + '.png'
-                            xbmc.log(url)
-                            try:
-                                pngfile = urlopen(url)
-                                if pngfile.code == 200:
-                                    output = open(screenFile1,'wb')
-                                    output.write(pngfile.read())
-                                    output.close()
-                                    pngfile.close()
-                                    self.image.setImage(screenFile1,False)
-                                print (pngfile.code)
-                                self.setOSDMode(False)
-                                self.getActivity()
-                            except Exception as err:
-                                print(err)
+                            self.setOSDMode(False)
+                            self.getControlEx(url, True)
 
                     try:
                         url = self.base + '/control?media=' + str(xbmc.Player().getTime())  + self.xnewa.client
-                        screenFile1 = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
-                        xbmc.log(url)
-                        request = Request(url)
-                        pngfile = urlopen(request)
-                        if pngfile.code == 200 and xbmc.getCondVisibility('videoplayer.isfullscreen') == 0:
-                            output = open(screenFile1,'wb')
-                            output.write(pngfile.read())
-                            output.close()
-                            self.image.setImage(screenFile1,False)
-                            # needs rendering always true so just
-                            self.getActivity()
-                        elif pngfile.code == 204:
+                        code = self.getControlEx(url, xbmc.getCondVisibility('videoplayer.isfullscreen') == False)
+                        if code == 204:
                             self.setOSDMode(False)
-                        else:
-                            print(pngfile.code)
-                        pngfile.close()
+                        elif code != 200:
+                            print(code)
                         self.skipStop = False
                     except Exception as err:
                         print(err)
@@ -711,84 +662,27 @@ class EmulateWindow(xbmcgui.WindowXML):
             url = keyBase + str(value + 43)
         return url
 
-    def getScreen(self, force=False):
+    def getForcedScreen(self):
         self.rendering = True
         self.errors = 0
         retval = True
         try:
-            if force:
-                if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
-                    url = self.base + '/control?size=' + self.settings.XNEWA_CLIENT_SIZE
-                    if self.settings.XNEWA_CLIENT_QUALITY == True:
-                        url += '&quality=high'
-                    url += self.xnewa.client
-                    xbmc.log(url)
-                    try:
-                        jpgfile = urlopen(url)
-                        jpgfile.close
-                        if self.sdlmode != SDL.disabled:
-                            try:
-                                url = self.base + '/control?media=stop' + self.xnewa.client
-                                xbmc.log(url)
-                                pngfile = urlopen(url)
-                                pngfile.close()
-                            except Exception as err:
-                                print(err)
-
-                    except HTTPError as e:
-                        print(e.code)
-                        if e.code == 404:
-                            xbmc.sleep(500)
-                            url = self.base + '/control?media=stop' + self.xnewa.client
-                            xbmc.log(url)
-                            pngfile = urlopen(url)
-                            pngfile.close()
-                            self.errors = self.errors + 1
-                        elif e.code == 403:
-                            self.sidUpdate()
-                            self.getSid()
-                            self.errors = self.errors + 1
-                        else:
-                            print(e)
-                            self.exit = True
-                            self.close()
-                            return False
-                        if self.errors < 3:
-                            self.getScreen(force)
-                            return False
-                    except URLError as err:
-                        print(err)
-                        self.exit = True
-                        self.close()
-
-                else:
-                    self.exit = True
-                    self.close()
-                    return False
-
-
-            screenFile = xbmc.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
-
-            url = self.base + '/control?format=json' + self.xnewa.client
-            #xbmc.log(url)
-            try:
-                self.setOSDMode(True)
-                jpgfile = urlopen(url)
-                output = open(screenFile,'wb')
-                output.write(jpgfile.read())
-                output.close()
-                self.image.setImage(screenFile,False)
-            except HTTPError as e:
-                xbmc.log(url)
-                xbmc.log(str(e.code))
-                retval = False
-            except URLError as err:
-                xbmc.log(url)
-                print(err)
-                xbmc.log('Abort emulation')
+            if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
+                url = self.base + '/control?size=' + self.settings.XNEWA_CLIENT_SIZE
+                if self.settings.XNEWA_CLIENT_QUALITY == True:
+                    url += '&quality=high'
+                url += self.xnewa.client
+                self.getControlEx(url, False)
+                if self.sdlmode != SDL.disabled:
+                    url = self.base + '/control?media=stop' + self.xnewa.client
+                    if self.getControlEx(url, False) != 200:
+                        self.getControlEx(url, False)
+            else:
                 self.exit = True
                 self.close()
-                retval = False
+                return False
+
+            self.getControlEx(None, True)
 
         except Exception as err:
             print(err)
@@ -798,19 +692,69 @@ class EmulateWindow(xbmcgui.WindowXML):
         return retval
 
 
+    def getControlEx(self, url=None, showImage=True):
+        code = 0
+        if url == None:
+            url = self.base + '/control?format=json' + self.xnewa.client
+
+        xbmc.log(url)
+        try:
+            jpgfile = urlopen(url, timeout=10)
+            if showImage and jpgfile.code == 200:
+                screenFile = pseudovfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                output = open(screenFile,'wb')
+                output.write(jpgfile.read())
+                output.close()
+                self.setOSDMode(True)
+                self.image.setImage(screenFile,False)
+                if self.pauseActivity:
+                    self.getActivity()
+            code = jpgfile.code
+        except HTTPError as e:
+            code = e.code
+            xbmc.log(str(e.code))
+            if e.code == 404:
+                xbmc.sleep(500)
+                self.errors = self.errors + 1
+            elif e.code == 403:
+                self.sidUpdate()
+                self.getSid()
+                self.errors = self.errors + 1
+        except URLError as err:
+            code = err.errno
+            leave = True
+            if isinstance(err.reason, socket.timeout):
+                self.timeout += 1
+                leave = xbmcgui.Dialog().yesno('NextPVR timeout', 'Do you want to exit UI client?', autoclose=10000)
+                xbmc.sleep(250)
+            if leave == True:
+                self.exit = True
+                self.close()
+        except Exception as err:
+            print (err)
+            code = -1
+            leave = True
+            if str(err) == 'timed out':
+                self.timeout += 1
+                leave = xbmcgui.Dialog().yesno('NextPVR timeout', 'Do you want to exit UI client?', autoclose=10000)
+                xbmc.sleep(250)
+            if leave == True:
+                self.exit = True
+                self.close()
+        return code
+
+
     def getActivity(self, update=False):
         if update:
             url = self.base + '/activity?format=json&updates=1'  + self.xnewa.client
         else:
             url = self.base + '/activity?format=json' + self.xnewa.client
-        import json
-        print (url)
+        xbmc.log(url)
         try:
-            json_file = urlopen(url)
+            json_file = urlopen(url, timeout=30)
             jsonActivity = json.load(json_file)
             json_file.close()
-            print(jsonActivity)
-            #xbmc.log(jsonActivity)
+            xbmc.log(str(jsonActivity))
             if 'url' in jsonActivity:
                 import re
                 if jsonActivity['url'] != '':
@@ -833,25 +777,13 @@ class EmulateWindow(xbmcgui.WindowXML):
                 self.quickPlayer(jsonActivity)
             elif 'action' in jsonActivity:
                 if jsonActivity['action'] == 'exit':
-                    self.exit = True
                     xbmc.sleep(250)
-                    import glob
-                    fileNames = glob.glob(xbmc.translatePath('special://temp') + 'knew5/emulate*.png' )
-                    for file in fileNames:
-                        try:
-                            os.remove(file)
-                        except:
-                            xbmc.log('Leaving ' + file)
-                    self.close()
+                    self.exitCleanUp(True)
                     return
                 elif jsonActivity['action'] == 'stop':
+                    self.setOSDMode(True)
                     url = self.base + '/control?media=stop' + self.xnewa.client
-                    xbmc.log(url)
-                    try:
-                        pngfile = urlopen(url)
-                        pngfile.close()
-                    except Exception as err:
-                        print(err)
+                    self.getControlEx(url, False)
             elif 'needsRendering' in jsonActivity:
                 if jsonActivity['needsRendering'] ==  True:
                     if isinstance(self.t1, Thread):
@@ -990,9 +922,14 @@ class EmulateWindow(xbmcgui.WindowXML):
 
             if 'recording_id' in activity:
                 dd['recording_oid'] = activity['recording_id']
-                dd['nextUrl'] = '/live?recording=' + dd['recording_oid']
-                if self.settings.NextPVR_ICON_DL == 'Yes' and self.xnewa.getShowIcon(dd['title']) is None:
-                    self.xnewa.getDetails(self.settings.NextPVR_USER,self.settings.NextPVR_PW,dd['recording_oid'],'R','Yes')
+                dd['nextUrl'] = '/live?recording_id=' + dd['recording_oid']
+                #if self.settings.NextPVR_ICON_DL == 'Yes' and self.xnewa.getShowIcon(dd['title']) is None:
+                recdata = self.xnewa.getDetails(self.settings.NextPVR_USER,self.settings.NextPVR_PW,dd['recording_oid'],'R','Yes')
+                dd['season'] = recdata['season']
+                dd['episode'] = recdata['episode']
+                dd['channel'] = recdata['channel']
+                dd['start'] = recdata['start']
+                dd['end'] = recdata['end']
             else:
                 dd['recording_oid'] = 0
 
