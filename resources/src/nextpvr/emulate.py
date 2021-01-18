@@ -561,7 +561,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                         if self.state == videoState.playing or self.state == videoState.error or self.state == videoState.stopped:
                             if self.sdlmode != SDL.disabled:
                                 if self.skipStop == False:
-                                    xbmc.log('Stop state : {}',self.state)
+                                    xbmc.log('Stop state : {}'.format(self.state))
                                     url = self.base + '/control?media=stop'
                                     if self.state == videoState.error:
                                         url += '&message=Player%20error'
@@ -598,8 +598,8 @@ class EmulateWindow(xbmcgui.WindowXML):
                         code = self.getControlEx(url, xbmc.getCondVisibility('videoplayer.isfullscreen') == False)
                         if code == 204:
                             self.setOSDMode(False)
-                        elif code != 200:
-                            print(code)
+                        else:
+                            xbmc.log('OSD video render {}'.format(code))
                         self.skipStop = False
                     except Exception as err:
                         print(err)
