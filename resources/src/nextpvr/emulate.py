@@ -212,8 +212,10 @@ class EmulateWindow(xbmcgui.WindowXML):
             actionID = action.getId()
             buttonID = action.getButtonCode()
         except: return
+        longPress = False
         if buttonID & 0x1000000:
             #these are long presses
+            longPress = True
             if actionID not in CONTEXT_MENU and buttonID not in CONTEXT_MENU:
                 return
         url = None
@@ -349,7 +351,10 @@ class EmulateWindow(xbmcgui.WindowXML):
         elif actionID in MOVEMENT_LEFT:
             url = keyBase + '37'
         elif actionID in MOVEMENT_UP:
-            url = keyBase + '38'
+            if longPress:
+                url = keyBase + '36'
+            else:
+                url = keyBase + '38'
             if xbmc.Player().isPlayingVideo():
                 if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
                     url = keyBase + str(70|0x20000)
@@ -668,7 +673,7 @@ class EmulateWindow(xbmcgui.WindowXML):
         retval = True
         try:
             if self.xnewa.AreYouThere(self.settings.usewol(), self.settings.NextPVR_MAC, self.settings.NextPVR_BROADCAST):
-                url = self.base + '/control?size=' + self.settings.XNEWA_CLIENT_SIZE
+                url = self.base + '/control?res=' + self.settings.XNEWA_CLIENT_SIZE
                 if self.settings.XNEWA_CLIENT_QUALITY == True:
                     url += '&quality=high'
                 url += self.xnewa.client
@@ -696,6 +701,8 @@ class EmulateWindow(xbmcgui.WindowXML):
         code = 0
         if url == None:
             url = self.base + '/control?format=json' + self.xnewa.client
+            if self.settings.XNEWA_CLIENT_QUALITY == True:
+                url += '&quality=high'
 
         xbmc.log(url)
         try:

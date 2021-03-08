@@ -1,3 +1,9 @@
+[B]2.9.3[/B]
+UI Client
+- Proper use of quality parameter
+- Resolultion change for NextPVR 5.1.1
+- Long-Up to hidden menu
+
 [B]2.9.2[/B]
 - Video OSD logging
 
