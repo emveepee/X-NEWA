@@ -222,7 +222,7 @@ class XNEWA_Connect(object):
                     elif usewol and mac != None:
                         if count == 0:
                             WolProgress = xbmcgui.DialogProgress()
-                            WolProgress.create("%s WOL" % smartUTF8(__language__(30152)), '%s %s' % (smartUTF8(__language__(30153)), self.ip), smartUTF8(__language__(30139)))
+                            WolProgress.create("%s WOL" % smartUTF8(__language__(30152)), '%s %s %s' % (smartUTF8(__language__(30153)), self.ip, smartUTF8(__language__(30139))))
                         completed = 100 * count // int(self.settings.NextPVR_CONTACTS)
                         WolProgress.update(completed)
                         xbmc.log ('sending wol ' + mac + ' ' + str(count))
@@ -2688,7 +2688,7 @@ def _WakeOnLan(ethernet_address, broadcast_address):
                 int(addr_byte[5], 16))
 
             # Build the Wake-On-LAN "Magic Packet"...
-            msg = '\xff' * 6 + hw_addr * 16
+            msg = b'\xff' * 6 + hw_addr  * 16
 
             # ...and send it to the broadcast address using UDP
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

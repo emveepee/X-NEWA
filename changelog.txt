@@ -1,3 +1,7 @@
+[B]2.9.4[/B]
+- WOL create dialog changed in Matrix
+- WOL byte array incorrectly using string value
+
 [B]2.9.3[/B]
 UI Client
 - Proper use of quality parameter
