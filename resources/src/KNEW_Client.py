@@ -339,6 +339,9 @@ def recording2dict_v5(self, recording, recDir=None,setWatched=True):
             theDict['subtitle'] = ''
     else:
         theDict['subtitle'] = py2_decode(recording['subtitle'])
+        if theDict['subtitle'] == '':
+            if 'year' in recording:
+                theDict['subtitle'] = str(recording['year'])
         if 'season' in recording:
             theDict['season'] = recording['season']
         else:
@@ -473,7 +476,7 @@ def recurring2dict_5(self, recurring):
         theDict['start'] = strptimeKodi("00:00",'%H:%M')
         theDict['end'] = strptimeKodi("23:59",'%H:%M')
     try:
-        if reccurring['directoryID'] == '':
+        if recurring['directoryID'] == '':
             theDict['directory'] = "Default"
         else:
             theDict['directory'] = recurring['directoryID'][1:-1]
@@ -656,18 +659,26 @@ def getGuideData(self,listing):
     channel['progs'] = progs
     return channel
 
-def getRecordingsSummary_v5(self):
+def getRecordingsSummary_v5(self, sortTitle, sortDate):
     xbmc.log("getRecordingsSummary v5 start")
     recordings = self.getRecentRecordings(self.settings.NextPVR_USER, self.settings.NextPVR_PW)
     summary = {}
     for recording in recordings:
         if recording['title'] in summary:
             summary[recording['title']][2] += 1
+            summary[recording['title']][3] = 0
         else:
             mylist = []
             mylist.append(recording['title'])
             mylist.append(recording['start'])
             mylist.append(1)
+            mylist.append(recording['recording_oid'])
+            mylist.append(recording['status'])
+            if 'filename' in recording:
+                mylist.append(recording['filename'])
+            else:
+                mylist.append(None)
+
             summary[recording['title']] = mylist
     retArr = []
     for recording in summary:
@@ -675,7 +686,21 @@ def getRecordingsSummary_v5(self):
         theDict['title'] = py2_decode(summary[recording][0])
         theDict['start'] =  summary[recording][1]
         theDict['count'] = summary[recording][2]
+        theDict['recording_oid'] = summary[recording][3]
+        theDict['status'] = summary[recording][4]
+        theDict['filename'] = summary[recording][5]
+        theDict['rectype'] = 'Summary'
         retArr.append(theDict)
+        reverse = not sortDate
+    if sortTitle:
+        key = 'title'
+        reverse = False
+    else:
+        key = 'start'
+
+
+    retArr1 = sorted(retArr, key=lambda x: x[key],  reverse=reverse)
+
     xbmc.log("getRecordingsSummary v5 end")
     return retArr
 
@@ -687,7 +712,7 @@ def cancelRecording_v5(self, progDetails):
     elif progDetails['status'].lower() == "pending" or progDetails['status'].lower() == "in-progress":
         debug("Cancelling")
         method = 'recording.delete&recording_id=' + str(progDetails['recording_oid'])
-    elif progDetails['status'].lower() == "completed":
+    elif progDetails['status'].lower() == "completed" or 'Watched' in progDetails['status'] :
         debug("Deleting")
         method = 'recording.delete&recording_id=' + str(progDetails['recording_oid'])
     elif progDetails['status'].lower() == "failed"  or progDetails['status'].lower() == "conflict" :

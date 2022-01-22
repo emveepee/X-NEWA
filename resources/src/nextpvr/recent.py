@@ -165,6 +165,18 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
 
     def onAction(self, action):
         #log.debug('Key got hit: %s   Current focus: %s' % (ui.toString(action), self.getFocusId()))
+        if self.mode == 0 and (action.getId() == ACTION_PAUSE or action.getId() == 58):
+            if self.programsListBox.getSelectedItem().getProperty('count') == '1':
+                if self.programsListBox.getSelectedItem().isSelected():
+                    self.programsListBox.getSelectedItem().select(False)
+                    self.selections -= 1
+                else:
+                    self.programsListBox.getSelectedItem().select(True)
+                    self.selections += 1
+                if self.selections > 0:
+                    self.win.setProperty('tagged', 'true')
+                else:
+                    self.win.setProperty('tagged', 'false')
         if self.mode == 1 and (action.getId() == ACTION_PAUSE or action.getId() == 58):
             if self.programsListBox.getSelectedItem().isSelected():
                 self.programsListBox.getSelectedItem().select(False)
@@ -176,17 +188,12 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                 self.win.setProperty('tagged', 'true')
             else:
                 self.win.setProperty('tagged', 'false')
-        elif  action.getId() in CONTEXT_MENU or action.getButtonCode() in CONTEXT_MENU:
-            if self.selections > 0:
-                for i in range(self.programsListBox.size()):
-                    if self.programsListBox.getListItem(i).isSelected():
-                        print(self.programsListBox.getListItem(i).getProperty('oid'))
         elif action.getId() in (EXIT_SCRIPT) or action.getButtonCode()  in (EXIT_SCRIPT):
             if self.filtered:
                 self.xnewa.cleanCache('recentRecordings*.p')
                 self.xnewa.cleanCache('summary.List')
             if self.mode == 1:
-                self.mode = 0;
+                self.mode = 0
                 self.render()
             else:
                 self.closed = True
@@ -277,6 +284,7 @@ class RecentRecordingsWindow(xbmcgui.WindowXML):
                             showIcon = self.xnewa.getShowIcon(t['title'])
                             listItem.setProperty('showicon',showIcon)
                             listItem.setProperty('count', str(t['count']) )
+                            listItem.setProperty('oid', str(t['recording_oid']))
                             listItems.append(listItem)
                         else:
                             i = i - 1

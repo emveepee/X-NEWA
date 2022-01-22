@@ -1,3 +1,13 @@
+[B]2.9.5[/B]
+UI Client
+- Enable Alt-G
+- Hotkeys to What's "New and Scheduler"
+- Use constants in emulate.py
+- Long Up to hidden menu
+- 10 minute timeout to Kodi from UI Client
+Python UI
+- Improved tagged deletes in Recordings
+
 [B]2.9.4[/B]
 - WOL create dialog changed in Matrix
 - WOL byte array incorrectly using string value

@@ -54,6 +54,7 @@ from xbmcaddon import Addon
 __language__ = Addon('script.kodi.knewc').getLocalizedString
 
 from XNEWAGlobals import *
+from enum_keys import *
 
 import socket
 import json
@@ -114,6 +115,7 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.osdMode = False
         self.lastMouseMove = 0
         self.timeout = 0
+        self.keyTimeout = time.time()
         self.pauseActivity = False
 
     def onInit(self):
@@ -151,7 +153,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             while self.state == videoState.playing:
                 xbmc.sleep(100)
         import glob
-        fileNames = glob.glob(pseudovfs.translatePath('special://temp') + 'knew5/emulate*.png' )
+        fileNames = glob.glob(pseudovfs.translatePath('special://temp') + 'knew5/emulate*.[pj][pn]g' )
         for file in fileNames:
             try:
                 os.remove(file)
@@ -208,16 +210,11 @@ class EmulateWindow(xbmcgui.WindowXML):
 
 
     def onAction(self, action):
+        self.keyTimeout = time.time()
         try:
             actionID = action.getId()
             buttonID = action.getButtonCode()
         except: return
-        longPress = False
-        if buttonID & 0x1000000:
-            #these are long presses
-            longPress = True
-            if actionID not in CONTEXT_MENU and buttonID not in CONTEXT_MENU:
-                return
         url = None
         if actionID == ACTION_MOUSE_MOVE:
             ms = datetime.datetime.now().microsecond
@@ -248,43 +245,56 @@ class EmulateWindow(xbmcgui.WindowXML):
         if self.onLiveAction(actionID,buttonID) == True:
             return
 
+        longPress = False
+        if buttonID & 0x1000000:
+            if buttonID & 0xff0000:
+                return
+            #these are long presses
+            longPress = True
+            # if actionID not in CONTEXT_MENU and buttonID not in CONTEXT_MENU and buttonID != MOVEMENT_UP:
+            #     return
+            if actionID in MOVEMENT_UP:
+                actionID = ACTION_FIRST_PAGE
+                buttonID = 0
+            else:
+                return
+
         self.renderstop = True
         self.inControl = True
         keyBase = self.base + '/control?time=' + str(now) + '&key='
         self.pauseActivity = True
         if actionID == ACTION_PLAYER_PLAY:
-            url = keyBase + str(80|0x20000)
+            url = keyBase + str(ENUM_KEY_P | ENUM_KEY_CONTROL)
         elif actionID == ACTION_STOP:
-            url = keyBase + str(83|0x20000)
+            url = keyBase + str(ENUM_KEY_S | ENUM_KEY_CONTROL)
             if self.state != videoState.inactive:
                 self.state = videoState.stopped
         elif actionID == ACTION_NEXT_ITEM:
             if buttonID & 0xf046 == 0xf046 :
-                # NextPVR Ctrl-F
-                url = keyBase + str(70|0x20000)
-
+                url = keyBase + str(ENUM_KEY_F | ENUM_KEY_CONTROL)
             else:
-                url = keyBase + str(39|0x20000)
+                url = keyBase + str(ENUM_KEY_RIGHT | ENUM_KEY_CONTROL)
         elif actionID == ACTION_PREV_ITEM:
             if xbmc.Player().isPlayingVideo():
                 if '/live?channel=' not in xbmc.Player().getPlayingFile():
-                    url = keyBase + str(37|0x20000)
+                    url = keyBase + str(ENUM_KEY_LEFT | ENUM_KEY_CONTROL)
             else:
                 # send ctrl-b doesn't work
-                url =  keyBase + str(37|0x20000)
+                url =  keyBase + str(ENUM_KEY_LEFT | ENUM_KEY_CONTROL)
         elif actionID == ACTION_PLAYER_FORWARD:
-            url = keyBase + str(70|0x20000)
+            url = keyBase + str(ENUM_KEY_F| ENUM_KEY_CONTROL)
         elif actionID == ACTION_PLAYER_REWIND:
-            url = keyBase + str(82|0x20000)
+            url = keyBase + str(ENUM_KEY_R | ENUM_KEY_CONTROL)
         elif actionID == ACTION_FIRST_PAGE or actionID == ACTION_INFO:
             #home
             if self.state == videoState.playing:
                 # send ctrl-b
-                url = keyBase + str(66|0x20000)
+                url = keyBase + str(ENUM_KEY_B | ENUM_KEY_CONTROL)
             else:
-                url = keyBase + '36'
+                url = keyBase + ENUM_KEY_MENU
             self.pauseActivity = False
         elif buttonID >= 0x2f041 and buttonID <= 0x2f05a:
+            # shifted letters
             url = keyBase + str(buttonID&0xff)
         elif actionID == ACTION_MOUSE_LEFT_CLICK or actionID == ACTION_MOUSE_DOUBLE_CLICK:
             pos = None
@@ -310,130 +320,131 @@ class EmulateWindow(xbmcgui.WindowXML):
         elif buttonID & 0x10000:
             ctrl = buttonID&0xff
             if ctrl == 0x50:
-                url = keyBase + str(ctrl|0x20000)
+                url = keyBase + str(ENUM_KEY_P | ENUM_KEY_CONTROL)
             elif ctrl == 0x53:
-                url = keyBase + str(ctrl|0x20000)
+                url = keyBase + str(ENUM_KEY_S | ENUM_KEY_CONTROL)
                 self.renderstop = False
                 xbmc.Player().stop()
             elif ctrl == 0x4b:
-                url = keyBase + str(ctrl|0x20000)
+                url = keyBase + str(ENUM_KEY_K | ENUM_KEY_CONTROL)
             elif ctrl == 0x52:
-                url = keyBase + str(ctrl|0x20000)
+                url = keyBase + str(ENUM_KEY_R | ENUM_KEY_CONTROL)
             elif ctrl == 0x82:
-                url = keyBase + str(37|0x20000)
+                url = keyBase + str(ENUM_KEY_LEFT | ENUM_KEY_CONTROL)
             elif ctrl == 0x83:
-                url = keyBase + str(39|0x20000)
+                url = keyBase + str(ENUM_KEY_RIGHT | ENUM_KEY_CONTROL)
             elif ctrl == 0x42:
-                url = keyBase + str(80|0x20000)
+                url = keyBase + str(ENUM_KEY_P | ENUM_KEY_CONTROL)
             elif ctrl == 0x46:
-                url = keyBase + str(70|0x20000)
+                url = keyBase + str(ENUM_KEY_F | ENUM_KEY_CONTROL)
             elif ctrl == 0x57:
-                url =  keyBase + str(87|0x20000)
+                url =  keyBase + str(ENUM_KEY_W | ENUM_KEY_CONTROL)
             elif ctrl == 0x47:
-                url = keyBase + str(112)
+                url = keyBase + ENUM_KEY_F1
             elif ctrl == 0x4d and buttonID & 0x30000:
                 myKey = self.getContext()
                 if myKey != None:
                     url = keyBase + myKey
             elif ctrl == 0x4f:
-                url = keyBase + str(119)
+                url = keyBase + ENUM_KEY_F8
             elif ctrl == 0x54:
-                url = keyBase + str(113)
+                url = keyBase + ENUM_KEY_F2
             else:
                 pass
                 #print actionID, buttonID, hex(ctrl), hex(actionID)
         elif actionID == ACTION_RECORD or actionID == ACTION_QUEUE_ITEM:
-            url = keyBase + str(75|0x20000)
+            url = keyBase + str(ENUM_KEY_K | ENUM_KEY_CONTROL)
         elif actionID == ACTION_PAUSE:
-            url = keyBase + '32'
+            url = keyBase + ENUM_KEY_SPACE
         elif buttonID == 0xf02e:
             url = keyBase + '46'
         elif actionID in MOVEMENT_LEFT:
-            url = keyBase + '37'
+            url = keyBase + str(ENUM_KEY_LEFT)
         elif actionID in MOVEMENT_UP:
-            if longPress:
-                url = keyBase + '36'
-            else:
-                url = keyBase + '38'
+            url = keyBase + ENUM_KEY_UP
             if xbmc.Player().isPlayingVideo():
                 if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
-                    url = keyBase + str(70|0x20000)
+                    url = keyBase + str(ENUM_KEY_F | ENUM_KEY_CONTROL)
             else:
                 self.pauseActivity = False
         elif actionID in MOVEMENT_RIGHT:
-            url = keyBase + '39'
+            url = keyBase + str(ENUM_KEY_RIGHT)
         elif actionID in MOVEMENT_DOWN or buttonID == 0xf064:
-            url = keyBase + '40'
+            url = keyBase + ENUM_KEY_DOWN
             if xbmc.Player().isPlayingVideo():
                 if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
-                    url = keyBase + str(82|0x20000)
+                    url = keyBase + str(ENUM_KEY_R | ENUM_KEY_CONTROL)
             else:
                 self.pauseActivity = False
         elif actionID in MOVEMENT_SCROLL_UP:
-            url = keyBase + '33'
+            url = keyBase +  ENUM_KEY_PAGEUP
         elif actionID in MOVEMENT_SCROLL_DOWN:
-            url = keyBase + '34'
+            url = keyBase + ENUM_KEY_PAGEDOWN
         elif actionID >= 58 and actionID <= 67:
+            # numbers maybe numpad
             url = keyBase + str(actionID-10)
         elif actionID >= 142 and actionID <= 149:
             url = keyBase + str(actionID-92)
         elif actionID == ACTION_SELECT_ITEM:
-            url = keyBase + '13'
+            url = keyBase + ENUM_KEY_ENTER
         elif actionID == KEYBOARD_BACK or buttonID == 61575:
-            url = keyBase + '8'
+            url = keyBase + ENUM_KEY_BACKSPACE
         elif actionID in EXIT_SCRIPT:
-            url = keyBase + '27'
+            url = keyBase + ENUM_KEY_BACK
         elif actionID in CONTEXT_MENU or buttonID in CONTEXT_MENU:
             myKey = self.getContext()
             if myKey != None:
                 url = keyBase + myKey
         elif actionID == ACTION_TELETEXT_RED:
-            url = keyBase + str(82|0x40000)
+            url = keyBase + str(ENUM_KEY_R | ENUM_KEY_ALT)
         elif actionID == ACTION_TELETEXT_GREEN:
-            url = keyBase + str(71|0x40000)
+            url = keyBase + str(ENUM_KEY_G | ENUM_KEY_ALT)
         elif actionID == ACTION_TELETEXT_YELLOW:
-            url = keyBase + str(89|0x40000)
+            url = keyBase + str(ENUM_KEY_Y | ENUM_KEY_ALT)
         elif actionID == ACTION_TELETEXT_BLUE:
-            url = keyBase + str(66|0x40000)
+            url = keyBase + str(ENUM_KEY_B | ENUM_KEY_ALT)
         elif buttonID >= 0xf030 and buttonID <= 0xf039:
+            #remote numbers and numpad
             url = keyBase + str(buttonID-0xf030+48)
-        elif buttonID >= 0xf041 and buttonID <= 0xf05a:
-            if self.state == videoState.playing and buttonID == 0xf05a:
-                buttonID = 118
-            url = keyBase + str(buttonID&0xff)
-        elif buttonID >= 0xf090 and buttonID <= 0xf098:
-            url = keyBase + str((buttonID&0xff)-32)
+        elif buttonID >= 0xf041 and buttonID <= 0x5a:
+            # letters
+            if self.state == videoState.playing and buttonID == 0x5a:
+                buttonID = int(ENUM_KEY_F7)
+            url = keyBase + str(buttonID & 0xff)
+        elif buttonID >= 0xf090 and buttonID <= 0xf099:
+            # fn keys
+            url = keyBase + str((buttonID & 0xff)-32)
         elif buttonID == 0xf09b:
             #F12 exit
             self.exitCleanUp(True)
         elif buttonID == 0x4f092:
             #alt-f4'
             url = keyBase + str(0x40073)
-        elif buttonID & 0x40000 or buttonID & 0x20000:
+        elif buttonID & 0x40000 or buttonID & ENUM_KEY_CONTROL:
             buttonID = buttonID | 0x40000
-            url = keyBase + str(buttonID&0x400ff)
+            url = keyBase + str(buttonID & 0x400ff)
         elif actionID == 122 or actionID == 999 :
             if buttonID == 50:
                 #guide
-                url = keyBase + '112'
+                url = keyBase + ENUM_KEY_F1
             elif buttonID == 49 or buttonID == 101:
                 # recordings
-                url = keyBase + '119'
+                url = keyBase + ENUM_KEY_F8
             elif buttonID == 24:
                 #live tv
-                url = keyBase + '113'
+                url = keyBase + ENUM_KEY_F2
             elif buttonID == 7:
                 #my videos
-                url = keyBase + '114'
+                url = keyBase + ENUM_KEY_F3
             elif buttonID == 9:
                 #my music
-                url = keyBase + '115'
+                url = keyBase + ENUM_KEY_F4
             elif buttonID == 6:
                 #my pictures
-                url = keyBase + '116'
+                url = keyBase + ENUM_KEY_F9
             elif buttonID == 248:
                 #my radio
-                url = keyBase + '117'
+                url = keyBase + ENUM_KEY_F10
             elif buttonID == 44:
                 #subtitle
                 xbmc.executebuiltin('Action( NextSubtitle )')
@@ -443,7 +454,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 pass
             elif buttonID == 213:
                 #display
-                url = keyBase + '119'
+                url = keyBase + ENUM_KEY_F8
             else:
                 xbmc.log('remote action unsupported {0} {1}'.format(actionID, buttonID))
                 pass
@@ -535,6 +546,12 @@ class EmulateWindow(xbmcgui.WindowXML):
         fullRefresh = 0
         monitor = xbmc.Monitor()
         while monitor.abortRequested() == False and self.exit == False:
+            current = time.time()
+            if current > self.keyTimeout + 600:
+                xbmc.log('No activity timeout. Exit knewc')
+                self.exit = True
+                self.close()
+
             if not xbmc.Player().isPlayingVideo():
                 if self.state == videoState.started:
                     if isinstance(self.t1, Thread):
@@ -556,7 +573,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     else:
                         fullRefresh = 0
                         import glob
-                        fileNames = glob.glob(pseudovfs.translatePath('special://temp') + 'knew5/emulate*.png' )
+                        fileNames = glob.glob(pseudovfs.translatePath('special://temp') + 'knew5/emulate*.[pj][pn]g' )
                         for file in fileNames:
                             try:
                                 os.remove(file)
@@ -576,7 +593,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                                     self.skipStop = False
                             else:
                                 #url = self.base + '/control?key=131155' + self.xnewa.client
-                                url = self.base + '/control?key=' + str(83|0x20000) + self.xnewa.client
+                                url = self.base + '/control?key=' + str(83|ENUM_KEY_CONTROL) + self.xnewa.client
                                 self.getControlEx(url, True)
 
                             self.setOSDMode(True)
@@ -627,43 +644,46 @@ class EmulateWindow(xbmcgui.WindowXML):
         url = None
         keyBase = ''
         dialog = xbmcgui.Dialog()
-        value = dialog.select( 'Enter selection', [  'Remote Keys', 'Recordings',  'TV Guide',  'Main Menu', 'Exit UI Client', '0', '1', '2', '3', '4', '5','6', '7', '8', '9'])
+        value = dialog.select( 'Enter selection', [  'Remote Keys', 'Recordings',  'TV Guide',  "What's New", 'Scheduler' , 'Exit UI Client', '0', '1', '2', '3', '4', '5','6', '7', '8', '9'])
         xbmc.log(str(value))
 
-        if value == 4:
+        if value == 5:
             self.exitCleanUp()
         elif value == 2:
-            url = keyBase + '112'
+            url = keyBase + ENUM_KEY_F1
         elif value == 1:
-            url = keyBase + '119'
+            url = keyBase + ENUM_KEY_F8
         elif value == 3:
-            url = keyBase + '120'
+            url = keyBase + ENUM_KEY_F10
+        elif value == 4:
+            url = keyBase + ENUM_KEY_F9
         elif value == 0:
             value = dialog.select( 'Navigation Selection', [ 'Home', 'Page Up', 'Page Down', 'Fast Forward', 'Rewind', 'Skip Next', 'Skip Previous', 'Red', 'Green', 'Yellow', 'Blue'])
             xbmc.log(str(value))
             if value == 0:
-                url = keyBase + '36'
+                url = keyBase + ENUM_KEY_MENU
             elif value == 1:
-                url = keyBase + '33'
+                url = keyBase + ENUM_KEY_PAGEUP
             elif value == 2:
-                url = keyBase + '34'
+                url = keyBase + ENUM_KEY_PAGEDOWN
             elif value == 3:
-                url = keyBase + str(70|0x20000)
+                url = keyBase + str(ENUM_KEY_F | ENUM_KEY_CONTROL)
             elif value == 4:
-                url = keyBase + str(82|0x20000)
+                url = keyBase + str(ENUM_KEY_R| ENUM_KEY_CONTROL)
             elif value == 5:
-                url = keyBase + str(39|0x20000)
+                url = keyBase + str(ENUM_KEY_RIGHT | ENUM_KEY_CONTROL)
             elif value == 6:
-                url = keyBase + str(37|0x20000)
+                url = keyBase + str(ENUM_KEY_LEFT | ENUM_KEY_CONTROL)
             elif  value == 7:
-                url = keyBase + str(82|0x40000)
+                url = keyBase + str(ENUM_KEY_R | ENUM_KEY_ALT)
             elif  value == 8:
-                url = keyBase + str(71|0x40000)
+                url = keyBase + str(ENUM_KEY_G | ENUM_KEY_ALT)
             elif  value == 9:
-                url = keyBase + str(89|0x40000)
+                url = keyBase + str(ENUM_KEY_Y | ENUM_KEY_ALT)
             elif  value == 10:
-                url = keyBase + str(66|0x40000)
-        elif  value >=5 and value <= 14:
+                url = keyBase + str(ENUM_KEY_B | ENUM_KEY_ALT)
+        elif  value >=6 and value <= 14:
+            # numbers
             url = keyBase + str(value + 43)
         return url
 
@@ -708,7 +728,11 @@ class EmulateWindow(xbmcgui.WindowXML):
         try:
             jpgfile = urlopen(url, timeout=10)
             if showImage and jpgfile.code == 200:
-                screenFile = pseudovfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time()) + '.png'
+                screenFile = pseudovfs.translatePath('special://temp') + 'knew5/emulate-'+ str(time.time())
+                if xbmc.Player().isPlayingVideo():
+                    screenFile += ".png"
+                else:
+                    screenFile += ".jpg"
                 output = open(screenFile,'wb')
                 output.write(jpgfile.read())
                 output.close()
@@ -788,6 +812,8 @@ class EmulateWindow(xbmcgui.WindowXML):
                     self.exitCleanUp(True)
                     return
                 elif jsonActivity['action'] == 'stop':
+                    if xbmc.Player().isPlayingVideo():
+                        xbmc.Player().stop()
                     self.setOSDMode(True)
                     url = self.base + '/control?media=stop' + self.xnewa.client
                     self.getControlEx(url, False)

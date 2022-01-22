@@ -666,7 +666,7 @@ class XNEWA_Connect(object):
                 xbmc.log(str(err))
             xbmc.log("getRecordingsSummary json end")
         else:
-            retArr = getRecordingsSummary_v5(self)
+            retArr = getRecordingsSummary_v5(self, sortTitle, sortDate)
 
         self.myCachedPickle(retArr,cached)
         return retArr
