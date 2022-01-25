@@ -546,12 +546,6 @@ class EmulateWindow(xbmcgui.WindowXML):
         fullRefresh = 0
         monitor = xbmc.Monitor()
         while monitor.abortRequested() == False and self.exit == False:
-            current = time.time()
-            if current > self.keyTimeout + 600:
-                xbmc.log('No activity timeout. Exit knewc')
-                self.exit = True
-                self.close()
-
             if not xbmc.Player().isPlayingVideo():
                 if self.state == videoState.started:
                     if isinstance(self.t1, Thread):
@@ -603,8 +597,6 @@ class EmulateWindow(xbmcgui.WindowXML):
 
                             url = self.base + '/control?key=131188' + self.xnewa.client
                             self.getControlEx(url, True)
-                xbmc.sleep(1000)
-
             else:
                 self.state = videoState.playing
                 if self.sdlmode == SDL.full:
@@ -628,7 +620,18 @@ class EmulateWindow(xbmcgui.WindowXML):
                         pass
                 self.getActivity()
 
-                xbmc.sleep(1000)
+            current = time.time()
+            if xbmc.Player().isPlaying():
+                self.keyTimeout = current
+            elif current > self.keyTimeout + 10:
+                xbmc.log('No activity timeout. Exit knewc')
+                self.exit = True
+                self.close()
+                if self.settings.XNEWA_WEBCLIENT == True:
+                    xbmc.executebuiltin('ActivateWindow(favourites)')
+                return
+
+            xbmc.sleep(1000)
         return
 
     def sidUpdate(self,):
