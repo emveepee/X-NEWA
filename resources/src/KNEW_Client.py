@@ -877,3 +877,19 @@ def strptimeKodi(date_string,format):
     except TypeError:
         return datetime(*(time.strptime(date_string, format)[0:6]))
     return None
+
+def getKeyEnum(self, hash, value ):
+
+    if not hash in self.keycodes:
+        if value == None:
+            method = "setting.device.keycode&hash=" + hash
+        else:
+            method = "setting.device.keycode&hash={0}&default={1}".format(hash, value)
+        ret, result = doRequest5(self,method)
+
+        if not ret:
+            return None
+        else:
+            self.keycodes[hash] = result['key']
+
+    return self.keycodes[hash]

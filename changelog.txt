@@ -6,6 +6,8 @@ UI Client
 - Long Up to hidden menu
 - 10 minute timeout to Kodi from UI Client
 - Drop to Favourites on timeout
+- user defined Fn and Hauppauge keys
+- separated recordedtv from mytv, recordedtv maps to Home
 Python UI
 - Improved tagged deletes in Recordings
 - Added sorting in Recorodings

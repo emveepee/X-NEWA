@@ -127,6 +127,7 @@ class XNEWA_Connect(object):
         self.update_time = 9223372036854775807
         self.isdst = time.localtime(time.time()).tm_isdst
         self.PVRRecordings = {}
+        self.keycodes = {}
 
         if self.isdst == 1:
             xbmc.log ('atz ' + str(time.altzone))
@@ -2637,6 +2638,16 @@ class XNEWA_Connect(object):
         except Exception as err:
             xbmc.log(str(err))
         return setting
+
+######################################################################################################
+# Get user defined keys
+######################################################################################################
+
+    def tryKeyEnum(self, hash, value ):
+        if self.settings.XNEWA_INTERFACE == 'JSON':
+            return None
+        return getKeyEnum(self, hash, value)
+
 
 ######################################################################################################
 # Creates a (MD5) hash of a string

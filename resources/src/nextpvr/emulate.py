@@ -291,7 +291,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 # send ctrl-b
                 url = keyBase + str(ENUM_KEY_B | ENUM_KEY_CONTROL)
             else:
-                url = keyBase + ENUM_KEY_MENU
+                url = keyBase + ENUM_KEY_HOME
             self.pauseActivity = False
         elif buttonID >= 0x2f041 and buttonID <= 0x2f05a:
             # shifted letters
@@ -411,9 +411,11 @@ class EmulateWindow(xbmcgui.WindowXML):
             if self.state == videoState.playing and buttonID == 0x5a:
                 buttonID = int(ENUM_KEY_F7)
             url = keyBase + str(buttonID & 0xff)
-        elif buttonID >= 0xf090 and buttonID <= 0xf099:
-            # fn keys
-            url = keyBase + str((buttonID & 0xff)-32)
+        elif buttonID >= 0xf090 and buttonID <= 0xf09b:
+            #fn keys
+            button = buttonID & 0xff
+            fn = 'F' + str(button - 143)
+            url = keyBase + self.userKey(fn, fn, button - 32)
         elif buttonID == 0xf09b:
             #F12 exit
             self.exitCleanUp(True)
@@ -426,25 +428,28 @@ class EmulateWindow(xbmcgui.WindowXML):
         elif actionID == 122 or actionID == 999 :
             if buttonID == 50:
                 #guide
-                url = keyBase + ENUM_KEY_F1
-            elif buttonID == 49 or buttonID == 101:
-                # recordings
-                url = keyBase + ENUM_KEY_F8
+                url = keyBase + self.userKey('guide', 'F1', ENUM_KEY_F1)
+            elif buttonID == 49:
+                # TV
+                url = keyBase + self.userKey('mytv', 'F8', ENUM_KEY_F8)
+            elif buttonID == 101:
+                # recordedtv
+                url = keyBase + self.userKey('recordedtv', 'HOME', ENUM_KEY_HOME)
             elif buttonID == 24:
                 #live tv
-                url = keyBase + ENUM_KEY_F2
+                url = keyBase + self.userKey('livetv', 'F2', ENUM_KEY_F2)
             elif buttonID == 7:
                 #my videos
-                url = keyBase + ENUM_KEY_F3
+                url = keyBase + self.userKey('myvideos', 'F3', ENUM_KEY_F3)
             elif buttonID == 9:
                 #my music
-                url = keyBase + ENUM_KEY_F4
+                url = keyBase + self.userKey('mymusic', 'F4', ENUM_KEY_F4)
             elif buttonID == 6:
                 #my pictures
-                url = keyBase + ENUM_KEY_F9
+                url = keyBase + self.userKey('mypictures', 'F9', ENUM_KEY_F9)
             elif buttonID == 248:
                 #my radio
-                url = keyBase + ENUM_KEY_F10
+                url = keyBase + self.userKey('liveradio', 'F10', ENUM_KEY_F10)
             elif buttonID == 44:
                 #subtitle
                 xbmc.executebuiltin('Action( NextSubtitle )')
@@ -471,6 +476,14 @@ class EmulateWindow(xbmcgui.WindowXML):
         self.renderstop = False
         self.inControl = False
         self.ready = True
+
+    def userKey(self, hash, enum, keyValue) :
+        key = self.xnewa.tryKeyEnum(hash, enum )
+        if key == None:
+            skey = str(keyValue)
+        else:
+            skey = str(key)
+        return skey
 
     def onLiveAction(self,actionID,buttonID):
         retval = False
@@ -623,7 +636,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             current = time.time()
             if xbmc.Player().isPlaying():
                 self.keyTimeout = current
-            elif current > self.keyTimeout + 10:
+            elif current > self.keyTimeout + 600:
                 xbmc.log('No activity timeout. Exit knewc')
                 self.exit = True
                 self.close()
@@ -664,7 +677,7 @@ class EmulateWindow(xbmcgui.WindowXML):
             value = dialog.select( 'Navigation Selection', [ 'Home', 'Page Up', 'Page Down', 'Fast Forward', 'Rewind', 'Skip Next', 'Skip Previous', 'Red', 'Green', 'Yellow', 'Blue'])
             xbmc.log(str(value))
             if value == 0:
-                url = keyBase + ENUM_KEY_MENU
+                url = keyBase + ENUM_KEY_HOME
             elif value == 1:
                 url = keyBase + ENUM_KEY_PAGEUP
             elif value == 2:
