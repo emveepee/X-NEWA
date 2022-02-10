@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.kodi.knewc" name="NextPVR New Client" version="2.9.4" provider-name="emveepee">
+<addon id="script.kodi.knewc" name="NextPVR New Client" version="2.9.5" provider-name="emveepee">
     <requires>
         <!--import addon="xbmc.python" version="2.1.0"/-->
         <import addon="script.module.future" version="0.16.0.4"/>
@@ -9,7 +9,7 @@
     </requires>
     <extension point="xbmc.python.script" library="default.py">
     </extension>
-    <!--extension point="xbmc.service" library="default.py"  start="startup"></extension-->
+    <!-- <extension point="xbmc.service" library="default.py"  start="startup"></extension> -->
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <minversion>28764</minversion>
