@@ -1,3 +1,6 @@
+[B]2.9.6[/B]
+- Fix for UI client menu.
+
 [B]2.9.5[/B]
 UI Client
 - Enable Alt-G

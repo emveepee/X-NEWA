@@ -698,9 +698,9 @@ class EmulateWindow(xbmcgui.WindowXML):
                 url = keyBase + str(ENUM_KEY_Y | ENUM_KEY_ALT)
             elif  value == 10:
                 url = keyBase + str(ENUM_KEY_B | ENUM_KEY_ALT)
-        elif  value >=6 and value <= 14:
+        elif  value >=6 and value <= 15:
             # numbers
-            url = keyBase + str(value + 43)
+            url = keyBase + str(value + 42)
         return url
 
     def getForcedScreen(self):
