@@ -8,7 +8,7 @@
     <setting default="password" id="password" label="30205" option="hidden" type="text" />
     <setting enable="false" id="blank1" label="" type="text" />
     <setting type="sep" />
-    <setting default="false" id="webclient" label="30206" type="bool" />
+    <setting default="true" id="webclient" label="30206" type="bool" />
     <setting default="false" enabled="false" id="installed" label="" type="bool" visible="false" />
     <setting default="priority" enabled="false" id="recurringSort" label="recurringSort" type="text" visible="false" />
     <setting default="0" enabled="false" id="recordingSort" label="recordingSort" type="number" visible="false" />

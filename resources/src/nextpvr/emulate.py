@@ -276,7 +276,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 url = keyBase + str(ENUM_KEY_RIGHT | ENUM_KEY_CONTROL)
         elif actionID == ACTION_PREV_ITEM:
             if xbmc.Player().isPlayingVideo():
-                if '/live?channel=' not in xbmc.Player().getPlayingFile():
+                if '/live?channel' not in xbmc.Player().getPlayingFile():
                     url = keyBase + str(ENUM_KEY_LEFT | ENUM_KEY_CONTROL)
             else:
                 # send ctrl-b doesn't work
@@ -363,7 +363,7 @@ class EmulateWindow(xbmcgui.WindowXML):
         elif actionID in MOVEMENT_UP:
             url = keyBase + ENUM_KEY_UP
             if xbmc.Player().isPlayingVideo():
-                if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
+                if '/live?channel' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
                     url = keyBase + str(ENUM_KEY_F | ENUM_KEY_CONTROL)
             else:
                 self.pauseActivity = False
@@ -372,7 +372,7 @@ class EmulateWindow(xbmcgui.WindowXML):
         elif actionID in MOVEMENT_DOWN or buttonID == 0xf064:
             url = keyBase + ENUM_KEY_DOWN
             if xbmc.Player().isPlayingVideo():
-                if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
+                if '/live?channel' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
                     url = keyBase + str(ENUM_KEY_R | ENUM_KEY_CONTROL)
             else:
                 self.pauseActivity = False
@@ -512,7 +512,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                     xbmc.executebuiltin('PlayerControl(tempoup)')
                     retval = True
                 elif actionID == ACTION_SHOW_OSD or actionID == ACTION_SELECT_ITEM:
-                    if '/live?channel=' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
+                    if '/live?channel' not in xbmc.Player().getPlayingFile() and self.osdMode == False:
                         xbmc.executebuiltin('Action(OSD,fullscreenvideo)')
                         retval = True
                 elif actionID == ACTION_PLAYER_REWIND:
@@ -563,7 +563,7 @@ class EmulateWindow(xbmcgui.WindowXML):
                 if self.state == videoState.started:
                     if isinstance(self.t1, Thread):
                         #print self.t1.is_alive(), self.renderstop, self.state, xbmc.Player().isPlayingVideo()
-                        if self.t1.isAlive() == False:
+                        if self.t1.is_alive() == False:
                             self.state = videoState.error
                         elif xbmc.Player().isPlayingAudio():
                             self.state = videoState.inactive

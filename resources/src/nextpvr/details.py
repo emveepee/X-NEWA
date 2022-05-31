@@ -447,8 +447,9 @@ class DetailDialog(xbmcgui.WindowXMLDialog):
                 infolabels={ "Title": self.detailData['title'],'plot': self.detailData['desc']}
             listitem.setInfo( type="video", infoLabels=infolabels )
 
-
-            if len(self.detailData['channel']) == 2:
+            if 'channel_oid' in self.detailData:
+                    url = self.urly + "/live?channel_id=" + self.detailData['channel_oid']
+            elif len(self.detailData['channel']) == 2:
                 url = self.urly + "/live?channel=" + self.detailData['channel'][1]
             elif self.detailData['channel'][2] == '0':
                 url = self.urly + "/live?channel=" + self.detailData['channel'][1]
