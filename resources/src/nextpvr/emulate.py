@@ -757,6 +757,8 @@ class EmulateWindow(xbmcgui.WindowXML):
                 if self.pauseActivity:
                     self.getActivity()
             code = jpgfile.code
+            if code == 204 and self.pauseActivity:
+                self.getActivity()
         except HTTPError as e:
             code = e.code
             xbmc.log(str(e.code))

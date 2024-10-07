@@ -1,3 +1,6 @@
+[B]2.10.1[/B]
+- handle video playback with an image
+
 [B]2.10.0[/B]
 - Fix for python 3.9 and higher (Nexus)
 - Default to UI client
